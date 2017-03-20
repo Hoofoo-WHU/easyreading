@@ -1,0 +1,25 @@
+{
+  "name": "easyreading",
+  "version": "0.1.0",
+  "description": "A Hybird Reading Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd project/\nnpm run build",
+    "dev": "cd project/\nnpm run dev",
+    "install": "\ncd project/\nnpm install\nnpm install cordova -g",
+    "build": "cd project/\nnpm run build",
+    "ios": "cordova run ios",
+    "android": "cordova run android",
+    "serve": "cordova serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hoofoo-WHU/easyreading.git"
+  },
+  "author": "Hoofoo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hoofoo-WHU/easyreading/issues"
+  },
+  "homepage": "https://github.com/Hoofoo-WHU/easyreading#readme"
+}

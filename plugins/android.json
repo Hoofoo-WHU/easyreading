@@ -9,6 +9,21 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "io.cordova.hellocordova"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "io.cordova.hellocordova"
+        },
+        "cordova-plugin-light-statusbar": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova.custom.plugins.exitapp": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-app-version": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
         }
     },
     "dependent_plugins": {}

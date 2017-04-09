@@ -1,16 +1,20 @@
 <template>
-  <div>
-    {{ msg }}
-  </div>
+  <scroll style="overflow: scroll; flex: 1; -webkit-overflow-scrolling: touch;">
+    <div style="height: 2000px; background: -webkit-linear-gradient(red, blue); width: 90%;"></div>
+  </scroll>
 </template>
 
 <script>
+import Scroll from './scroll.vue'
 export default {
   name: 'store',
   data () {
     return {
       msg: '这里是商城模块'
     }
+  },
+  components: {
+    Scroll
   }
 }
 </script>

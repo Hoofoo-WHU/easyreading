@@ -1,12 +1,18 @@
 <template>
-  <div>
-    {{ msg }}
-  </div>
+  <scroller class="scroller">
+    <div>
+      {{ msg }}
+    </div>
+  </scroller>
 </template>
 
 <script>
+import Scroller from './vue-iscroll.vue'
 export default {
   name: 'my',
+  components: {
+    Scroller
+  },
   data () {
     return {
       msg: '这里是我的模块'
@@ -17,4 +23,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.scroller{
+  flex: 1;
+}
 </style>

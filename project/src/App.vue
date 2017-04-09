@@ -11,6 +11,7 @@
       <span class="router" v-tap="{methods: to, name: 'Store'}" :class="{ active: router === 'Store' }">书城</span>
       <span class="router" v-tap="{methods: to, name: 'Search'}" :class="{ active: router === 'Search' }">搜索</span>
       <span class="router" v-tap="{methods: to, name: 'My'}" :class="{ active: router === 'My' }">我的</span>
+      <span class="router" v-tap="{methods: to, name: 'Test'}" :class="{ active: router === 'Test' }">测试</span>
       <!-- <router-link class="router" :to="{ name: 'Shelf' }" :class="{ active: router === 'Shelf' }">书架</router-link>
       <router-link class="router" :to="{ name: 'Store' }" :class="{ active: router === 'Store' }">书城</router-link>
       <router-link class="router" :to="{ name: 'Search' }" :class="{ active: router === 'Search' }">搜索</router-link>

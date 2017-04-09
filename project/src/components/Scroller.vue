@@ -2,7 +2,7 @@
   <div class="wrapper" @touchmove.prevent @click.prevent>
     <div class="content" :class="{preventEvent: scrolling}">
       <!-- <div>{{x}},{{y}}</div> -->
-      <div>{{ scrolling }}</div>
+      <!-- <div>{{ scrolling }}</div> -->
       <slot></slot>
     </div>
   </div>

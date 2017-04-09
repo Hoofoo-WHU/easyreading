@@ -1,11 +1,13 @@
 <template>
-  <scroll style="overflow: scroll; flex: 1; -webkit-overflow-scrolling: touch;">
-    <div style="height: 2000px; background: -webkit-linear-gradient(red, blue); width: 90%;"></div>
-  </scroll>
+  <scroller class="scroller">
+    <div>
+      {{ msg }}
+    </div>
+  </scroller>
 </template>
 
 <script>
-import Scroll from './scroll.vue'
+import Scroller from '@/components/Scroller'
 export default {
   name: 'store',
   data () {
@@ -14,11 +16,14 @@ export default {
     }
   },
   components: {
-    Scroll
+    Scroller
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.scroller{
+  flex: 1;
+}
 </style>

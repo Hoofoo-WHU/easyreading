@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Shelf from '@/components/Shelf'
-import Store from '@/components/Store'
-import Search from '@/components/Search'
-import My from '@/components/My'
+import Shelf from '@/modules/Shelf'
+import Store from '@/modules/Store'
+import Search from '@/modules/Search'
+import My from '@/modules/My'
+import Test from '@/modules/Test'
 
 Vue.use(Router)
 
@@ -32,6 +33,11 @@ export default new Router({
       path: '/my',
       name: 'My',
       component: My
+    },
+    {
+      path: '/test',
+      name: 'Test',
+      component: Test
     }
   ]
 })

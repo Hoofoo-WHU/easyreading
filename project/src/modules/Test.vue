@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import Scroller from './vue-iscroll.vue'
+  import Scroller from '@/components/Scroller'
   export default {
     components: {
       Scroller

@@ -7,15 +7,15 @@
 </template>
 
 <script>
-import Scroller from './vue-iscroll.vue'
+import Scroller from '@/components/Scroller'
 export default {
-  name: 'search',
+  name: 'shelf',
   components: {
     Scroller
   },
   data () {
     return {
-      msg: '这里是搜索模块'
+      msg: '这里是书架模块'
     }
   }
 }
@@ -27,4 +27,3 @@ export default {
   flex: 1;
 }
 </style>
-

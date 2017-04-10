@@ -1,5 +1,5 @@
 <template>
-  <scroller class="scroller">
+  <scroller class="scroller" ref="scroller">
     <div>
       {{ msg }}
     </div>
@@ -16,6 +16,11 @@ export default {
   data () {
     return {
       msg: '这里是我的模块'
+    }
+  },
+  methods: {
+    scrollTop () {
+      this.$refs.scroller.scrollTop()
     }
   }
 }

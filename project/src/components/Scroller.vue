@@ -15,7 +15,12 @@ export default {
   props: {
     options: {
       type: Object,
-      default: () => {}
+      default: () => {
+        return {
+          bounceTime: 1000,
+          deceleration: 0.00055
+        }
+      }
     }
   },
   watch: {
@@ -59,6 +64,9 @@ export default {
     scrollEnd () {
       this.scrolling = false
       this.$emit('scrollEnd')
+    },
+    scrollTop () {
+      this.iScroll.scrollTo(0, 0, 1000)
     }
   }
 }

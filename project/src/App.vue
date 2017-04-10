@@ -1,21 +1,17 @@
 <template>
   <div id="app">
-    <div class="navigation-bar">{{ router }}</div>
+    <div class="navigation-bar" v-tap="{methods: scrollTop}">{{ router }}</div>
     <div class="view">
       <keep-alive>
         <router-view></router-view>
       </keep-alive>
     </div>
     <div class="bottom-bar">
-      <span class="router" v-tap="{methods: to, name: 'Shelf'}" :class="{ active: router === 'Shelf' }">书架</span>
-      <span class="router" v-tap="{methods: to, name: 'Store'}" :class="{ active: router === 'Store' }">书城</span>
-      <span class="router" v-tap="{methods: to, name: 'Search'}" :class="{ active: router === 'Search' }">搜索</span>
-      <span class="router" v-tap="{methods: to, name: 'My'}" :class="{ active: router === 'My' }">我的</span>
-      <span class="router" v-tap="{methods: to, name: 'Test'}" :class="{ active: router === 'Test' }">测试</span>
-      <!-- <router-link class="router" :to="{ name: 'Shelf' }" :class="{ active: router === 'Shelf' }">书架</router-link>
-      <router-link class="router" :to="{ name: 'Store' }" :class="{ active: router === 'Store' }">书城</router-link>
-      <router-link class="router" :to="{ name: 'Search' }" :class="{ active: router === 'Search' }">搜索</router-link>
-      <router-link class="router" :to="{ name: 'My' }" :class="{ active: router === 'My' }">我的</router-link> -->
+      <span class="router" v-tap="{methods: to, name: 'shelf'}" :class="{active: router === 'shelf'}">书架</span>
+      <span class="router" v-tap="{methods: to, name: 'store'}" :class="{active: router === 'store'}">书城</span>
+      <span class="router" v-tap="{methods: to, name: 'search'}" :class="{active: router === 'search'}">搜索</span>
+      <span class="router" v-tap="{methods: to, name: 'my'}" :class="{active: router === 'my'}">我的</span>
+      <span class="router" v-tap="{methods: to, name: 'test'}" :class="{active: router === 'test'}">测试</span>
     </div>
   </div>
 </template>
@@ -29,16 +25,27 @@ export default {
   computed: {
     router: function () {
       return this.$route.name
+    },
+    activeMoudle: function () {
+      return this.$route.matched[0].instances.default
     }
   },
   methods: {
     to: function (params) {
       // console.log(params.name)
       this.$router.push({'name': params.name})
+      // console.log(this.activeMoudle)
+    },
+    scrollTop: function () {
+      if (this.activeMoudle.scrollTop) {
+        this.activeMoudle.scrollTop()
+      } else {
+        console.error('缺少方法：scrollTop', this.activeMoudle)
+      }
     }
   },
   mounted () {
-    console.log(this.$router)
+    // console.log(this.$router)
   }
 }
 </script>

@@ -12,31 +12,31 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: { name: 'Shelf' }
+      redirect: { name: 'shelf' }
     },
     {
       path: '/shelf',
-      name: 'Shelf',
+      name: 'shelf',
       component: Shelf
     },
     {
       path: '/store',
-      name: 'Store',
+      name: 'store',
       component: Store
     },
     {
       path: '/search',
-      name: 'Search',
+      name: 'search',
       component: Search
     },
     {
       path: '/my',
-      name: 'My',
+      name: 'my',
       component: My
     },
     {
       path: '/test',
-      name: 'Test',
+      name: 'test',
       component: Test
     }
   ]

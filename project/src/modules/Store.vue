@@ -1,5 +1,5 @@
 <template>
-  <scroller class="scroller">
+  <scroller class="scroller" ref="scroller">
     <div>
       {{ msg }}
     </div>
@@ -17,6 +17,11 @@ export default {
   },
   components: {
     Scroller
+  },
+  methods: {
+    scrollTop () {
+      this.$refs.scroller.scrollTop()
+    }
   }
 }
 </script>

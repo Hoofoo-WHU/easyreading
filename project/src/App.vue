@@ -46,6 +46,9 @@ export default {
   },
   mounted () {
     // console.log(this.$router)
+    document.addEventListener('backbutton', function () {
+      navigator.app.exitApp()
+    }, false)
   }
 }
 </script>

@@ -49,7 +49,6 @@ export default {
     this.iScroll = new IScroll(this.$el, this.options)
     this.iScroll.on('scrollStart', this.scrollStart)
     this.iScroll.on('scrollEnd', this.scrollEnd)
-    console.log(this.iScroll)
     setTimeout(this.resize, 0)
   },
   methods: {

@@ -18,6 +18,7 @@
     <preference name="DisallowOverscroll" value="true" />
     <platform name="android">
         <allow-intent href="market:*" />
+        <preference name="StatusBarBackgroundColor" value="#ffffffff" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />

@@ -49,12 +49,16 @@ export default {
     this.iScroll = new IScroll(this.$el, this.options)
     this.iScroll.on('scrollStart', this.scrollStart)
     this.iScroll.on('scrollEnd', this.scrollEnd)
-    setTimeout(this.resize, 0)
+    this.iScroll.on('beforeScrollStart', this.beforeScrollStart)
+    setTimeout(this.refresh, 0)
   },
   methods: {
-    resize () {
+    refresh () {
       this.iScroll.refresh()
       this.iScroll.hasVerticalScroll = true
+    },
+    beforeScrollStart () {
+      this.$emit('beforeScrollStart')
     },
     scrollStart () {
       this.scrolling = true
@@ -66,6 +70,12 @@ export default {
     },
     scrollTop () {
       this.iScroll.scrollTo(0, 0, 1000)
+    },
+    scrollTo (x, y) {
+      this.iScroll.scrollTo(-x, -y, 1000)
+    },
+    scrollBy (x, y) {
+      this.iScroll.scrollBy(-x, -y, 1000)
     }
   }
 }

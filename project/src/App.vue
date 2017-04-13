@@ -11,16 +11,22 @@
       <span class="router" v-tap="{methods: to, name: 'store'}" :class="{active: router === 'store'}">书城</span>
       <span class="router" v-tap="{methods: to, name: 'search'}" :class="{active: router === 'search'}">搜索</span>
       <span class="router" v-tap="{methods: to, name: 'my'}" :class="{active: router === 'my'}">我的</span>
-      <span class="router" v-tap="{methods: to, name: 'test'}" :class="{active: router === 'test'}">测试</span>
+      <span class="router" v-tap="{methods: to, name: 'test'}" :class="{active: router === 'test'}">
+        <icon name="settings" style="width: 25px; height: 25px;"></icon>
+      </span>
     </div>
   </div>
 </template>
 
 <script>
+import Icon from './components/Icon'
 export default {
   name: 'app',
   data () {
     return {}
+  },
+  components: {
+    Icon
   },
   computed: {
     router: function () {
@@ -95,5 +101,6 @@ export default {
   -webkit-appearance: none;
   text-align: center;
   line-height: 49px;
+  transition: color 0.2s;
 }
 </style>

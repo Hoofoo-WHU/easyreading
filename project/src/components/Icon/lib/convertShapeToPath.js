@@ -86,7 +86,7 @@ module.exports = function (node, type) {
     case 'path':
       return {
         d: node.d,
-        fill: node.fill === undefined && node.fill === '#000000' ? '' : node.fill,
+        fill: node.fill === undefined ? '' : node.fill,
         stroke: formateColor(node.stroke)
       }
     case 'polygon':
@@ -107,7 +107,7 @@ module.exports = function (node, type) {
 function formateColor (prop) {
   if (!prop) {
     return 'transparent'
-  } else if (prop === '#000000') {
+  } else if (prop === undefined) {
     return ''
   } else {
     return prop

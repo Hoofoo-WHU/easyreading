@@ -45,7 +45,7 @@
       },
       icon () {
         var xml = require(`!xml-loader!./svg/${this.name}.svg`)
-        console.log(xml.svg)
+        // console.log(xml.svg)
         const t = xml.svg.$.viewBox.split(' ')
         return {
           width: t[2],

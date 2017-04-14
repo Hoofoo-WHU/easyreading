@@ -1,11 +1,13 @@
 <template>
   <div class="wrapper" @touchmove.prevent @touchstart="touchStart" @touchend="touchEnd" @mousedown="touchStart" @mouseup="touchEnd">
     <div class="content" :class="{preventEvent: scrolling}">
-        <div class="pull-refresh" v-if="canPullRefresh" :class="{ opacity1: touching || pullRefreshState === 2 }">
+      <transition name="fade">
+        <div class="pull-refresh" v-if="!iscrollMounted || (canPullRefresh && (touching || pullRefreshState === 2))">
           <icon class="pull-refresh-icon" :name="refreshIcon" spin v-if="pullRefreshState === 2"></icon>
           <icon class="pull-refresh-icon" name="up" :class="{'active-pull-refresh-icon': pullRefreshState === 1}" v-if="pullRefreshState !== 2"></icon>
           <div class="pull-refresh-text">{{ pullRefreshText }}</div>
         </div>
+      </transition>
 <!--       <div>{{x}},{{y}}</div>
       <div>{{ scrolling }}</div>
       <div>{{ pullRefreshState }}</div>
@@ -74,7 +76,8 @@ export default {
       x: 0,
       y: 0,
       pullRefreshHeight: 60,
-      touching: false
+      touching: false,
+      iscrollMounted: false
     }
   },
   mounted () {
@@ -91,6 +94,7 @@ export default {
     this.iScroll.on('scroll', this.scroll)
     this.iScroll.on('beforeScrollStart', this.beforeScrollStart)
     this.refresh()
+    this.iscrollMounted = true
   },
   methods: {
     refresh () {
@@ -99,7 +103,7 @@ export default {
           top: 0,
           bottom: this.pullRefreshHeight
         }
-        if (this.canPullRefresh && this.pullRefreshState === 2) {
+        if (this.pullRefreshState === 2) {
           fix.top = this.pullRefreshHeight
         }
         this.iScroll.refresh(fix)
@@ -116,7 +120,6 @@ export default {
     scroll () {
       this.x = ~~this.iScroll.x
       this.y = ~~this.iScroll.y
-      console.log(this.touching || this.pullRefreshState === 2)
     },
     scrollEnd () {
       this.scrolling = false
@@ -135,7 +138,6 @@ export default {
       this.touching = true
     },
     touchEnd () {
-      console.log('touchEnd')
       this.touching = false
       if (this.canPullRefresh && this.pullRefreshState === 1) {
         this.activePullRefresh()
@@ -167,8 +169,6 @@ export default {
   overflow: hidden;
   margin-top: -60px;
   height: 60px;
-  transition: opacity .4s;
-  opacity: 0;
 }
 .pull-refresh-icon{
   width: 25px;
@@ -186,9 +186,15 @@ export default {
 .preventEvent{
   pointer-events: none;
 }
-.opacity1{
-  transition: opacity 0s;
-  opacity: 1;
+.fade-enter-active {
+  transition: transform .8s, opacity .8s;
+}
+.fade-leave-active {
+  transition: transform .8s, opacity .8s;
+}
+.fade-enter, .fade-leave-active {
+  transform: scale(0.6, 0.6);
+  opacity: 0;
 }
 
 </style>

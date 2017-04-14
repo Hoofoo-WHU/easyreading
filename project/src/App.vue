@@ -6,27 +6,28 @@
         <router-view></router-view>
       </keep-alive>
     </div>
-    <div class="bottom-bar">
-      <span class="router" v-tap="{methods: to, name: 'shelf'}" :class="{active: router === 'shelf'}">书架</span>
-      <span class="router" v-tap="{methods: to, name: 'store'}" :class="{active: router === 'store'}">书城</span>
-      <span class="router" v-tap="{methods: to, name: 'search'}" :class="{active: router === 'search'}">搜索</span>
-      <span class="router" v-tap="{methods: to, name: 'my'}" :class="{active: router === 'my'}">我的</span>
-      <span class="router" v-tap="{methods: to, name: 'test'}" :class="{active: router === 'test'}">
-        <icon name="settings" style="width: 25px; height: 25px;"></icon>
-      </span>
-    </div>
+    <bottom-bar>
+      <bottom-bar-item v-tap="{methods: to, name: 'shelf'}" name="书架" icon="shelf" :active="router === 'shelf'"></bottom-bar-item>
+      <bottom-bar-item v-tap="{methods: to, name: 'store'}" name="书城" icon="store" :active="router === 'store'"></bottom-bar-item>
+      <bottom-bar-item v-tap="{methods: to, name: 'search'}" name="搜索" icon="search" :active="router === 'search'"></bottom-bar-item>
+      <bottom-bar-item v-tap="{methods: to, name: 'my'}" name="我的" icon="account" :active="router === 'my'"></bottom-bar-item>
+      <bottom-bar-item v-tap="{methods: to, name: 'test'}" name="测试" icon="settings" :active="router === 'test'"></bottom-bar-item>
+    </bottom-bar>
   </div>
 </template>
 
 <script>
-import Icon from './components/Icon'
+import Icon from '@/components/Icon'
+import { BottomBar, BottomBarItem } from '@/components/BottomBar'
 export default {
   name: 'app',
   data () {
     return {}
   },
   components: {
-    Icon
+    Icon,
+    BottomBar,
+    BottomBarItem
   },
   computed: {
     router: function () {
@@ -73,9 +74,6 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.active {
-  color: #2786f3;
-}
 .view{
   width: 100%;
   flex: 1;
@@ -90,17 +88,7 @@ export default {
   text-align: center;
   line-height: 45px;
   background-color: #fff;
-}
-.bottom-bar{
-  height: 49px;
-  display: flex;
-  background-color: #fff;
-}
-.router{
-  flex: 1;
-  -webkit-appearance: none;
-  text-align: center;
-  line-height: 49px;
-  transition: color 0.2s;
+  z-index: 2;
+  box-shadow: 0px 0px 5px #ddd;
 }
 </style>

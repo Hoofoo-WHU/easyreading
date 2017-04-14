@@ -1,5 +1,5 @@
 <template>
-  <scroller style="flex: 1;" ref="scroller">
+  <scroller style="flex: 1;" ref="scroller" canPullRefresh @pullRefresh="pullRefresh">
     <div v-for="(item, index) in items" v-tap="{ methods: onItemClick, item: item, index: index }"
         class="row" :class="{'grey-bg': index % 2 == 0}">
       {{ item }}
@@ -30,6 +30,17 @@
       },
       scrollTop () {
         this.$refs.scroller.scrollTop()
+      },
+      pullRefresh (over) {
+        console.log('pullRefresh')
+        setTimeout(() => {
+          var i = parseInt(this.items[0]) - 1
+          var end = i - 1
+          for (; i > end; i--) {
+            this.items.unshift(i + ' - keep walking, be 2 with you.')
+          }
+        }, 3000)
+        setTimeout(over, 3000)
       }
     }
   }

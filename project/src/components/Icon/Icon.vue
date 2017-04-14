@@ -1,6 +1,6 @@
 <template>
   <svg version="1.1" :class="clazz" :viewBox="box">
-    <path :d="path.d" :fill="path.fill" :stroke="path.stroke" v-for="path in icon.paths"/>
+    <path :d="path.d" :fill="path.fill" v-for="path in icon.paths"/>
   </svg>
 </template>
 
@@ -34,12 +34,7 @@
         type: String,
         required: true
       },
-      spin: Boolean,
-      flip: {
-        validator: function (val) {
-          return val === 'horizontal' || val === 'vertical'
-        }
-      }
+      spin: Boolean
     },
     computed: {
       clazz () {
@@ -50,6 +45,7 @@
       },
       icon () {
         var xml = require(`!xml-loader!./svg/${this.name}.svg`)
+        // console.log(xml.svg)
         const t = xml.svg.$.viewBox.split(' ')
         return {
           width: t[2],

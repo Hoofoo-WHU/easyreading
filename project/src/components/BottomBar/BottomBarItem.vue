@@ -47,6 +47,7 @@ export default {
 .name{
   text-align: center;
   font-size: 10px;
+  user-select: none;
 }
 .active{
   color: #157afb;

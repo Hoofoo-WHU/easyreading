@@ -8,6 +8,7 @@
   .svg-icon {
     display: inline-block;
     fill: currentColor;
+    user-select: none;
   }
 
   .svg-icon.spin {

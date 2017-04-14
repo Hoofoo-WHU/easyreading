@@ -169,6 +169,7 @@ export default {
   overflow: hidden;
   margin-top: -60px;
   height: 60px;
+  user-select: none;
 }
 .pull-refresh-icon{
   width: 25px;
@@ -182,6 +183,7 @@ export default {
 .pull-refresh-text{
   font-size: 12px;
   color: #7a8086;
+  user-select: none;
 }
 .preventEvent{
   pointer-events: none;

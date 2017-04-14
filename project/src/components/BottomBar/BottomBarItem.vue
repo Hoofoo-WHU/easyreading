@@ -37,7 +37,7 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  color: #030303;
+  color: #5a6773;
 }
 .icon{
   width: 25px;

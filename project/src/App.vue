@@ -11,7 +11,7 @@
       <bottom-bar-item v-tap="{methods: to, name: 'store'}" name="书城" icon="store" :active="router === 'store'"></bottom-bar-item>
       <bottom-bar-item v-tap="{methods: to, name: 'search'}" name="搜索" icon="search" :active="router === 'search'"></bottom-bar-item>
       <bottom-bar-item v-tap="{methods: to, name: 'my'}" name="我的" icon="account" :active="router === 'my'"></bottom-bar-item>
-      <!-- <bottom-bar-item v-tap="{methods: to, name: 'test'}" name="测试" icon="settings" :active="router === 'test'"></bottom-bar-item> -->
+      <bottom-bar-item v-tap="{methods: to, name: 'test'}" name="测试" icon="settings" :active="router === 'test'"></bottom-bar-item>
     </bottom-bar>
   </div>
 </template>
@@ -88,5 +88,7 @@ export default {
   text-align: center;
   line-height: 45px;
   background-color: #fff;
+  z-index: 2;
+  box-shadow: 0px 0px 5px #ddd;
 }
 </style>

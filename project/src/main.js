@@ -28,6 +28,7 @@ document.addEventListener('deviceready', () => {
       }
     })
   }
+  Vue.prototype.$platform = window.cordova.platformId
   new Vue({
     el: '#app',
     router,

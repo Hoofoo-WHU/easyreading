@@ -1,18 +1,20 @@
 <template>
-  <div class="wrapper" @touchmove.prevent @touchstart="touchStart" @touchend="touchEnd" @mousedown="touchStart" @mouseup="touchEnd">
-    <div class="content" :class="{preventEvent: scrolling}">
-      <transition name="fade">
-        <div class="pull-refresh" v-if="canPullRefresh && (touching || pullRefreshState === 2)">
-          <icon class="pull-refresh-icon" :name="refreshIcon" spin v-if="pullRefreshState === 2"></icon>
-          <icon class="pull-refresh-icon" name="up" :class="{'active-pull-refresh-icon': pullRefreshState === 1}" v-if="pullRefreshState !== 2"></icon>
-          <div class="pull-refresh-text">{{ pullRefreshText }}</div>
-        </div>
-      </transition>
-<!--       <div>{{x}},{{y}}</div>
-      <div>{{ scrolling }}</div>
-      <div>{{ pullRefreshState }}</div>
- -->      
-      <slot></slot>
+  <div style="position:relative;">
+    <div class="wrapper" @touchmove.prevent @touchstart="touchStart" @touchend="touchEnd" @mousedown="touchStart" @mouseup="touchEnd">
+      <div class="content" :class="{preventEvent: scrolling}">
+        <transition name="fade">
+          <div class="pull-refresh" v-if="!iscrollMounted || (canPullRefresh && (touching || pullRefreshState === 2))">
+            <icon class="pull-refresh-icon" :name="refreshIcon" spin v-if="pullRefreshState === 2"></icon>
+            <icon class="pull-refresh-icon" name="down" :class="{'active-pull-refresh-icon': pullRefreshState === 1}" v-if="pullRefreshState !== 2"></icon>
+            <div class="pull-refresh-text">{{ pullRefreshText }}</div>
+          </div>
+        </transition>
+  <!--       <div>{{x}},{{y}}</div>
+        <div>{{ scrolling }}</div>
+        <div>{{ pullRefreshState }}</div>
+   -->      
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -76,7 +78,8 @@ export default {
       x: 0,
       y: 0,
       pullRefreshHeight: 60,
-      touching: false
+      touching: false,
+      iscrollMounted: false
     }
   },
   mounted () {
@@ -87,12 +90,13 @@ export default {
     if (this.canPullRefresh) {
       options.probeType = 3
     }
-    this.iScroll = new IScroll(this.$el, options)
+    this.iScroll = new IScroll(this.$el.childNodes[0], options)
     this.iScroll.on('scrollStart', this.scrollStart)
     this.iScroll.on('scrollEnd', this.scrollEnd)
     this.iScroll.on('scroll', this.scroll)
     this.iScroll.on('beforeScrollStart', this.beforeScrollStart)
     this.refresh()
+    this.iscrollMounted = true
   },
   methods: {
     refresh () {
@@ -156,7 +160,12 @@ export default {
 
 <style lang="css" scoped>
 .wrapper{
-  overflow: hidden !important;
+  overflow: visible !important;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
 }
 .content{
   overflow: visible;
@@ -167,6 +176,7 @@ export default {
   overflow: hidden;
   margin-top: -60px;
   height: 60px;
+  user-select: none;
 }
 .pull-refresh-icon{
   width: 25px;
@@ -180,6 +190,7 @@ export default {
 .pull-refresh-text{
   font-size: 12px;
   color: #7a8086;
+  user-select: none;
 }
 .preventEvent{
   pointer-events: none;

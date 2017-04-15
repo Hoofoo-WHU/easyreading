@@ -17,11 +17,22 @@ export default {
 
 <style lang="css" scoped>
 .bottom-bar{
-  height: 49px;
+  min-height: 49px;
   display: flex;
   width: 100%;
   flex-direction: row;
-  background: #fafafa;
+  z-index: 1;
+}
+@supports not (-webkit-backdrop-filter: blur(8px)){
+  .bottom-bar{
+    background: #fff;
+  }
+}
+@supports (-webkit-backdrop-filter: blur(8px)){
+  .bottom-bar{
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+  }
 }
 .border { border-top: 1px solid #c8c7cc }
 @media screen and (-webkit-min-device-pixel-ratio: 2) {

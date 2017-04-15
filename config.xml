@@ -23,9 +23,9 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <preference name="StatusBarBackgroundColor" value="#ffffffff" />
+        <!-- <preference name="StatusBarBackgroundColor" value="#ffffffff" /> -->
         <preference name="StatusBarStyle" value="default" />
-        <preference name="StatusBarOverlaysWebView" value="false" />
+        <!-- <preference name="StatusBarOverlaysWebView" value="false" /> -->
     </platform>
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-plugin-statusbar" spec="~2.2.2" />

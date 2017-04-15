@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <div class="navigation-bar" v-tap="{methods: scrollTop}">{{ router }}</div>
+    <navigation-bar v-tap.prevent="{methods: scrollTop}" :title="router"></navigation-bar>
     <div class="view">
       <keep-alive>
-        <router-view></router-view>
+        <router-view/>
       </keep-alive>
     </div>
     <bottom-bar>
-      <bottom-bar-item v-tap="{methods: to, name: 'shelf'}" name="书架" icon="shelf" :active="router === 'shelf'"></bottom-bar-item>
-      <bottom-bar-item v-tap="{methods: to, name: 'store'}" name="书城" icon="store" :active="router === 'store'"></bottom-bar-item>
-      <bottom-bar-item v-tap="{methods: to, name: 'search'}" name="搜索" icon="search" :active="router === 'search'"></bottom-bar-item>
-      <bottom-bar-item v-tap="{methods: to, name: 'my'}" name="我的" icon="account" :active="router === 'my'"></bottom-bar-item>
-      <bottom-bar-item v-tap="{methods: to, name: 'test'}" name="测试" icon="settings" :active="router === 'test'"></bottom-bar-item>
+      <bottom-bar-item v-tap="{methods: to, name: 'shelf'}" name="书架" icon="shelf" :active="router === 'shelf'"/>
+      <bottom-bar-item v-tap="{methods: to, name: 'store'}" name="书城" icon="store" :active="router === 'store'"/>
+      <bottom-bar-item v-tap="{methods: to, name: 'search'}" name="搜索" icon="search" :active="router === 'search'"/>
+      <bottom-bar-item v-tap="{methods: to, name: 'my'}" name="我的" icon="account" :active="router === 'my'"/>
+      <bottom-bar-item v-tap="{methods: to, name: 'test'}" name="测试" icon="settings" :active="router === 'test'"/>
     </bottom-bar>
   </div>
 </template>
@@ -19,6 +19,7 @@
 <script>
 import Icon from '@/components/Icon'
 import { BottomBar, BottomBarItem } from '@/components/BottomBar'
+import NavigationBar from '@/components/NavigationBar'
 export default {
   name: 'app',
   data () {
@@ -27,7 +28,8 @@ export default {
   components: {
     Icon,
     BottomBar,
-    BottomBarItem
+    BottomBarItem,
+    NavigationBar
   },
   computed: {
     router: function () {
@@ -79,16 +81,7 @@ export default {
   flex: 1;
   background: #f2f2f2;
   text-align: center;
-  overflow: hidden;
   display: flex;
-}
-.navigation-bar{
-  height: 45px;
-  display: inline;
-  text-align: center;
-  line-height: 45px;
-  background-color: #fff;
-  z-index: 2;
-  box-shadow: 0px 0px 5px #ddd;
+  flex-direction: column;
 }
 </style>

@@ -9,7 +9,7 @@ import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(Tap)
-
+Vue.prototype.$platform = 'dev'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

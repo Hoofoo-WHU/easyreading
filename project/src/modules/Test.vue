@@ -1,5 +1,5 @@
 <template>
-  <scroller style="flex: 1;" ref="scroller" canPullRefresh @pullRefresh="pullRefresh">
+  <scroller style="flex:1" ref="scroller" canPullRefresh @pullRefresh="pullRefresh">
     <div v-for="(item, index) in items" v-tap="{ methods: onItemClick, item: item, index: index }"
         class="row" :class="{'grey-bg': index % 2 == 0}">
       {{ item }}
@@ -53,11 +53,12 @@
     font-size: 16px;
     line-height: 30px;
     text-align: center;
-    color: #444;
+    color: red;
     background-color: #fff;
   }
 
   .grey-bg {
+    color: blue;
     background-color: #eee;
   }
 </style>

@@ -1,18 +1,20 @@
 <template>
-  <div class="wrapper" @touchmove.prevent @touchstart="touchStart" @touchend="touchEnd" @mousedown="touchStart" @mouseup="touchEnd">
-    <div class="content" :class="{preventEvent: scrolling}">
-      <transition name="fade">
-        <div class="pull-refresh" v-if="!iscrollMounted || (canPullRefresh && (touching || pullRefreshState === 2))">
-          <icon class="pull-refresh-icon" :name="refreshIcon" spin v-if="pullRefreshState === 2"></icon>
-          <icon class="pull-refresh-icon" name="up" :class="{'active-pull-refresh-icon': pullRefreshState === 1}" v-if="pullRefreshState !== 2"></icon>
-          <div class="pull-refresh-text">{{ pullRefreshText }}</div>
-        </div>
-      </transition>
-<!--       <div>{{x}},{{y}}</div>
-      <div>{{ scrolling }}</div>
-      <div>{{ pullRefreshState }}</div>
- -->      
-      <slot></slot>
+  <div style="position:relative;">
+    <div class="wrapper" @touchmove.prevent @touchstart="touchStart" @touchend="touchEnd" @mousedown="touchStart" @mouseup="touchEnd">
+      <div class="content" :class="{preventEvent: scrolling}">
+        <transition name="fade">
+          <div class="pull-refresh" v-if="!iscrollMounted || (canPullRefresh && (touching || pullRefreshState === 2))">
+            <icon class="pull-refresh-icon" :name="refreshIcon" spin v-if="pullRefreshState === 2"></icon>
+            <icon class="pull-refresh-icon" name="down" :class="{'active-pull-refresh-icon': pullRefreshState === 1}" v-if="pullRefreshState !== 2"></icon>
+            <div class="pull-refresh-text">{{ pullRefreshText }}</div>
+          </div>
+        </transition>
+  <!--       <div>{{x}},{{y}}</div>
+        <div>{{ scrolling }}</div>
+        <div>{{ pullRefreshState }}</div>
+   -->      
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -88,7 +90,7 @@ export default {
     if (this.canPullRefresh) {
       options.probeType = 3
     }
-    this.iScroll = new IScroll(this.$el, options)
+    this.iScroll = new IScroll(this.$el.childNodes[0], options)
     this.iScroll.on('scrollStart', this.scrollStart)
     this.iScroll.on('scrollEnd', this.scrollEnd)
     this.iScroll.on('scroll', this.scroll)
@@ -158,7 +160,12 @@ export default {
 
 <style lang="css" scoped>
 .wrapper{
-  overflow: hidden !important;
+  overflow: visible !important;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
 }
 .content{
   overflow: visible;

@@ -38,7 +38,7 @@ export default {
 
 <style lang="stylus" scoped>
 .bottom-bar-item{
-  height: 49px;
+  min-height: 49px;
   flex: 1;
   display: flex;
   user-select: none;

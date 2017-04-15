@@ -17,7 +17,7 @@ export default {
 
 <style lang="css" scoped>
 .bottom-bar{
-  height: 49px;
+  min-height: 49px;
   display: flex;
   width: 100%;
   flex-direction: row;

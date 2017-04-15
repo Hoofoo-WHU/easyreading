@@ -37,6 +37,7 @@ export default {
 
 <style lang="stylus" scoped>
 .nav-bar-item{
+  height: 49px;
   overflow: hidden;
   display: flex;
   flex-direction: row;

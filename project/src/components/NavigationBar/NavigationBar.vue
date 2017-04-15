@@ -32,13 +32,13 @@ export default {
 
 <style lang="stylus" scoped>
 .navigation-bar{
-  height: 49px;
   display: flex;
   width: 100%;
   flex-direction: row;
   z-index: 1;
   user-select: none;
   position: relative;
+  min-height: 49px;
   .title{
     position: absolute;
     left: 50%;

@@ -1,22 +1,24 @@
 <template>
-  <div class="bottom-bar-item" :class="{active: active, disable: disable}">
+  <div class="nav-bar-item" :class="{'right-icon': rightIcon, disable: disable}">
     <icon class="icon" v-if="icon" :name="icon"></icon>
-    <span class="name">{{ name }}</span>
+    <span>{{text}}</span>
   </div>
 </template>
 
 <script>
 import Icon from '@/components/Icon'
-
 export default {
-  name: 'BottomBarItem',
+  name: 'NavigationBarItem',
+  components: {
+    Icon
+  },
   props: {
-    name: {
-      type: String,
-      default: 'bottom-bar-item'
-    },
     icon: String,
-    active: {
+    text: {
+      type: String,
+      default: 'navigation-bar-item'
+    },
+    rightIcon: {
       type: Boolean,
       default: false
     },
@@ -24,9 +26,6 @@ export default {
       type: Boolean,
       default: false
     }
-  },
-  components: {
-    Icon
   },
   data () {
     return {
@@ -37,25 +36,26 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.bottom-bar-item{
-  flex: 1;
+.nav-bar-item{
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  user-select: none;
-  color: #5a6773;
+  flex-direction: row;
+  color: #157afb;
+  align-items: center;
+  padding: 0px 10px;
+  font-size: 17px;
   transition: color .3s;
+  user-select: none;
+  &:active{
+    color: #c7c7cc;
+  }
   .icon{
     width: 25px;
     height: 25px;
-    margin: 7px auto 0px auto;
   }
-  .name{
-    text-align: center;
-    font-size: 10px;
+  .right-icon{
+    flex-direction: row-reverse;
   }
-}
-.active{
-  color: #157afb;
 }
 .disable{
   pointer-events: none;

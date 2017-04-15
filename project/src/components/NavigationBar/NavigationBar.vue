@@ -1,8 +1,10 @@
 <template>
 <div class="navigation-bar border" :class="{ios: $platform === 'ios'}">
-  <slot name="left"><div class="item"></div></slot>
-  <div class="title">{{title}}</div>
-  <slot name="right"><div class="item"></div></slot>
+  <slot>
+    <div class="left"><slot name="left"></slot></div>
+    <div class="title">{{title}}</div>
+    <div class="right"><slot name="right"></slot></div>
+  </slot>
 </div>
 </template>
 
@@ -28,6 +30,7 @@ export default {
   flex-direction: row;
   z-index: 1;
   user-select: none;
+  position: relative;
 }
 @supports not (-webkit-backdrop-filter: blur(8px)){
   .navigation-bar{
@@ -41,13 +44,23 @@ export default {
   }
 }
 .title{
-  flex: 3;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
   text-align: center;
   line-height: 49px;
+  font-size: 17px;
+  color: #030303;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.item{
-  flex: 1;
-  background: #157afb;
+.left{
+  display: flex;
+}
+.right{
+  margin-left: auto;
+  display: flex;
 }
 .ios{
   padding-top: 20px;

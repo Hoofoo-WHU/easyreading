@@ -12,8 +12,8 @@
     <bottom-bar>
       <bottom-bar-item v-tap="{methods: to, name: 'shelf'}" text="书架" icon="shelf" :active="router === 'shelf'"/>
       <bottom-bar-item v-tap="{methods: to, name: 'store'}" text="书城" icon="store" :active="router === 'store'"/>
-      <bottom-bar-item v-tap="{methods: to, name: 'search'}" text="搜索" icon="search" :active="router === 'search'"/>
-      <bottom-bar-item v-tap="{methods: to, name: 'my'}" disable text="我的" icon="account" :active="router === 'my'"/>
+      <bottom-bar-item v-tap="{methods: to, name: 'search'}" icon="search" :active="router === 'search'"/>
+      <bottom-bar-item v-tap="{methods: to, name: 'my'}" disable text="我的" :active="router === 'my'"/>
       <bottom-bar-item v-tap="{methods: to, name: 'test'}" text="测试" icon="settings" :active="router === 'test'"/>
     </bottom-bar>
   </div>

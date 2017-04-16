@@ -2,8 +2,8 @@
 <div class="navigation-bar border" :class="{ios: $platform === 'ios'}">
   <slot>
     <div class="left"><slot name="left"></slot></div>
-    <div class="title" :class="{small: subTitle}">{{title}}</div>
-    <div class="title sub-title">{{subTitle}}</div>
+    <div v-if="title" class="title" :class="{small: subTitle}">{{title}}</div>
+    <div v-if="subTitle" class="title sub-title">{{subTitle}}</div>
     <div class="right"><slot name="right"></slot></div>
   </slot>
 </div>
@@ -69,6 +69,9 @@ export default {
 }
 .ios{
   padding-top: 20px;
+  & > .title{
+    margin-top: 10px;
+  }
 }
 .border { border-bottom: 1px solid #c8c7cc }
 @media screen and (-webkit-min-device-pixel-ratio: 2) {

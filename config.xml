@@ -33,4 +33,5 @@
     <plugin name="cordova.custom.plugins.exitapp" spec="~1.0.0" />
     <plugin name="cordova-plugin-app-version" spec="~0.1.9" />
     <plugin name="cordova-plugin-console" spec="~1.0.6" />
+    <engine name="ios" spec="~4.3.1" />
 </widget>

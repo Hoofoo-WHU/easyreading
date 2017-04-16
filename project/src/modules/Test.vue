@@ -1,9 +1,9 @@
 <template>
   <scroller style="flex:1" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh">
-    <div v-for="(item, index) in items" v-tap="{ methods: onItemClick, item: item, index: index }"
-        class="row" :class="{'grey-bg': index % 2 == 0}">
+    <touch v-for="(item, index) in items" :key="item.index"
+        class="row" :class="{'grey-bg': index % 2 == 0}" @tap="onItemClick({index:index})">
       {{ item }}
-    </div>
+    </touch>
   </scroller>
 </template>
 
@@ -39,8 +39,8 @@
           for (; i > end; i--) {
             this.items.unshift(i + ' - keep walking, be 2 with you.')
           }
-        }, 3000)
-        setTimeout(over, 3000)
+        }, 2000)
+        setTimeout(over, 2000)
       }
     }
   }

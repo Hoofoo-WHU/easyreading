@@ -1,7 +1,7 @@
 <template>
-<div class="bottom-bar border">
+<touch class="bottom-bar border">
   <slot></slot>
-</div>
+</touch>
 </template>
 
 <script>

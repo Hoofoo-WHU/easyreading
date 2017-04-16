@@ -1,8 +1,8 @@
 <template>
-  <div class="bottom-bar-item" :class="{active: active, disable: disable}">
+  <touch class="bottom-bar-item" :class="{active: active, disable: disable}" @tap="tap">
     <icon class="icon" v-if="icon" :class="{only: !text}" :name="icon"></icon>
     <div class="text" :class="{only: !icon}" v-if="text">{{ text }}</div>
-  </div>
+  </touch>
 </template>
 
 <script>
@@ -31,6 +31,13 @@ export default {
   data () {
     return {
 
+    }
+  },
+  methods: {
+    tap: function (e) {
+      // e.srcEvent.stopPropagation()
+      e.srcEvent.stopImmediatePropagation()
+      this.$emit('tap')
     }
   }
 }

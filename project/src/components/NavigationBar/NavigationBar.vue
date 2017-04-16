@@ -1,5 +1,5 @@
 <template>
-<div class="navigation-bar border" :class="{ios: $platform === 'ios'}">
+<div class="navigation-bar border" :class="{ios: $platform === 'ios'}" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
   <slot>
     <div class="left"><slot name="left"></slot></div>
     <div v-if="title" class="title" :class="{small: subTitle}">{{title}}</div>
@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import InnerEvent from './mixins/innerEvent'
 export default {
   name: 'NavigationBar',
   props: {
@@ -25,6 +26,14 @@ export default {
   data () {
     return {
 
+    }
+  },
+  mixins: [InnerEvent],
+  methods: {
+    touchEnd: function (e) {
+      if (this.isInnerEvent(e, this.$el)) {
+        this.$emit('tap', e)
+      }
     }
   }
 }

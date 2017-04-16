@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <navigation-bar v-tap.prevent="{methods: scrollTop}" :title="router">
-      <navigation-bar-item v-tap="{methods: test}" slot="left" text="测试" icon="back" disable/>
-      <navigation-bar-item v-tap="{methods: test}" slot="right" text="测试" right-icon/>
+    <navigation-bar @tap.capture="scrollTop" :title="router">
+      <navigation-bar-item @tap="test" slot="left" text="测试" icon="back" disable/>
+      <navigation-bar-item @tap="test" slot="right" text="测试" right-icon/>
     </navigation-bar>
     <div class="view">
       <keep-alive>
@@ -10,11 +10,11 @@
       </keep-alive>
     </div>
     <bottom-bar>
-      <bottom-bar-item v-tap="{methods: to, name: 'shelf'}" text="书架" icon="shelf" :active="router === 'shelf'"/>
-      <bottom-bar-item v-tap="{methods: to, name: 'store'}" text="书城" icon="store" :active="router === 'store'"/>
-      <bottom-bar-item v-tap="{methods: to, name: 'search'}" icon="search" :active="router === 'search'"/>
-      <bottom-bar-item v-tap="{methods: to, name: 'my'}" disable text="我的" :active="router === 'my'"/>
-      <bottom-bar-item v-tap="{methods: to, name: 'test'}" text="测试" icon="settings" :active="router === 'test'"/>
+      <bottom-bar-item @tap="to('shelf')" text="书架" icon="shelf" :active="router === 'shelf'"/>
+      <bottom-bar-item @tap="to('store')" text="书城" icon="store" :active="router === 'store'"/>
+      <bottom-bar-item @tap="to('search')" text="搜索" icon="search" :active="router === 'search'"/>
+      <bottom-bar-item @tap="to('my')" disable text="我的" icon="account" :active="router === 'my'"/>
+      <bottom-bar-item @tap="to('test')" text="测试" icon="settings" :active="router === 'test'"/>
     </bottom-bar>
   </div>
 </template>
@@ -44,9 +44,9 @@ export default {
     }
   },
   methods: {
-    to: function (params) {
+    to: function (name) {
       // console.log(params.name)
-      this.$router.push({'name': params.name})
+      this.$router.push({'name': name})
       // console.log(this.activeMoudle)
     },
     scrollTop: function () {
@@ -57,7 +57,7 @@ export default {
       }
     },
     test () {
-      alert('可以')
+      console.log('可以')
     }
   },
   mounted () {
@@ -82,6 +82,7 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  user-select: none;
 }
 .view{
   width: 100%;

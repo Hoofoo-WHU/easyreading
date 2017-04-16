@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-bar-item" :class="{'right-icon': rightIcon, disable: disable}">
+  <div class="nav-bar-item" :class="{'right-icon': rightIcon, disable: disable}" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
     <icon class="icon" v-if="icon" :name="icon"></icon>
     <span>{{text}}</span>
   </div>
@@ -7,11 +7,13 @@
 
 <script>
 import Icon from '@/components/Icon'
+import InnerEvent from './mixins/innerEvent'
 export default {
   name: 'NavigationBarItem',
   components: {
     Icon
   },
+  mixins: [InnerEvent],
   props: {
     icon: String,
     text: {
@@ -30,6 +32,13 @@ export default {
   data () {
     return {
 
+    }
+  },
+  methods: {
+    touchEnd: function (e) {
+      if (this.isInnerEvent(e, this.$el)) {
+        this.$emit('tap')
+      }
     }
   }
 }

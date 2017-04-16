@@ -2,13 +2,15 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
-import Tap from 'v-tap'
+// import Tap from 'v-tap'
 
 import router from './router'
 import store from './store'
 
 Vue.config.productionTip = false
-Vue.use(Tap)
+// Vue.use(Tap)
+var VueTouch = require('vue-touch')
+Vue.use(VueTouch, {name: 'touch'})
 
 var cordovajsEl = document.createElement('script')
 cordovajsEl.setAttribute('type', 'text/javascript')

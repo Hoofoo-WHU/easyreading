@@ -1,21 +1,21 @@
 <template>
   <div style="position:relative;">
-    <div class="wrapper" @touchmove.prevent @touchstart="touchStart" @touchend="touchEnd" @mousedown="touchStart" @mouseup="touchEnd">
+    <touch class="wrapper" @panmove="scroll" @panstart="touchStart" @panend="touchEnd">
       <div class="content" :class="{preventEvent: scrolling}">
         <transition name="fade">
           <div class="pull-refresh" v-if="!iscrollMounted || (canPullRefresh && (touching || pullRefreshState === 2))">
-            <icon class="pull-refresh-icon" :name="refreshIcon" spin v-if="pullRefreshState === 2"></icon>
-            <icon class="pull-refresh-icon" name="down" :class="{'active-pull-refresh-icon': pullRefreshState === 1}" v-if="pullRefreshState !== 2"></icon>
+            <icon class="pull-refresh-icon" :name="refreshIcon" spin v-show="pullRefreshState === 2"></icon>
+            <icon class="pull-refresh-icon" name="down" :class="{'active-pull-refresh-icon': pullRefreshState === 1}" v-show="pullRefreshState !== 2"></icon>
             <div class="pull-refresh-text">{{ pullRefreshText }}</div>
           </div>
         </transition>
-  <!--       <div>{{x}},{{y}}</div>
+<!--         <div>{{x}},{{y}}</div>
         <div>{{ scrolling }}</div>
-        <div>{{ pullRefreshState }}</div>
-   -->      
+        <div>{{ pullRefreshState }}</div> -->
+        
         <slot></slot>
       </div>
-    </div>
+    </touch>
   </div>
 </template>
 
@@ -85,16 +85,17 @@ export default {
   mounted () {
     var options = {
       bounceTime: 1000,
-      deceleration: 0.00055
+      deceleration: 0.0006
     }
     if (this.canPullRefresh) {
-      options.probeType = 3
+      options.probeType = 1
     }
     this.iScroll = new IScroll(this.$el.childNodes[0], options)
     this.iScroll.on('scrollStart', this.scrollStart)
     this.iScroll.on('scrollEnd', this.scrollEnd)
-    this.iScroll.on('scroll', this.scroll)
+    // this.iScroll.on('scroll', this.scroll)
     this.iScroll.on('beforeScrollStart', this.beforeScrollStart)
+    this.iScroll.on('scrollCancel', this.scrollCancel)
     this.refresh()
     this.iscrollMounted = true
   },
@@ -128,7 +129,11 @@ export default {
       this.$emit('scrollEnd')
     },
     scrollTop () {
-      this.iScroll.scrollTo(0, 0, 1000)
+      if (this.pullRefreshState === 2) {
+        this.scrollTo(0, -this.pullRefreshHeight)
+      } else {
+        this.scrollTo(0, 0)
+      }
     },
     scrollTo (x, y) {
       this.iScroll.scrollTo(-x, -y, 1000)
@@ -148,6 +153,9 @@ export default {
     activePullRefresh () {
       this.pullRefreshState = 2
       this.refresh()
+      setTimeout(() => {
+        this.scrollTop()
+      }, 0)
       this.$emit('pullRefresh', this.endPullRefresh)
     },
     endPullRefresh () {

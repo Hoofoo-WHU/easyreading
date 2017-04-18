@@ -1,14 +1,16 @@
 <template>
   <div id="app">
-    <navigation-bar @tap.capture="scrollTop" :title="router">
+    <navigation-bar @tap="scrollTop" :title="router">
       <navigation-bar-item @tap="cancel" slot="left" text="返回" icon="back"/>
       <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
     </navigation-bar>
-    <div class="view">
+    <router-wrapper class="view">
       <keep-alive>
-        <router-view/>
+        <!-- <transition name='slide-fade'> -->
+          <router-view/>
+        <!-- </transition> -->
       </keep-alive>
-    </div>
+    </router-wrapper>
     <bottom-bar>
       <bottom-bar-item @tap="to('shelf')" text="书架" icon="shelf" :active="router === 'shelf'"/>
       <bottom-bar-item @tap="to('store')" text="书城" icon="store" :active="router === 'store'"/>
@@ -23,6 +25,7 @@
 import Icon from '@/components/Icon'
 import { BottomBar, BottomBarItem } from '@/components/BottomBar'
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
+import RouterWrapper from '@/components/RouterWrapper'
 export default {
   name: 'main',
   data () {
@@ -33,14 +36,16 @@ export default {
     BottomBar,
     BottomBarItem,
     NavigationBar,
-    NavigationBarItem
+    NavigationBarItem,
+    RouterWrapper
   },
   computed: {
     router: function () {
       return this.$route.name
     },
     activeMoudle: function () {
-      return this.$route.matched[0].instances.default
+      var matched = this.$route.matched
+      return matched[matched.length - 1].instances.default
     }
   },
   methods: {
@@ -85,11 +90,23 @@ export default {
   user-select: none;
 }
 .view{
-  width: 100%;
+  /*width: 100%;*/
   flex: 1;
   background: #efeff4;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
+  /*display: flex;*/
+  /*flex-direction: column;*/
 }
+/*.slide-fade-enter-active {
+  transition: all .8s;
+}
+.slide-fade-leave-active {
+  transition: all .8s;
+}
+.slide-fade-enter, .slide-fade-leave-active {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.slide-fade-leave-active{
+  transform: translateX(-100%);
+}*/
 </style>

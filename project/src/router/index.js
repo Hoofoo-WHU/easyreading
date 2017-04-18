@@ -29,7 +29,7 @@ function getRoutes (el) {
 var routes = [
   {
     path: '/',
-    redirect: { name: 'main' }
+    redirect: { name: 'shelf' }
   }
 ]
 

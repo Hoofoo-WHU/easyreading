@@ -12,6 +12,20 @@ Vue.config.productionTip = false
 var VueTouch = require('vue-touch')
 Vue.use(VueTouch, {name: 'touch'})
 
+var axios = require('axios')
+Vue.prototype.$http = axios
+axios.interceptors.request.use(
+  config => {
+    if (store.state.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+      config.headers.Authorization = `token ${store.state.token}`
+    }
+    return config
+  },
+  err => {
+    return Promise.reject(err)
+  }
+)
+
 var cordovajsEl = document.createElement('script')
 cordovajsEl.setAttribute('type', 'text/javascript')
 cordovajsEl.setAttribute('src', 'cordova.js')

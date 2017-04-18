@@ -179,6 +179,7 @@ export default {
   overflow: visible;
 }
 .pull-refresh{
+  text-align: center;
   padding-top: 8px;
   box-sizing: border-box;
   overflow: hidden;

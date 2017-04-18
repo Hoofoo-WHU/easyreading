@@ -611,7 +611,7 @@ IScroll.prototype = {
 				utils.click(e);
 			}
 
-			this._execEvent('scrollCancel');
+			// this._execEvent('scrollCancel');
 			return;
 		}
 
@@ -791,6 +791,7 @@ IScroll.prototype = {
 		}
 
 		for ( ; i < l; i++ ) {
+			// console.log(this._events[type])
 			this._events[type][i].apply(this, [].slice.call(arguments, 1));
 		}
 	},

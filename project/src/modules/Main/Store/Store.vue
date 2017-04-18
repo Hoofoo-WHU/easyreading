@@ -1,12 +1,15 @@
 <template>
-  <scroller class="scroller" ref="scroller">
-    <div>
-      {{ msg }}
-    </div>
-  </scroller>
+  <router-content>
+    <scroller class="scroller" ref="scroller">
+      <div style="text-align: center">
+        {{ msg }}
+      </div>
+    </scroller>
+  </router-content>
 </template>
 
 <script>
+import RouterContent from '@/components/RouterContent'
 import Scroller from '@/components/Scroller'
 export default {
   name: 'store',
@@ -16,7 +19,8 @@ export default {
     }
   },
   components: {
-    Scroller
+    Scroller,
+    RouterContent
   },
   methods: {
     scrollTop () {

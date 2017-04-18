@@ -1,18 +1,22 @@
 <template>
-  <scroller style="flex:1" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh">
-    <touch v-for="(item, index) in items" :key="item.index"
-        class="row" :class="{'grey-bg': index % 2 == 0}" @tap="onItemClick({index:index})">
-      {{ item }}
-    </touch>
-  </scroller>
+  <router-content>
+    <scroller style="flex:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh">
+      <touch v-for="(item, index) in items" :key="item.index"
+          class="row" :class="{'grey-bg': index % 2 == 0}" @tap="onItemClick({index:index})">
+        {{ item }}
+      </touch>
+    </scroller>
+  </router-content>
 </template>
 
 <script>
   import Scroller from '@/components/Scroller'
+  import RouterContent from '@/components/RouterContent'
   export default {
     name: 'test',
     components: {
-      Scroller
+      Scroller,
+      RouterContent
     },
     data () {
       return {
@@ -53,12 +57,10 @@
     font-size: 16px;
     line-height: 30px;
     text-align: center;
-    color: red;
     background-color: #fff;
   }
 
   .grey-bg {
-    color: blue;
     background-color: #eee;
   }
 </style>

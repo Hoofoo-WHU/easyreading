@@ -63,6 +63,14 @@ export default {
     },
     cancel () {
       console.log('Tap cancel')
+      // alert(this.$statusBar.isVisible)
+      if (this.$statusBar.isVisible) {
+        // alert('111111')
+        this.$statusBar.hide()
+      } else {
+        // alert('2222222')
+        this.$statusBar.show()
+      }
     },
     login () {
       this.to('login')
@@ -70,6 +78,10 @@ export default {
   },
   mounted () {
     // console.log(this.$router)
+    setTimeout(() => {
+      this.$statusBar.show()
+      this.$splashScreen.hide()
+    }, 1000)
     document.addEventListener('backbutton', function () {
       navigator.app.exitApp()
     }, false)

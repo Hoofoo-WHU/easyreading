@@ -21,6 +21,10 @@
     <feature name="Console">
         <param name="ios-package" value="CDVLogger" />
     </feature>
+    <feature name="SplashScreen">
+        <param name="ios-package" value="CDVSplashScreen" />
+        <param name="onload" value="true" />
+    </feature>
     <feature name="StatusBar">
         <param name="ios-package" value="CDVStatusBar" />
         <param name="onload" value="true" />
@@ -41,6 +45,21 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <icon height="20" src="static/appIcon/ios/AppIcon-20@1x.png" width="20" />
+    <icon height="40" src="static/appIcon/ios/AppIcon-20@2x.png" width="40" />
+    <icon height="29" src="static/appIcon/ios/AppIcon-29@1x.png" width="29" />
+    <icon height="57" src="static/appIcon/ios/AppIcon-57@1x.png" width="57" />
+    <icon height="58" src="static/appIcon/ios/AppIcon-29@2x.png" width="58" />
+    <icon height="80" src="static/appIcon/ios/AppIcon-40@2x.png" width="80" />
+    <icon height="87" src="static/appIcon/ios/AppIcon-29@3x.png" width="87" />
+    <icon height="114" src="static/appIcon/ios/AppIcon-57@2x.png" width="114" />
+    <icon height="120" src="static/appIcon/ios/AppIcon-60@2x.png" width="120" />
+    <icon height="180" src="static/appIcon/ios/AppIcon-60@3x.png" width="180" />
+    <splash height="480" src="static/screen/ios/Default@1x~iphone.png" width="320" />
+    <splash height="960" src="static/screen/ios/Default@2x~iphone.png" width="640" />
+    <splash height="1136" src="static/screen/ios/Default-568h@2x~iphone.png" width="640" />
+    <splash height="1334" src="static/screen/ios/Default-667h@2x~iphone.png" width="750" />
+    <splash height="2208" src="static/screen/ios/Default-736h@3x~iphone.png" width="1242" />
     <allow-intent href="itms:*" />
     <allow-intent href="itms-apps:*" />
     <preference name="AllowInlineMediaPlayback" value="false" />
@@ -58,4 +77,8 @@
     <preference name="PaginationMode" value="unpaginated" />
     <preference name="StatusBarOverlaysWebView" value="true" />
     <preference name="StatusBarStyle" value="default" />
+    <preference name="Orientation" value="portrait" />
+    <preference name="FadeSplashScreenDuration" value="300" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="AutoHideSplashScreen" value="false" />
 </widget>

@@ -1,6 +1,6 @@
 <template>
   <router-content>
-    <scroller style="flex:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh">
+    <scroller style="flex:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
       <touch v-for="(item, index) in items" :key="item.index"
           class="row" :class="{'grey-bg': index % 2 == 0}" @tap="onItemClick({index:index})">
         {{ item }}
@@ -45,6 +45,21 @@
           }
         }, 2000)
         setTimeout(over, 2000)
+      },
+      loadMore (over) {
+        console.log('loadMore')
+        setTimeout(() => {
+          var noMore = false
+          var i = parseInt(this.items[this.items.length - 1]) + 1
+          var end = i + 20
+          for (; i < end; i++) {
+            this.items.push(i + ' - keep walking, be 2 with you.')
+          }
+          if (i > 100) {
+            noMore = true
+          }
+          over(noMore)
+        }, 2000)
       }
     }
   }

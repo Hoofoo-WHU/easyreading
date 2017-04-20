@@ -2,11 +2,11 @@
   <div style="position:relative;">
     <touch class="wrapper" @panmove="scroll" @panstart="touchStart" @panend="touchEnd">
       <div class="content" :class="{preventEvent: scrolling}">
-        <transition name="fade">
-          <div class="pull-refresh" v-if="!iscrollMounted || (canPullRefresh && (touching || pullRefreshState === 2))">
+        <transition name="fade" @enter="pullshow = true" @after-leave="pullshow = false">
+          <div class="pull-refresh" v-if="canPullRefresh && (touching || pullRefreshState === 2)">
             <icon class="pull-refresh-icon" :name="refreshIcon" spin v-show="pullRefreshState === 2"></icon>
             <icon class="pull-refresh-icon" name="down" :class="{'active-pull-refresh-icon': pullRefreshState === 1}" v-show="pullRefreshState !== 2"></icon>
-            <div class="pull-refresh-text">{{ pullRefreshText }}</div>
+            <div class="pull-refresh-text">{{ _pullRefreshText }}</div>
           </div>
         </transition>
 <!--         <div>{{x}},{{y}}</div>
@@ -14,6 +14,7 @@
         <div>{{ pullRefreshState }}</div> -->
         
         <slot></slot>
+        <div v-if="canLoadMore && !noMore" class="loadmoreWrapper"><div class="loadmore"><icon class="loadmore-icon" :name="loadIcon" spin></icon>&nbsp&nbsp<span>{{loadmoreText}}</span></div></div>
       </div>
     </touch>
   </div>
@@ -47,6 +48,18 @@ export default {
     refreshIcon: {
       type: String,
       default: 'loading'
+    },
+    canLoadMore: {
+      type: Boolean,
+      default: false
+    },
+    loadIcon: {
+      type: String,
+      default: 'loading'
+    },
+    loadmoreText: {
+      type: String,
+      default: '加载中...'
     }
   },
   watch: {
@@ -61,11 +74,11 @@ export default {
     }
   },
   computed: {
-    pullRefreshText: function () {
+    _pullRefreshText: function () {
       var texts = {
-        0: '下拉刷新',
-        1: '释放更新',
-        2: '加载中...'
+        0: this.pullRefreshText,
+        1: this.activeRefreshText,
+        2: this.refreshingText
       }
       return texts[this.pullRefreshState]
     }
@@ -79,7 +92,11 @@ export default {
       y: 0,
       pullRefreshHeight: 60,
       touching: false,
-      iscrollMounted: false
+      iscrollMounted: false,
+      loadMoreHeigth: 60,
+      noMore: false,
+      pullshow: false,
+      deactivated: false
     }
   },
   mounted () {
@@ -101,17 +118,23 @@ export default {
   },
   methods: {
     refresh () {
-      setTimeout(() => {
-        var fix = {
-          top: 0,
-          bottom: this.pullRefreshHeight
-        }
-        if (this.pullRefreshState === 2) {
-          fix.top = this.pullRefreshHeight
-        }
-        this.iScroll.refresh(fix)
-        this.iScroll.hasVerticalScroll = true
-      }, 0)
+      if (!this.deactivated) {
+        setTimeout(() => {
+          var fix = {
+            top: 0,
+            bottom: 0
+          }
+          if (this.pullshow) {
+            fix.bottom = this.pullRefreshHeight
+          }
+          if (this.pullRefreshState === 2) {
+            fix.top = this.pullRefreshHeight
+          }
+          // console.log(fix)
+          this.iScroll.refresh(fix)
+          this.iScroll.hasVerticalScroll = true
+        }, 0)
+      }
     },
     beforeScrollStart () {
       this.$emit('beforeScrollStart')
@@ -126,6 +149,9 @@ export default {
     },
     scrollEnd () {
       this.scrolling = false
+      if (this.canLoadMore && !this.noMore && this.iScroll.y <= this.iScroll.maxScrollY + this.loadMoreHeigth) {
+        this.loadMore()
+      }
       this.$emit('scrollEnd')
     },
     scrollTop () {
@@ -161,7 +187,27 @@ export default {
     endPullRefresh () {
       this.pullRefreshState = 0
       this.refresh()
+    },
+    loadMore () {
+      if (!this.loading) {
+        this.loading = true
+        this.$emit('loadMore', this.endLoadMore)
+      }
+    },
+    endLoadMore (noMore) {
+      if (noMore) {
+        this.noMore = true
+      }
+      this.loading = false
+      this.refresh()
     }
+  },
+  activated () {
+    this.deactivated = false
+    this.refresh()
+  },
+  deactivated () {
+    this.deactivated = true
   }
 }
 </script>
@@ -186,19 +232,32 @@ export default {
   margin-top: -60px;
   height: 60px;
   user-select: none;
+  color: #7a8086;
 }
-.pull-refresh-icon{
+.pull-refresh-icon,.loadmore-icon{
   width: 25px;
   height: 25px;
-  color: #7a8086;
   transition: transform .4s;
+}
+.loadmore{
+  /*align-self: center;*/
+  font-size: 14px;
+  color: #7a8086;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.loadmoreWrapper{
+  height:60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .active-pull-refresh-icon{
   transform: rotate(-180deg)
 }
 .pull-refresh-text{
   font-size: 12px;
-  color: #7a8086;
   user-select: none;
 }
 .preventEvent{

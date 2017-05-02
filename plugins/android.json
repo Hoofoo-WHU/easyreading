@@ -7,22 +7,36 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+        "cordova-plugin-app-version": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
         },
-        "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
         },
         "cordova-plugin-light-statusbar": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
         "cordova.custom.plugins.exitapp": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
-        "cordova-plugin-app-version": {
+        "it.innowatio.cordova.ios-fullscreen": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
-        "cordova-plugin-console": {
+        "cordova-plugin-crosswalk-webview": {
+            "XWALK_VERSION": "23+",
+            "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
+            "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect",
+            "XWALK_MODE": "embedded",
+            "XWALK_MULTIPLEAPK": "true",
             "PACKAGE_NAME": "com.whu.suiyueyi"
         }
     },

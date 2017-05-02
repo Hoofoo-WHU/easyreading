@@ -7,16 +7,25 @@
         "files": {}
     },
     "installed_plugins": {
+        "cordova-plugin-app-version": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
         "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
-        "cordova-plugin-app-version": {
+        "it.innowatio.cordova.ios-fullscreen": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
-        "cordova-plugin-console": {
+        "cordova-plugin-crosswalk-webview": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         }
     },

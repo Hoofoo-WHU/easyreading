@@ -1,9 +1,9 @@
 import Main from './Main.vue'
-import Shelf from './Shelf/index'
-import Store from './Store/index'
-import Search from './Search/index'
-import My from './My/index'
-import Test from './Test/index'
+import Shelf from './Shelf'
+import Store from './Store'
+import Search from './Search'
+import My from './My'
+import Test from './Test'
 
 export default {
   module: Main,

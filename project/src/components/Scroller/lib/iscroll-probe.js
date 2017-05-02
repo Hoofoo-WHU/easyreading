@@ -357,7 +357,7 @@ function IScroll (el, options) {
 	this._init();
 	this.refresh();
 
-	this.scrollTo(this.options.startX, this.options.startY);
+	this._scrollTo(this.options.startX, this.options.startY);
 	this.enable();
 }
 
@@ -599,7 +599,7 @@ IScroll.prototype = {
 			return;
 		}
 
-		this.scrollTo(newX, newY);	// ensures that the last position is rounded
+		this._scrollTo(newX, newY);	// ensures that the last position is rounded
 
 		// we scrolled less than 10 pixels
 		if ( !this.moved ) {
@@ -611,7 +611,7 @@ IScroll.prototype = {
 				utils.click(e);
 			}
 
-			this._execEvent('scrollCancel');
+			// this._execEvent('scrollCancel');
 			return;
 		}
 
@@ -655,7 +655,7 @@ IScroll.prototype = {
 				easing = utils.ease.quadratic;
 			}
 
-			this.scrollTo(newX, newY, time, easing);
+			this._scrollTo(newX, newY, time, easing);
 			return;
 		}
 
@@ -694,7 +694,7 @@ IScroll.prototype = {
 			return false;
 		}
 
-		this.scrollTo(x, y, time, this.options.bounceEasing);
+		this._scrollTo(x, y, time, this.options.bounceEasing);
 
 		return true;
 	},
@@ -791,6 +791,7 @@ IScroll.prototype = {
 		}
 
 		for ( ; i < l; i++ ) {
+			// console.log(this._events[type])
 			this._events[type][i].apply(this, [].slice.call(arguments, 1));
 		}
 	},
@@ -802,8 +803,11 @@ IScroll.prototype = {
 
 		this.scrollTo(x, y, time, easing);
 	},
-
 	scrollTo: function (x, y, time, easing) {
+		this._execEvent('startScroll')
+		this._scrollTo(x, y, time, easing)
+	},
+	_scrollTo: function (x, y, time, easing) {
 		easing = easing || utils.ease.circular;
 
 		this.isInTransition = this.options.useTransition && time > 0;
@@ -847,7 +851,7 @@ IScroll.prototype = {
 
 		time = time === undefined || time === null || time === 'auto' ? Math.max(Math.abs(this.x-pos.left), Math.abs(this.y-pos.top)) : time;
 
-		this.scrollTo(pos.left, pos.top, time, easing);
+		this._scrollTo(pos.left, pos.top, time, easing);
 	},
 
 	_transitionTime: function (time) {
@@ -1188,7 +1192,7 @@ IScroll.prototype = {
 			newY = this.maxScrollY;
 		}
 
-		this.scrollTo(newX, newY, 0);
+		this._scrollTo(newX, newY, 0);
 
 		if ( this.options.probeType > 1 ) {
 			this._execEvent('scroll');
@@ -1413,7 +1417,7 @@ IScroll.prototype = {
 			pageY: y
 		};
 
-		this.scrollTo(posX, posY, time, easing);
+		this._scrollTo(posX, posY, time, easing);
 	},
 
 	next: function (time, easing) {
@@ -1562,7 +1566,7 @@ IScroll.prototype = {
 			this.keyAcceleration = 0;
 		}
 
-		this.scrollTo(newX, newY, 0);
+		this._scrollTo(newX, newY, 0);
 
 		this.keyTime = now;
 	},
@@ -1901,7 +1905,7 @@ Indicator.prototype = {
 				this.scroller.directionX = 0;
 				this.scroller.directionY = 0;
 				this.scroller.currentPage = snap;
-				this.scroller.scrollTo(snap.x, snap.y, time, this.scroller.options.bounceEasing);
+				this.scroller._scrollTo(snap.x, snap.y, time, this.scroller.options.bounceEasing);
 			}
 		}
 
@@ -2087,7 +2091,7 @@ Indicator.prototype = {
 		x = this.options.listenX ? Math.round(x / this.sizeRatioX) : this.scroller.x;
 		y = this.options.listenY ? Math.round(y / this.sizeRatioY) : this.scroller.y;
 
-		this.scroller.scrollTo(x, y);
+		this.scroller._scrollTo(x, y);
 	},
 
 	fade: function (val, hold) {

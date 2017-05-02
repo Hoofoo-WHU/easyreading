@@ -1,8 +1,8 @@
 <template>
-  <div class="bottom-bar-item" :class="{active: active, disable: disable}">
+  <touch class="bottom-bar-item" :class="{active: active, disable: disable}" @tap="tap">
     <icon class="icon" v-if="icon" :class="{only: !text}" :name="icon"></icon>
-    <div class="name" :class="{only: !icon}" v-if="text">{{ text }}</div>
-  </div>
+    <div class="text" :class="{only: !icon}" v-if="text">{{ text }}</div>
+  </touch>
 </template>
 
 <script>
@@ -32,6 +32,13 @@ export default {
     return {
 
     }
+  },
+  methods: {
+    tap: function (e) {
+      // e.srcEvent.stopPropagation()
+      e.srcEvent.stopImmediatePropagation()
+      this.$emit('tap')
+    }
   }
 }
 </script>
@@ -48,19 +55,23 @@ export default {
   .icon{
     width: 25px;
     height: 25px;
-    margin: 7px auto 0px auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -18px);
     &[class*=only]{
+      position: static;
+      transform: translate(0, 0);
       flex: 1;
-      margin: 0;
       align-self: center;
     }
   }
-  .name{
+  .text{
     font-size: 10px;
     position: absolute;
-    bottom: 1.5px;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, 8px);
     &[class*=only]{
       position: static;
       text-align: center;

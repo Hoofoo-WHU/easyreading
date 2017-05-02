@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <navigation-bar @tap="scrollTop" :title="router">
-      <navigation-bar-item @tap="cancel" slot="left" text="返回" icon="back"/>
+      <navigation-bar-item @tap="read" slot="left" text="读书" icon="back"/>
       <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
     </navigation-bar>
     <router-wrapper class="view">
@@ -12,11 +12,11 @@
       </keep-alive>
     </router-wrapper>
     <bottom-bar>
-      <bottom-bar-item @tap="to('shelf')" text="书架" icon="shelf" :active="router === 'shelf'"/>
-      <bottom-bar-item @tap="to('store')" text="书城" icon="store" :active="router === 'store'"/>
-      <bottom-bar-item @tap="to('search')" text="搜索" icon="search" :active="router === 'search'"/>
-      <bottom-bar-item @tap="to('my')" text="我的" icon="account" :active="router === 'my'"/>
-      <bottom-bar-item @tap="to('test')" text="测试" icon="settings" :active="router === 'test'"/>
+      <bottom-bar-item @tap="replace('shelf')" text="书架" icon="shelf" :active="router === 'shelf'"/>
+      <bottom-bar-item @tap="replace('store')" text="书城" icon="store" :active="router === 'store'"/>
+      <bottom-bar-item @tap="replace('search')" text="搜索" icon="search" :active="router === 'search'"/>
+      <bottom-bar-item @tap="replace('my')" text="我的" icon="account" :active="router === 'my'"/>
+      <bottom-bar-item @tap="replace('test')" text="测试" icon="settings" :active="router === 'test'"/>
     </bottom-bar>
   </div>
 </template>
@@ -54,6 +54,9 @@ export default {
       this.$router.push({'name': name})
       // console.log(this.activeMoudle)
     },
+    replace: function (name) {
+      this.$router.replace({'name': name})
+    },
     scrollTop: function () {
       if (this.activeMoudle.scrollTop) {
         this.activeMoudle.scrollTop()
@@ -61,26 +64,32 @@ export default {
         console.error('缺少方法：scrollTop', this.activeMoudle)
       }
     },
-    cancel () {
-      console.log('Tap cancel')
+    read () {
+      console.log('Tap read')
+      this.to('read')
       // alert(this.$statusBar.isVisible)
-      if (this.$statusBar.isVisible) {
-        // alert('111111')
-        this.$statusBar.hide()
-      } else {
-        // alert('2222222')
-        this.$statusBar.show()
-      }
+      // if (this.$statusBar.isVisible) {
+      //   // alert('111111')
+      //   this.$statusBar.hide()
+      // } else {
+      //   // alert('2222222')
+      //   this.$statusBar.show()
+      // }
     },
     login () {
-      this.to('login')
+      this.replace('login')
     }
   },
   mounted () {
     // console.log(this.$router)
+    this.replace('shelf')
     setTimeout(() => {
-      this.$statusBar.show()
-      this.$splashScreen.hide()
+      if (this.$statusBar) {
+        this.$statusBar.show()
+      }
+      if (this.$splashScreen) {
+        this.$splashScreen.hide()
+      }
     }, 1000)
     document.addEventListener('backbutton', function () {
       navigator.app.exitApp()

@@ -39,17 +39,28 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <allow-intent href="market:*" />
-    <icon density="ldpi" src="static/appIcon/android/ldpi.png" />
+    <splash density="port-mdpi" src="static/screen/android/splash-port-mdpi.png" />
+    <splash density="port-hdpi" src="static/screen/android/splash-port-hdpi.png" />
+    <splash density="port-xhdpi" src="static/screen/android/splash-port-xhdpi.png" />
+    <splash density="port-xxhdpi" src="static/screen/android/splash-port-xxhdpi.png" />
+    <splash density="port-xxxhdpi" src="static/screen/android/splash-port-xxxhdpi.png" />
     <icon density="mdpi" src="static/appIcon/android/mdpi.png" />
     <icon density="hdpi" src="static/appIcon/android/hdpi.png" />
     <icon density="xhdpi" src="static/appIcon/android/xhdpi.png" />
     <icon density="xxhdpi" src="static/appIcon/android/xxhdpi.png" />
     <icon density="xxxhdpi" src="static/appIcon/android/xxxhdpi.png" />
     <preference name="loglevel" value="DEBUG" />
+    <preference name="webView" value="org.crosswalk.engine.XWalkWebViewEngine" />
+    <preference name="xwalkVersion" value="23+" />
+    <preference name="xwalkLiteVersion" value="xwalk_core_library_canary:17+" />
+    <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect" />
+    <preference name="xwalkMode" value="embedded" />
+    <preference name="xwalkMultipleApk" value="true" />
+    <preference name="android-minSdkVersion" value="16" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
     <preference name="FadeSplashScreenDuration" value="300" />
     <preference name="ShowSplashScreenSpinner" value="false" />
     <preference name="AutoHideSplashScreen" value="false" />
-    <preference name="StatusBarBackgroundColor" value="#ffffffff" />
+    <preference name="StatusBarBackgroundColor" value="#00000000" />
 </widget>

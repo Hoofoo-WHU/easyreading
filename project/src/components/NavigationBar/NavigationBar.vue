@@ -44,7 +44,7 @@ export default {
   display: flex;
   width: 100%;
   flex-direction: row;
-  z-index: 1;
+  z-index: 100;
   user-select: none;
   position: relative;
   min-height: 49px;
@@ -82,13 +82,37 @@ export default {
     margin-top: 10px;
   }
 }
-.border { border-bottom: 1px solid #c8c7cc }
-@media screen and (-webkit-min-device-pixel-ratio: 2) {
-  .border { border-bottom: 0.5px solid #c8c7cc }
+.border:before { 
+  border-bottom: 1px solid #c8c7cc;
+  content: '';
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  transform-origin: left bottom;
 }
-@media screen and (-webkit-min-device-pixel-ratio: 3) {
-  .border { border-bottom: 0.333333px solid #c8c7cc }
+@media only screen and (-webkit-min-device-pixel-ratio: 2.0),
+only screen and (min--moz-device-pixel-ratio: 2.0),
+only screen and (-o-min-device-pixel-ratio: 200/100),
+only screen and (min-device-pixel-ratio: 2.0) {
+  .border:before {
+    transform: scaleY(0.5);
+  }
 }
+@media only screen and (-webkit-min-device-pixel-ratio: 2.5),
+only screen and (min--moz-device-pixel-ratio: 2.5),
+only screen and (-o-min-device-pixel-ratio: 250/100),
+only screen and (min-device-pixel-ratio: 2.5) {
+  .border:before {
+    transform: scaleY(0.4);
+  }
+}
+// .border { border-bottom: 1px solid #c8c7cc }
+// @media screen and (-webkit-min-device-pixel-ratio: 2) {
+//   .border { border-bottom: 0.5px solid #c8c7cc }
+// }
+// @media screen and (-webkit-min-device-pixel-ratio: 3) {
+//   .border { border-bottom: 0.333333px solid #c8c7cc }
+// }
 @supports not (-webkit-backdrop-filter: blur(8px)){
   .navigation-bar{
     background: #fff;

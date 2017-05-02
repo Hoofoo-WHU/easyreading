@@ -51,7 +51,8 @@ module.exports.metadata =
     "cordova-plugin-statusbar": "2.2.2",
     "cordova-plugin-whitelist": "1.3.2",
     "cordova.custom.plugins.exitapp": "1.0.0",
-    "it.innowatio.cordova.ios-fullscreen": "0.3.0"
+    "it.innowatio.cordova.ios-fullscreen": "0.3.0",
+    "cordova-plugin-crosswalk-webview": "2.3.0"
 };
 // BOTTOM OF METADATA
 });

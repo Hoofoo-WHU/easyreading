@@ -23,8 +23,17 @@
     <preference name="AutoHideSplashScreen" value="false" />
     <platform name="android">
         <allow-intent href="market:*" />
-        <preference name="StatusBarBackgroundColor" value="#ffffffff" />
-        <icon density="ldpi" src="static/appIcon/android/ldpi.png" />
+<!--         <preference name="SplashScreenDelay" value="0" />
+        <preference name="FadeSplashScreenDuration" value="0" />
+        <preference name="FadeSplashScreen" value="false"/> -->
+        <preference name="StatusBarBackgroundColor" value="#00000000" />
+        <!-- <splash src="static/screen/android/splash-port-ldpi.png" density="port-ldpi"/> -->
+        <splash src="static/screen/android/splash-port-mdpi.png" density="port-mdpi"/>
+        <splash src="static/screen/android/splash-port-hdpi.png" density="port-hdpi"/>
+        <splash src="static/screen/android/splash-port-xhdpi.png" density="port-xhdpi"/>
+        <splash src="static/screen/android/splash-port-xxhdpi.png" density="port-xxhdpi"/>
+        <splash src="static/screen/android/splash-port-xxxhdpi.png" density="port-xxxhdpi"/>
+        <!-- <icon density="ldpi" src="static/appIcon/android/ldpi.png" /> -->
         <icon density="mdpi" src="static/appIcon/android/mdpi.png" />
         <icon density="hdpi" src="static/appIcon/android/hdpi.png" />
         <icon density="xhdpi" src="static/appIcon/android/xhdpi.png" />

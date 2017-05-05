@@ -1,7 +1,7 @@
 <template>
   <touch class="page" @panstart="panstart" @panend="panend" :pan-options="{ direction: 'vertical' }" @panmove="panVertival">
     <div style="height: 100%; width: 100%; position: relative">
-      <transition name="remove" @before-leave="removing=true" @after-leave="removing=false">
+      <transition name="remove" @before-leave="removing=true" @after-leave="tagend">
         <div v-if="paning" class="pull-tag" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}">{{tagMessage}}</div>
       </transition>
       <span  class="pull-tag-icon" :tag="tag" :active="activePull && !tag" :noactive="activePull && tag" :class="{trans: removing}" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}"><icon name="tag"></icon></span>
@@ -67,13 +67,14 @@ export default {
         // console.log('panstart')
         // e.srcEvent.stopImmediatePropagation()
         this.paning = true
+        this.distancefix = e.deltaY
         this.$emit('tagstart')
       }
     },
     panVertival (e) {
       if (this.canPullTag && !this.removing && this.paning) {
         e.srcEvent.stopImmediatePropagation()
-        const distance = e.deltaY > 0 ? e.deltaY : 0
+        const distance = e.deltaY - this.distancefix > 0 ? e.deltaY - this.distancefix : 0
         // console.log(distance / 2)
         // console.log(distance)
         var a = 1.005
@@ -94,6 +95,10 @@ export default {
         this.pullDistance = 0
         this.paning = false
       }
+    },
+    tagend () {
+      this.removing = false
+      this.$emit('tagend')
     }
   }
 }

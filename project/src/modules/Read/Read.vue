@@ -4,21 +4,21 @@
       <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
     </navigation-bar>
     <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal' }" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
-      <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="show=false" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+      <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
         <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
           <div :class="{noindent: !pages[page - 1].start}">
             <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
         </div>
       </page>
-      <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="show=false" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+      <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
         <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
           <div :class="{noindent: !pages[page + 1].start}">
             <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
         </div>
       </page>
-      <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="show=false" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+      <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
         <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
           <div style="height: 0; overflow: hidden">
             <div class="buffer" style="visibility: hidden"></div>
@@ -373,34 +373,39 @@ export default {
       // console.log(this.pages[this.page])
     },
     panstart (e) {
-      this.show = false
-      this.paning = true
-      // this.panStart =
-      if (this.pandistance < 0) {
-        this.page++
+      if (!this.taging) {
+        this.show = false
+        this.paning = true
+        // this.panStart =
+        if (this.pandistance < 0) {
+          this.page++
+        }
+        if (this.pandistance > 0) {
+          this.page--
+        }
+        this.pandistance = 0
+        this.fixdistance = e.deltaX
       }
-      if (this.pandistance > 0) {
-        this.page--
-      }
-      this.pandistance = 0
-      this.fixdistance = e.deltaX
     },
     panHorizontal (e) {
-      this.pandistance = e.deltaX - this.fixdistance
-      this.pantime = new Date().getTime()
+      if (!this.taging) {
+        this.pandistance = e.deltaX - this.fixdistance
+      }
     },
     panend (e) {
-      var width = window.innerWidth
-      // console.log(e.deltaX - this.fixdistance - this.pandistance)
-      // console.log(new Date().getTime() - this.pantime)
-      if (this.pandistance < -width * 0.5 && this.page + 1 < this.pages.length) {
-        this.pandistance = -width
-      } else if (this.pandistance > width * 0.5 && this.page > 0) {
-        this.pandistance = width
-      } else {
-        this.pandistance = 0
+      if (!this.taging) {
+        var width = window.innerWidth
+        // console.log(e.deltaX - this.fixdistance - this.pandistance)
+        // console.log(new Date().getTime() - this.pantime)
+        if (this.pandistance < -width * 0.5 && this.page + 1 < this.pages.length) {
+          this.pandistance = -width
+        } else if (this.pandistance > width * 0.5 && this.page > 0) {
+          this.pandistance = width
+        } else {
+          this.pandistance = 0
+        }
+        this.paning = false
       }
-      this.paning = false
     },
     swiperight () {
       // console.log('swiperight')
@@ -432,6 +437,13 @@ export default {
         var width = window.innerWidth
         this.pandistance = -width
       }
+    },
+    tagstart () {
+      this.show = false
+      this.taging = true
+    },
+    tagend () {
+      this.taging = false
     },
     getData: function () {
       var dataElement = this.$el.getElementsByClassName('text')[0].getElementsByTagName('p')

@@ -1814,6 +1814,10 @@ event-emitter@~0.3.5:
     d "1"
     es5-ext "~0.10.14"
 
+eventemitter2@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/eventemitter2/-/eventemitter2-4.1.0.tgz#b1fb8a1144e7dfcf80cecce9877ff6d68e7d8506"
+
 eventemitter3@1.x.x:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
@@ -4427,10 +4431,6 @@ utils-merge@1.0.0:
 uuid@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
-
-v-tap@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/v-tap/-/v-tap-3.0.1.tgz#78b735f796c5b6be14c156b6cb0c5f4ece790eaa"
 
 validate-npm-package-license@^3.0.1:
   version "3.0.1"

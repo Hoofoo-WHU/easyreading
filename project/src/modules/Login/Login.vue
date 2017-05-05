@@ -42,9 +42,9 @@ export default {
       if (this.$http) {
         console.log('httpover')
       }
-      this.$http.post('http://oott.me/user/identifier/check', {'identifier': this.phonenum, 'function': 0})
+      this.$http.post('/user/identifier/check', {'identifier': this.phonenum, 'function': 0})
       .then(response => {
-        alert('ok')
+        alert(response.data.available)
         this.$store.state.token = response.data.identifier_token
         this.message = this.$store.state.token
       })

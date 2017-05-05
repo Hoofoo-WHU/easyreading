@@ -1,11 +1,16 @@
 <template>
-  <touch class="page" @panstart="panstart" @panend="panend" @panup="panVertival" @pandown="panVertival">
-    <div class="pull-tag" :class="{trans: !paning}" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}">{{tagMessage}}</div>
-    <span  class="pull-tag-icon" :tag="tag" :active="activePull" :class="{trans: !paning}" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}"><icon name="tag"></icon></span>
-    <div class="content-wrapper" :class="{trans: !paning}" :style="{transform: 'translateY(' + pullDistance + 'px) translateZ(0)'}">
-      <span class="chapter">{{chapter}}</span>
-      <div class="content">
-        <slot></slot>
+  <touch class="page" @panstart="panstart" @panend="panend" :pan-options="{ direction: 'vertical' }" @panmove="panVertival">
+    <div style="height: 100%; width: 100%; position: relative">
+      <transition name="remove" @before-leave="removing=true" @after-leave="removing=false">
+        <div v-if="paning" class="pull-tag" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}">{{tagMessage}}</div>
+      </transition>
+      <span  class="pull-tag-icon" :tag="tag" :active="activePull && !tag" :noactive="activePull && tag" :class="{trans: removing}" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}"><icon name="tag"></icon></span>
+      <div class="content-wrapper" :class="{trans: !paning}" :style="{transform: 'translateY(' + pullDistance + 'px) translateZ(0)'}">
+        <span class="chapter">{{chapter}}</span>
+        <div class="pageContent">
+          <slot></slot>
+        </div>
+        <span class="pageIndex">{{page}}</span>
       </div>
     </div>
   </touch>
@@ -19,6 +24,10 @@ export default {
     Icon
   },
   props: {
+    canPullTag: {
+      type: Boolean,
+      default: false
+    },
     tag: {
       type: Boolean,
       default: false
@@ -26,13 +35,18 @@ export default {
     chapter: {
       type: String,
       default: ''
+    },
+    page: {
+      type: [Number, String],
+      default: ''
     }
   },
   data () {
     return {
       paning: false,
       pullDistance: 0,
-      tagHeight: 60
+      tagHeight: 60,
+      removing: false
     }
   },
   computed: {
@@ -49,25 +63,37 @@ export default {
   },
   methods: {
     panstart (e) {
-      // console.log('panstart')
-      this.paning = true
-      this.panStart = e.center.y
+      if (this.canPullTag && !this.removing) {
+        // console.log('panstart')
+        // e.srcEvent.stopImmediatePropagation()
+        this.paning = true
+        this.$emit('tagstart')
+      }
     },
     panVertival (e) {
-      const distance = e.center.y > this.panStart ? e.center.y - this.panStart : 0
-      // console.log(distance)
-      this.pullDistance = Math.pow(Math.log(distance + 1), 2.8)
-    },
-    panend () {
-      if (this.pullDistance > this.tagHeight) {
-        if (this.tag) {
-          this.$emit('untag')
-        } else {
-          this.$emit('tag')
-        }
+      if (this.canPullTag && !this.removing && this.paning) {
+        e.srcEvent.stopImmediatePropagation()
+        const distance = e.deltaY > 0 ? e.deltaY : 0
+        // console.log(distance / 2)
+        // console.log(distance)
+        var a = 1.005
+        var b = 0.6
+        this.pullDistance = ~~(-1 / (b * Math.pow(a, b * distance) * Math.log(a)) + 1 / Math.log(a) / b) / 2
       }
-      this.pullDistance = 0
-      this.paning = false
+    },
+    panend (e) {
+      if (this.canPullTag && !this.removing) {
+        e.srcEvent.stopImmediatePropagation()
+        if (this.pullDistance > this.tagHeight) {
+          if (this.tag) {
+            this.$emit('untag')
+          } else {
+            this.$emit('tag')
+          }
+        }
+        this.pullDistance = 0
+        this.paning = false
+      }
     }
   }
 }
@@ -75,7 +101,11 @@ export default {
 
 <style lang="stylus" scoped>
 .page{
-  flex: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   .content-wrapper{
     position: absolute;
     top: 0;
@@ -83,6 +113,7 @@ export default {
     left: 0;
     right: 0;
     background: #fff;
+    z-index: -1;
     // transform: translateZ(0);
     display: flex;
     .chapter{
@@ -96,7 +127,15 @@ export default {
       text-overflow: ellipsis;
       overflow: hidden;
     }
-    .content{
+    .pageIndex{
+      position: absolute;
+      bottom: 15px;
+      right: 20px;
+      opacity: 0.5;
+      font-size: 12px;
+    }
+    .pageContent{
+      display: flex;
       flex: 1;
       margin: 40px 20px 40px 20px;
       overflow: hidden;
@@ -122,18 +161,26 @@ export default {
   top: -30px;
   right: 0;
   color: #888;
+  // z-index: 1;
   // transform: translateZ(0);
   transition: color .4s;
   &[tag]{
     color: #db5149;
     transform: translateY(30px) !important;
-    z-index: 1;
+    // z-index: 1;
   }
   &[active]{
     color: #db5149;
   }
+  &[noactive]{
+    color: #888;
+  }
 }
 .trans{   
   transition: transform .4s cubic-bezier(.3,.5,.29,.99),color .4s;
+}
+.remove-leave-active {
+  transform: translateY(0) !important;
+  transition: transform .4s cubic-bezier(.3,.5,.29,.99);
 }
 </style>

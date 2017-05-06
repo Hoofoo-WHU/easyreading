@@ -77,7 +77,7 @@ export default {
       // }
     },
     login () {
-      this.replace('login')
+      this.to('login')
     }
   },
   mounted () {

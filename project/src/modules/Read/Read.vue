@@ -1,31 +1,39 @@
 <template>
   <div class="read">
     <navigation-bar title="读书" class="navigation" :show="show">
-      <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
+      <navigation-bar-item slot="left" icon="back" text="返回" @tap="back" :disable="showmore"/>
+      <navigation-bar-item slot="right" icon="shop" @tap="more" :disable="showmore"/>
+      <navigation-bar-item slot="right" icon="more" @tap="more" :disable="showmore"/>
     </navigation-bar>
     <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal' }" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
-      <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
-          <div :class="{noindent: !pages[page - 1].start}">
-            <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+      <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page - 1].chapter" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+        <transition name="fade" appear>
+          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+            <div :class="{noindent: !pages[page - 1].start}">
+              <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+            </div>
           </div>
-        </div>
+        </transition>
       </page>
-      <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
-          <div :class="{noindent: !pages[page + 1].start}">
-            <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+      <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page + 1].chapter" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+        <transition name="fade" appear>
+          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+            <div :class="{noindent: !pages[page + 1].start}">
+              <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+            </div>
           </div>
-        </div>
+        </transition>
       </page>
-      <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" chapter="第几回 啦啦啦啦啦你是卖报的小行家" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+      <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page] ? pages[page].chapter : ''" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
         <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
           <div style="height: 0; overflow: hidden">
             <div class="buffer" style="visibility: hidden"></div>
           </div>
-          <div v-if="pages[page]" :class="{noindent: !pages[page].start}">
-            <p v-for="(parts, index) in pages[page].data">{{parts}}<span v-if="!pages[page].end && index + 1 === pages[page].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-          </div>
+          <transition name="fade" appear>
+            <div v-if="pages[page]" :class="{noindent: !pages[page].start}">
+              <p v-for="(parts, index) in pages[page].data">{{parts}}<span v-if="!pages[page].end && index + 1 === pages[page].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+            </div>
+          </transition>
         </div>
       </page>
     </touch>
@@ -35,6 +43,8 @@
       <bottom-bar-item icon="light"/>
       <bottom-bar-item icon="font"/>
     </bottom-bar>
+    <action-sheet v-if="showmore" @cancel="showmore = false">
+    </action-sheet>
     <div class="text" style="display: none">
       <p>“秋是一个歌，但是‘桂花蒸’的夜，像在厨里吹的箫调，白天像小孩子唱的歌，又热又熟又清又湿。”</p>
 
@@ -283,8 +293,10 @@
 <script>
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
+import ActionSheet from '@/components/ActionSheet'
 import Page from './Page'
 import Paging from './lib/page.js'
+import bounce from './lib/bounce.js'
 export default {
   name: 'read',
   components: {
@@ -292,16 +304,18 @@ export default {
     NavigationBarItem,
     BottomBar,
     BottomBarItem,
-    Page
+    Page,
+    ActionSheet
   },
   data () {
     return {
       show: false,
       pages: [],
-      page: 0,
+      page: 20,
       finish: false,
       pandistance: 0,
-      paning: false
+      paning: false,
+      showmore: false
     }
   },
   watch: {
@@ -311,7 +325,11 @@ export default {
   },
   methods: {
     back () {
-      this.$router.go(-1)
+      this.$router.back()
+    },
+    more () {
+      console.log('moretap')
+      this.showmore = true
     },
     tap (e) {
       var width = window.innerWidth
@@ -389,7 +407,11 @@ export default {
     },
     panHorizontal (e) {
       if (!this.taging) {
-        this.pandistance = e.deltaX - this.fixdistance
+        if (this.page > 0 && this.page < this.pages.length - 1) {
+          this.pandistance = e.deltaX - this.fixdistance
+        } else {
+          this.pandistance = bounce(e.deltaX - this.fixdistance)
+        }
       }
     },
     panend (e) {
@@ -476,7 +498,7 @@ export default {
         }
       })
       buffer.innerHTML = ''
-      paging.start(buffer, height, data)
+      paging.start(buffer, height, data, '第一章')
     }
   },
   activated () {
@@ -551,5 +573,11 @@ export default {
   //   -webkit-margin-before: 0em;
   // }
   // ::-webkit-scrollbar{width:0px;}
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="background: white; position:absolute; top:0;left:0;right: 0;bottom:0">
   <!--   <iframe src="http://www.baidu.com">
       <p>Your browser does not support iframes.</p>
     </iframe> -->

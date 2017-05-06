@@ -311,7 +311,7 @@ export default {
     return {
       show: false,
       pages: [],
-      page: 20,
+      page: 0,
       finish: false,
       pandistance: 0,
       paning: false,
@@ -348,7 +348,7 @@ export default {
     },
     refreshStatusBar () {
       // console.log(this.show)
-      if (this.$statusBar) {
+      if (this.$statusBar && this.$platform === 'ios') {
         if (!this.show) {
           this.$statusBar.hide()
         } else {

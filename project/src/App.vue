@@ -20,6 +20,8 @@ export default {
   },
   watch: {
     '$route': function (to, from) {
+      // console.log(to)
+      // console.log(from)
       // const toDepth = to.path.split('/').length
       // const fromDepth = from.path.split('/').length
       // console.log(toDepth === fromDepth)
@@ -34,14 +36,13 @@ body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background:#f2f2f2;
 }
 * {
   margin: 0;
   padding: 0;
 }
 .push-enter-active, .push-leave-active, .pop-enter-active, .pop-leave-active {
-  transition: all 0.6s cubic-bezier(.3,.5,.29,.99);
+  transition: all 0.6s ease;
   /*box-shadow: 0 0 10px #888;*/
 }
 .push-enter, .push-leave, .pop-enter, .pop-leave {
@@ -49,7 +50,7 @@ body {
 }
 .push-leave-active{
   z-index: -10;
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) translateZ(0);
 }
 .push-enter{
   transform: translateX(100%) translateZ(0);
@@ -58,7 +59,7 @@ body {
   z-index: -10;
 }
 .pop-enter{
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) translateZ(0);
 }
 .pop-leave-active{
   transform: translateX(100%) translateZ(0);

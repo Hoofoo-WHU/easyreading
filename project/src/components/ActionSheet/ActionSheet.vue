@@ -11,8 +11,10 @@ export default {
     }
   },
   methods: {
-    cancel () {
-      this.$emit('cancel')
+    cancel (e) {
+      setTimeout(() => {
+        this.$emit('cancel')
+      }, 0)
     }
   }
 }
@@ -27,6 +29,5 @@ export default {
   bottom: 0;
   right: 0;
   background: #0006;
-  transition: all .6s;
 }
 </style>

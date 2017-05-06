@@ -93,7 +93,7 @@ export default {
 }
 .view{
   /*width: 100%;*/
-  flex: 1;
+  flex-grow: 1;
   background: #efeff4;
   /*display: flex;*/
   /*flex-direction: column;*/

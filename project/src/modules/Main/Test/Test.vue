@@ -4,7 +4,7 @@
       <navigation-bar-item @tap="read" slot="left" text="读书" icon="back"/>
       <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
     </navigation-bar>
-    <scroller style="flex:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
+    <scroller style="flex-grow:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
       <touch v-for="(item, index) in items" :key="item.index"
           class="row" :class="{'grey-bg': index % 2 == 0}" @tap="onItemClick({index:index})">
         {{ item }}

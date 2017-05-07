@@ -3,4 +3,5 @@
 /project/dist/
 /project/npm-debug.log
 /project/yarn-error.log
+
 /platforms/*

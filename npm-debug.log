@@ -1,0 +1,101 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   '@components/Modal' ]
+2 info using npm@4.1.2
+3 info using node@v7.7.4
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData @components/Modal
+8 silly fetchNamedPackageData @components/Modal
+9 silly mapToRegistry name @components/Modal
+10 silly mapToRegistry scope (from package name) @components
+11 verbose mapToRegistry no registry URL found in name for scope @components
+12 silly mapToRegistry using default registry
+13 silly mapToRegistry registry http://registry.cnpmjs.org/
+14 silly mapToRegistry data Result {
+14 silly mapToRegistry   raw: '@components/Modal',
+14 silly mapToRegistry   scope: '@components',
+14 silly mapToRegistry   escapedName: '@components%2fModal',
+14 silly mapToRegistry   name: '@components/Modal',
+14 silly mapToRegistry   rawSpec: '',
+14 silly mapToRegistry   spec: 'latest',
+14 silly mapToRegistry   type: 'tag' }
+15 silly mapToRegistry uri http://registry.cnpmjs.org/@components%2fModal
+16 verbose request uri http://registry.cnpmjs.org/@components%2fModal
+17 verbose request no auth needed
+18 info attempt registry request try #1 at 14:56:53
+19 verbose request id 891cf17a00608e90
+20 http request GET http://registry.cnpmjs.org/@components%2fModal
+21 http 404 http://registry.cnpmjs.org/@components%2fModal
+22 verbose headers { 'transfer-encoding': 'chunked',
+22 verbose headers   connection: 'keep-alive',
+22 verbose headers   'content-type': 'application/json; charset=utf-8',
+22 verbose headers   date: 'Sat, 06 May 2017 06:56:58 GMT',
+22 verbose headers   server: 'nginx/1.4.6 (Ubuntu)',
+22 verbose headers   'x-current-requests': '1',
+22 verbose headers   'x-readtime': '11' }
+23 silly get cb [ 404,
+23 silly get   { 'transfer-encoding': 'chunked',
+23 silly get     connection: 'keep-alive',
+23 silly get     'content-type': 'application/json; charset=utf-8',
+23 silly get     date: 'Sat, 06 May 2017 06:56:58 GMT',
+23 silly get     server: 'nginx/1.4.6 (Ubuntu)',
+23 silly get     'x-current-requests': '1',
+23 silly get     'x-readtime': '11' } ]
+24 silly fetchPackageMetaData Error: 404 Not Found: @components/Modal
+24 silly fetchPackageMetaData     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:304:12)
+24 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+24 silly fetchPackageMetaData     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:212:14)
+24 silly fetchPackageMetaData     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:186:22)
+24 silly fetchPackageMetaData     at emitTwo (events.js:106:13)
+24 silly fetchPackageMetaData     at Request.emit (events.js:194:7)
+24 silly fetchPackageMetaData     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1081:10)
+24 silly fetchPackageMetaData     at emitOne (events.js:96:13)
+24 silly fetchPackageMetaData     at Request.emit (events.js:191:7)
+24 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1001:12)
+24 silly fetchPackageMetaData  error for @components/Modal { Error: 404 Not Found: @components/Modal
+24 silly fetchPackageMetaData     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:304:12)
+24 silly fetchPackageMetaData     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+24 silly fetchPackageMetaData     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:212:14)
+24 silly fetchPackageMetaData     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:186:22)
+24 silly fetchPackageMetaData     at emitTwo (events.js:106:13)
+24 silly fetchPackageMetaData     at Request.emit (events.js:194:7)
+24 silly fetchPackageMetaData     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1081:10)
+24 silly fetchPackageMetaData     at emitOne (events.js:96:13)
+24 silly fetchPackageMetaData     at Request.emit (events.js:191:7)
+24 silly fetchPackageMetaData     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1001:12) pkgid: '@components/Modal', statusCode: 404, code: 'E404' }
+25 silly rollbackFailedOptional Starting
+26 silly rollbackFailedOptional Finishing
+27 silly runTopLevelLifecycles Finishing
+28 silly install printInstalled
+29 verbose stack Error: 404 Not Found: @components/Modal
+29 verbose stack     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:304:12)
+29 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+29 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:212:14)
+29 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:186:22)
+29 verbose stack     at emitTwo (events.js:106:13)
+29 verbose stack     at Request.emit (events.js:194:7)
+29 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1081:10)
+29 verbose stack     at emitOne (events.js:96:13)
+29 verbose stack     at Request.emit (events.js:191:7)
+29 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1001:12)
+30 verbose statusCode 404
+31 verbose pkgid @components/Modal
+32 verbose cwd /Users/escawn/Documents/easyreading
+33 error Darwin 15.6.0
+34 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "--save" "@components/Modal"
+35 error node v7.7.4
+36 error npm  v4.1.2
+37 error code E404
+38 error 404 Not Found: @components/Modal
+39 error 404
+40 error 404 '@components/Modal' is not in the npm registry.
+41 error 404 Your package name is not valid, because
+42 error 404 1. name can no longer contain capital letters
+43 error 404 Note that you can also install from a
+44 error 404 tarball, folder, http url, or git url.
+45 verbose exit [ 1, true ]

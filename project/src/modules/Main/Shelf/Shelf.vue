@@ -4,14 +4,15 @@
       <navigation-bar-item @tap="modify" slot="right" text="编辑" v-if="edit"/>
       <navigation-bar-item @tap="finish" slot="right" text="完成" v-else/>
     </navigation-bar>
-    <scroller class="scroller" ref="scroller" style="position:relative">
+    <scroller class="scroller" ref="scroller" style="flex-grow:1" >
       <div class="shelf">
         <touch v-for="item in books" class="book" @tap="clickAll(item.id)">
-            <input type="checkbox" :id="item.id" :value="item.id" v-model="checked" class="check" v-if="!edit" @click.prevent>
-            <img :src="item.cover" alt="" width="100%" for="item.id">
+           <!--  <input type="checkbox" :id="item.id" :value="item.id" v-model="checked" class="check" v-if="!edit" @click.prevent>   -->
+          <!-- <img :src="item.cover" alt="" width="100%" for="item.id">
           <div>{{item.title}}</div>
           <div v-if="isUpdate" class="status">XXX未读</div>
-          <div v-else class="update">●有更新</div>
+          <div v-else class="update">●有更新</div> -->
+          <book :cover="item.cover" :title="item.title" :isUpdate="isUpdate"/>
         </touch>
        <!--  <touch class="book" @tap="add">
             <img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2891742048,3830076574&fm=58" width="100%">
@@ -33,6 +34,7 @@ import Scroller from '@/components/Scroller'
 import RouterContent from '@/components/RouterContent'
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import { BottomBar, BottomBarItem } from '@/components/BottomBar'
+import Book from './components/Book'
 
 export default {
   name: 'shelf',
@@ -42,7 +44,8 @@ export default {
     Scroller,
     RouterContent,
     NavigationBar,
-    NavigationBarItem
+    NavigationBarItem,
+    Book
   },
   data () {
     return {
@@ -134,7 +137,7 @@ export default {
     padding-right: 5%;
     position: relative;
   }
-  .status{
+/*  .status{
     text-align: right;
     transform: scale(0.8);
     color: orange;
@@ -143,16 +146,37 @@ export default {
     text-align: right;
     transform: scale(0.8);
     color: green;
-  }
+  }*/
   .check{
-    border-radius: 100%;
-    width: 15px;
-    height: 15px;
     position: absolute;
-    top: -8px;
-    right: 5px;
-    opacity: 0.4;
+    visibility: hidden;
   }
+  input[type=checkbox]:before{
+    display: inline-block;  
+    position: absolute;
+    top: 80px;
+    left: 55px;
+    content:' ';  
+    visibility: visible;  
+    height: 2em;  
+    width: 2em;  
+    display: block;  
+    background: url("./svg/unchecked.svg") no-repeat;  
+    background-size: 2em 2em;  
+}  
+  input[type=checkbox]:checked:before{
+    display: inline-block;  
+    position: absolute;
+    top: 80px;
+    left: 55px;
+    content:' ';  
+    visibility: visible;  
+    height: 2em;  
+    width: 2em;  
+    display: block;  
+    background: url("./svg/checked.svg") no-repeat;  
+    background-size: 2em 2em;
+}  
   .bottom{
     position: absolute;
     bottom: -49px;

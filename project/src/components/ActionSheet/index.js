@@ -1,7 +1,7 @@
 import ActionSheet from './ActionSheet.vue'
-import ActionSheetContent from './ActionSheetContent.vue'
+import ActionSheetItem from './ActionSheetItem.vue'
 
 export {
   ActionSheet,
-  ActionSheetContent
+  ActionSheetItem
 }

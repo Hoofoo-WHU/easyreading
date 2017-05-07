@@ -43,7 +43,7 @@ document.addEventListener('deviceready', () => {
   if (window.cordova.platformId === 'android') {
     window.LightStatusBar.isSupported(function (success) {
       if (success) {
-        window.LightStatusBar.setStatusBarColor('#00000000')
+        window.LightStatusBar.setStatusBarColor('#ffffffff')
       }
     })
   }

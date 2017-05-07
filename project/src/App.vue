@@ -1,14 +1,32 @@
 <template>
-  <keep-alive>
-    <router-view/>
-  </keep-alive>
+  <transition :name="transitionName">
+    <keep-alive>
+        <router-view/>
+    </keep-alive>
+  </transition>
 </template>
 
 <script>
+import RouterWrapper from '@/components/RouterWrapper'
 export default {
   name: 'app',
+  components: {
+    RouterWrapper
+  },
   data () {
-    return {}
+    return {
+      transitionName: 'push'
+    }
+  },
+  watch: {
+    '$route': function (to, from) {
+      // console.log(to)
+      // console.log(from)
+      // const toDepth = to.path.split('/').length
+      // const fromDepth = from.path.split('/').length
+      // console.log(toDepth === fromDepth)
+      this.transitionName = this.$router.isBack ? 'pop' : 'push'
+    }
   }
 }
 </script>
@@ -22,5 +40,28 @@ body {
 * {
   margin: 0;
   padding: 0;
+}
+.push-enter-active, .push-leave-active, .pop-enter-active, .pop-leave-active {
+  transition: all 0.6s ease;
+  /*box-shadow: 0 0 10px #888;*/
+}
+.push-enter, .push-leave, .pop-enter, .pop-leave {
+   /*box-shadow: 0 0 10px #888;*/
+}
+.push-leave-active{
+  z-index: -10;
+  transform: translateX(-50%) translateZ(0);
+}
+.push-enter{
+  transform: translateX(100%) translateZ(0);
+}
+.pop-enter-active{
+  z-index: -10;
+}
+.pop-enter{
+  transform: translateX(-50%) translateZ(0);
+}
+.pop-leave-active{
+  transform: translateX(100%) translateZ(0);
 }
 </style>

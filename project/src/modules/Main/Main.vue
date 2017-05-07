@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <navigation-bar @tap="scrollTop" :title="router">
-      <navigation-bar-item @tap="read" slot="left" text="读书" icon="back"/>
-      <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
-    </navigation-bar>
     <router-wrapper class="view">
       <keep-alive>
         <!-- <transition name='slide-fade'> -->
@@ -63,21 +59,6 @@ export default {
       } else {
         console.error('缺少方法：scrollTop', this.activeMoudle)
       }
-    },
-    read () {
-      console.log('Tap read')
-      this.to('read')
-      // alert(this.$statusBar.isVisible)
-      // if (this.$statusBar.isVisible) {
-      //   // alert('111111')
-      //   this.$statusBar.hide()
-      // } else {
-      //   // alert('2222222')
-      //   this.$statusBar.show()
-      // }
-    },
-    login () {
-      this.replace('login')
     }
   },
   mounted () {
@@ -112,7 +93,7 @@ export default {
 }
 .view{
   /*width: 100%;*/
-  flex: 1;
+  flex-grow: 1;
   background: #efeff4;
   /*display: flex;*/
   /*flex-direction: column;*/

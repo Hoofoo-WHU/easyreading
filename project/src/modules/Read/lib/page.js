@@ -16,21 +16,24 @@ function Paging () {
   var para = {
     buffer: null,
     height: null,
-    data: null
+    data: null,
+    chapter: null
   }
-  var Page = function () {
+  var Page = function (chapter) {
+    this.chapter = chapter
     this.start = true
     this.end = true
     this.count = 0
     this.data = []
     this.tag = false
   }
-  var page = new Page()
+  var page
   // 生命周期
-  this.start = (buffer, height, data) => {
+  this.start = (buffer, height, data, chapter) => {
     buffer ? para.buffer = buffer : console.error('缺少buffer')
     height ? para.height = height : console.error('缺少height')
     data ? para.data = data : console.error('缺少data')
+    chapter ? para.chapter = chapter : console.error('缺少chapter')
     emit('start')
     _start()
   }
@@ -42,6 +45,7 @@ function Paging () {
   }
   var _start = () => {
     state.paging = true
+    page = new Page(para.chapter)
     _paging()
   }
   var _paging = () => {
@@ -65,7 +69,7 @@ function Paging () {
           para.data.unshift(part)
           emit('page', page)
           para.buffer.innerHTML = ''
-          page = new Page()
+          page = new Page(para.chapter)
           state.newPage = true
         } else {
           p.textContent = part
@@ -86,7 +90,7 @@ function Paging () {
             para.data.unshift(part.slice(p.textContent.length))
             emit('page', page)
             para.buffer.innerHTML = ''
-            page = new Page()
+            page = new Page(para.chapter)
             state.newPage = true
           } else {
             page.data.push(part)

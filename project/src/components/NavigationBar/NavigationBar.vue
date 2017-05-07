@@ -65,8 +65,8 @@ export default {
   }
   .sub-title{
     top: 50%;
-    transform: translate(-50%, 6px);
-    font-size: 11px;
+    transform: translate(-50%, 8px);
+    font-size: 9px;
   }
   .left{
     display: flex;

@@ -1,9 +1,8 @@
 <template lang="html">
-    <div>
+    <div id="book-rank-list">
         <navigation-bar @tap="" title="排行列表">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
-        <div class="book-rank-list">
             <ul>
                 <li v-for="book in rank(mockData)" :key="book.rank">
                     <div class="rank-icon" v-if="book.rank === 1">
@@ -36,7 +35,6 @@
                     </div>
                 </li>
             </ul>
-        </div>
     </div>
 </template>
 
@@ -79,8 +77,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.book-rank-list {
+#book-rank-list {
     font-size: 15px;
+    background: #efeff4;
     ul {
         margin: 0;
         padding: 0;

@@ -1,5 +1,5 @@
 <template lang="html">
-    <div>
+    <div id="book-category">
         <navigation-bar @tap="" :title="type[typeId-1].name">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
@@ -96,6 +96,9 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+#book-category {
+    background: #efeff4;
+}
 .book-category-intro {
     text-align: center;
     width: 80%;

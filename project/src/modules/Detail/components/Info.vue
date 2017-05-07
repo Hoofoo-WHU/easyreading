@@ -1,7 +1,7 @@
 <template>
   <div id="info">
     <touch @tap="catalog">
-      <div class="catalog">  
+      <div class="catalog">
         <div>
           <p class="left"><b>目录 最近更新</b></p>
           <p class="right">{{update.time}}</p>
@@ -9,12 +9,12 @@
         <div>
           <p class="left">{{update.chapter}}</p>
           <p class="right">>>></p>
-        </div>       
+        </div>
       </div>
     </touch>
     <div class="hr"></div>
     <div class="info">
-      <touch  @tap="changeOverflow">            
+      <touch  @tap="changeOverflow">
         <p class="left"><b>作品简介</b></p>
         <p class="right">{{overflow}}</p>
       </touch>
@@ -102,7 +102,7 @@
    margin-top: 5px;
  }
  .hr{
-   background: gray;
+   background: #d3d3d3;
    height: 1px;
    margin-bottom: 10px;
  }

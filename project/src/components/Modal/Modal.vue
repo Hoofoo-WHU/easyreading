@@ -1,17 +1,17 @@
 <template lang="html">
     <div>
           <transition name="modal-zoom">
-              <div class="modal-wrapper" v-show="show" @click="cancel">
+              <div class="modal-wrapper" v-show="show" @click.self="cancel">
                   <div class="modal">
                           <div class="modal-header" v-if="showHeader">
                               <slot name="header">
                                   <span class="modal-title">{{title}}</span>
                               </slot>
-                              <slot name="close">
+                              <div class="close">
                                   <div class="modal-header-close" @click="cancel" v-if="showCloseButton">
                                       <icon class="icon" name="close"></icon>
                                   </div>
-                              </slot>
+                              </div>
                           </div>
                           <div class="modal-body">
                               <slot>{{content}}</slot>
@@ -155,12 +155,13 @@ export default {
 .modal-header {
     font-weight: 500;
     padding: 14px 16px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #d3d3d3;
-    display: flex;
-    justify-content: flex-end;
-    .modal-header-close {
+    .close {
         width: 4%;
+        position: absolute;
+        left: 90%;
+        top: 10%;
     }
 }
 .modal-footer {

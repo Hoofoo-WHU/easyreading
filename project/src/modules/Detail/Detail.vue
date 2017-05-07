@@ -18,11 +18,13 @@
           <comment :comment='comment'/>
         </div>
     </scroller>
+    <shop v-model="shopModalShow" @paySuccess="showMessage"></shop>
+    <message v-model="messageShow" :message-text="messageText"></message>
     <bottom-bar>
       <bottom-bar-item  v-if="!isIn" text="+书架" icon="add" @tap="add"></bottom-bar-item>
       <bottom-bar-item  v-else text="-书架" icon="remove" @tap="remove"></bottom-bar-item>
       <bottom-bar-item  text="立即阅读" icon="read" class="center" ></bottom-bar-item>
-      <bottom-bar-item  text="下载" icon="downLoad"></bottom-bar-item>
+      <bottom-bar-item  text="购买" icon="shop" @tap="shop"></bottom-bar-item>
     </bottom-bar>
   </div>
 </template>
@@ -35,7 +37,8 @@
   import Info from './components/Info'
   import Relate from './components/relate'
   import Comment from './components/comment'
-
+  import Shop from './components/shop'
+  import Message from '@/components/Message'
   export default {
     name: 'detail',
     components: {
@@ -47,7 +50,9 @@
       Cover,
       Info,
       Relate,
-      Comment
+      Comment,
+      Shop,
+      Message
     },
     data () {
       return {
@@ -58,7 +63,10 @@
         recommendInfo: [
         ],
         comment: [
-        ]
+        ],
+        shopModalShow: false,
+        messageShow: false,
+        messageText: ''
       }
     },
     mounted () {
@@ -79,7 +87,7 @@
           title: '三生三世十里桃花'})
       }
       for (let i = 1; i <= 10; i++) {
-        this.comment.push({author: 'sx', time: '2017-03-18 08:08', data: '评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论'})
+        this.comment.push({author: 'sx', time: '2017-03-18 08:08', data: '评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论', resNum: 122})
       }
     },
     computed: {
@@ -112,7 +120,7 @@
           var end = i + 10
           console.log(this.comment.length)
           for (; i < end; i++) {
-            this.comment.push({author: 'sx', time: '2017-03-18 08:08', data: '评论评论我是评论'})
+            this.comment.push({author: 'sx', time: '2017-03-18 08:08', data: '评论评论我是评论', resNum: 122})
           }
           if (i > 100) {
             noMore = true
@@ -130,6 +138,13 @@
       remove () {
         this.$store.commit('remove', this.info.id)
         console.log(this.isIn)
+      },
+      shop () {
+        this.shopModalShow = true
+      },
+      showMessage (text) {
+        this.messageText = text
+        this.messageShow = true
       }
     }
   }
@@ -166,7 +181,7 @@
     font-size: 12px;
   }
   .hr{
-    background: gray;
+    background: #d3d3d3;
     height: 1px;
     margin-bottom: 10px;
   }

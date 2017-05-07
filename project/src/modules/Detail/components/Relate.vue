@@ -69,12 +69,19 @@
     padding-top: 10px;
   }
   .change{
+    width: 30%;
+    height: 20px;
+    border: 1px #d3d3d3 solid;
+    border-radius: 50px;
     text-align: center;
-    color: blue;
-    padding-bottom: 10px;
+    font-size: 10px;
+    margin: 10px auto;
+    line-height: 20px;
+    color: grey;
+
   }
   .hr{
-    background: gray;
+    background: #d3d3d3;
     height: 1px;
     margin-bottom: 10px;
   }

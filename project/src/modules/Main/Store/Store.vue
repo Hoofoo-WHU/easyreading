@@ -120,7 +120,7 @@ export default {
       this.replace('bookRankList')
     },
     toBookDetail () {
-      this.replace('bookDetail')
+      this.replace('detail')
     }
   }
 }

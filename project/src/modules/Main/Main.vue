@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-<!--     <navigation-bar @tap="scrollTop" :title="router">
-  <navigation-bar-item @tap="detail" slot="left" text="读书" icon="back"/>
-  <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/> -->
-  </navigation-bar>
+    <navigation-bar @tap="scrollTop" :title="router">
+      <navigation-bar-item @tap="read" slot="left" text="读书" icon="back"/>
+      <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
+    </navigation-bar>
     <router-wrapper class="view">
       <keep-alive>
         <!-- <transition name='slide-fade'> -->
@@ -11,7 +11,7 @@
         <!-- </transition> -->
       </keep-alive>
     </router-wrapper>
-    <bottom-bar style="z-index:1">
+    <bottom-bar>
       <bottom-bar-item @tap="replace('shelf')" text="书架" icon="shelf" :active="router === 'shelf'"/>
       <bottom-bar-item @tap="replace('store')" text="书城" icon="store" :active="router === 'store'"/>
       <bottom-bar-item @tap="replace('search')" text="搜索" icon="search" :active="router === 'search'"/>
@@ -76,9 +76,6 @@ export default {
       //   this.$statusBar.show()
       // }
     },
-    detail () {
-      this.to('detail')
-    },
     login () {
       this.replace('login')
     }
@@ -97,7 +94,6 @@ export default {
     document.addEventListener('backbutton', function () {
       navigator.app.exitApp()
     }, false)
-    this.$store.commit('init')
   }
 }
 </script>

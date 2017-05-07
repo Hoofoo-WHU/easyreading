@@ -6,17 +6,9 @@
     </navigation-bar>
     <scroller class="scroller" ref="scroller" style="flex-grow:1" >
       <div class="shelf">
-        <touch v-for="item in books" class="book" @tap="clickAll(item.id)">
-           <!--  <input type="checkbox" :id="item.id" :value="item.id" v-model="checked" class="check" v-if="!edit" @click.prevent>   -->
-          <!-- <img :src="item.cover" alt="" width="100%" for="item.id">
-          <div>{{item.title}}</div>
-          <div v-if="isUpdate" class="status">XXX未读</div>
-          <div v-else class="update">●有更新</div> -->
-          <book :cover="item.cover" :title="item.title" :isUpdate="isUpdate"/>
+        <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id">
+          <book :cover="item.cover" :title="item.title" :isUpdate="isUpdate" :isEdit="item.isEdit" :edit="edit"/>
         </touch>
-       <!--  <touch class="book" @tap="add">
-            <img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2891742048,3830076574&fm=58" width="100%">
-        </touch> -->
       </div>
     </scroller>
     <transition name="trans">
@@ -76,38 +68,35 @@ export default {
     },
     finish () {
       this.edit = !this.edit
-      this.checked = []
+      for (var i = this.books.length - 1; i >= 0; i--) {
+        this.books[i].isEdit = false
+      }
       this.isAll = true
     },
-    clickAll (id) {
+    check (index) {
       if (this.edit === false) {
-        if (this.checked.filter(function (bid) {
-          return id === bid
-        }).length !== 0) {
-          this.checked = this.checked.filter(function (bid) {
-            return bid !== id
-          })
-        } else {
-          this.checked.push(id)
-        }
+        this.books[index].isEdit = !this.books[index].isEdit
       } else {
-        this.$router.push({name: 'detail', params: {id: id}})
+        this.$router.push({name: 'detail', params: {id: this.books[index].id}})
       }
     },
     all () {
-      this.checked = []
       for (var i = this.books.length - 1; i >= 0; i--) {
-        this.checked.push(this.books[i].id)
+        this.books[i].isEdit = true
       }
       this.isAll = !this.isAll
     },
     cancel () {
-      this.checked = []
+      for (var i = this.books.length - 1; i >= 0; i--) {
+        this.books[i].isEdit = false
+      }
       this.isAll = !this.isAll
     },
     remove () {
-      for (var i = this.checked.length - 1; i >= 0; i--) {
-        this.$store.commit('remove', this.checked[i])
+      for (var i = this.books.length - 1; i >= 0; i--) {
+        if (this.books[i].isEdit) {
+          this.$store.commit('remove', this.books[i].id)
+        }
       }
     },
     add () {
@@ -137,46 +126,6 @@ export default {
     padding-right: 5%;
     position: relative;
   }
-/*  .status{
-    text-align: right;
-    transform: scale(0.8);
-    color: orange;
-  }
-  .update{
-    text-align: right;
-    transform: scale(0.8);
-    color: green;
-  }*/
-  .check{
-    position: absolute;
-    visibility: hidden;
-  }
-  input[type=checkbox]:before{
-    display: inline-block;  
-    position: absolute;
-    top: 80px;
-    left: 55px;
-    content:' ';  
-    visibility: visible;  
-    height: 2em;  
-    width: 2em;  
-    display: block;  
-    background: url("./svg/unchecked.svg") no-repeat;  
-    background-size: 2em 2em;  
-}  
-  input[type=checkbox]:checked:before{
-    display: inline-block;  
-    position: absolute;
-    top: 80px;
-    left: 55px;
-    content:' ';  
-    visibility: visible;  
-    height: 2em;  
-    width: 2em;  
-    display: block;  
-    background: url("./svg/checked.svg") no-repeat;  
-    background-size: 2em 2em;
-}  
   .bottom{
     position: absolute;
     bottom: -49px;

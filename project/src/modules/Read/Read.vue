@@ -43,7 +43,10 @@
       <bottom-bar-item icon="light"/>
       <bottom-bar-item icon="font"/>
     </bottom-bar>
-    <action-sheet v-if="showmore" @cancel="showmore = false">
+    <action-sheet :show="showmore" @cancel="showmore = false">
+      <action-sheet-content><button-item class="buttonItem">加入书架</button-item></action-sheet-content>
+      <action-sheet-content><button-item class="buttonItem">书籍详情</button-item></action-sheet-content>
+      <action-sheet-content><button-item class="buttonItem">测试</button-item></action-sheet-content>
     </action-sheet>
     <div class="text" style="display: none">
       <p>“秋是一个歌，但是‘桂花蒸’的夜，像在厨里吹的箫调，白天像小孩子唱的歌，又热又熟又清又湿。”</p>
@@ -293,7 +296,8 @@
 <script>
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
-import ActionSheet from '@/components/ActionSheet'
+import {ActionSheet, ActionSheetContent} from '@/components/ActionSheet'
+import ButtonItem from '@/components/ButtonItem'
 import Page from './Page'
 import Paging from './lib/page.js'
 import bounce from './lib/bounce.js'
@@ -305,7 +309,9 @@ export default {
     BottomBar,
     BottomBarItem,
     Page,
-    ActionSheet
+    ActionSheet,
+    ActionSheetContent,
+    ButtonItem
   },
   data () {
     return {
@@ -407,10 +413,10 @@ export default {
     },
     panHorizontal (e) {
       if (!this.taging) {
-        if (this.page > 0 && this.page < this.pages.length - 1) {
-          this.pandistance = e.deltaX - this.fixdistance
-        } else {
+        if ((this.page <= 0 && e.deltaX > 0) || (this.page >= this.pages.length - 1 && e.deltaX < 0)) {
           this.pandistance = bounce(e.deltaX - this.fixdistance)
+        } else {
+          this.pandistance = e.deltaX - this.fixdistance
         }
       }
     },
@@ -564,6 +570,9 @@ export default {
   }
   .noindent>:first-child{
     text-indent: 0em;
+  }
+  .buttonItem{
+    height: 53px;
   }
   // .pageContentWrapper p {
   //   -webkit-margin-before: 0.5em;

@@ -1,3 +1,7 @@
 import ActionSheet from './ActionSheet.vue'
+import ActionSheetContent from './ActionSheetContent.vue'
 
-export default ActionSheet
+export {
+  ActionSheet,
+  ActionSheetContent
+}

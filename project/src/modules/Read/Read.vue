@@ -1,14 +1,39 @@
 <template>
-  <div id="read">
+  <div class="read">
     <navigation-bar title="读书" class="navigation" :show="show">
-      <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
+      <navigation-bar-item slot="left" icon="back" text="返回" @tap="back" :disable="showmore"/>
+      <navigation-bar-item slot="right" icon="shop" @tap="more" :disable="showmore"/>
+      <navigation-bar-item slot="right" icon="more" @tap="more" :disable="showmore"/>
     </navigation-bar>
-    <touch class="content" @tap="tap" @panstart="panstart" @panend="panend">
-      <page :tag="tag" chapter="第几回 啦啦啦啦啦你是卖报的小行家" @tag="tag=true" @untag="tag=false">
-        <div id="pageContentWrapper" style="width: 100%;">
-          <div id="buffer" style="height: 0; overflow: scroll"></div>
-          <div style="width: 100%; height: 100%;" id="pageContent">
+    <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal' }" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
+      <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page - 1].chapter" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+        <transition name="fade" appear>
+          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+            <div :class="{noindent: !pages[page - 1].start}">
+              <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+            </div>
           </div>
+        </transition>
+      </page>
+      <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page + 1].chapter" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+        <transition name="fade" appear>
+          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+            <div :class="{noindent: !pages[page + 1].start}">
+              <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+            </div>
+          </div>
+        </transition>
+      </page>
+      <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page] ? pages[page].chapter : ''" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+          <div style="height: 0; overflow: hidden">
+            <div class="buffer" style="visibility: hidden"></div>
+          </div>
+          <transition name="fade" appear>
+            <div v-if="pages[page]" :class="{noindent: !pages[page].start}">
+              <p v-for="(parts, index) in pages[page].data">{{parts}}<span v-if="!pages[page].end && index + 1 === pages[page].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+            </div>
+          </transition>
         </div>
       </page>
     </touch>
@@ -18,8 +43,12 @@
       <bottom-bar-item icon="light"/>
       <bottom-bar-item icon="font"/>
     </bottom-bar>
-    
-    <div id="text" style="display: none">
+    <action-sheet :show="showmore" @cancel="showmore = false">
+      <action-sheet-content><button-item class="buttonItem">加入书架</button-item></action-sheet-content>
+      <action-sheet-content><button-item class="buttonItem">书籍详情</button-item></action-sheet-content>
+      <action-sheet-content><button-item class="buttonItem">测试</button-item></action-sheet-content>
+    </action-sheet>
+    <div class="text" style="display: none">
       <p>“秋是一个歌，但是‘桂花蒸’的夜，像在厨里吹的箫调，白天像小孩子唱的歌，又热又熟又清又湿。”</p>
 
       <p>——炎樱丁阿小手牵着儿子百顺，一层一层楼爬上来。高楼的后阳台上望出去，城市成了旷野，苍苍的无数的红的灰的屋脊，都是些后院子，后窗，后巷堂，连天也背过脸去了，无面目的阴阴的一片，过了八月节还这么热，也不知它是什么心思。</p>
@@ -267,7 +296,11 @@
 <script>
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
+import {ActionSheet, ActionSheetContent} from '@/components/ActionSheet'
+import ButtonItem from '@/components/ButtonItem'
 import Page from './Page'
+import Paging from './lib/page.js'
+import bounce from './lib/bounce.js'
 export default {
   name: 'read',
   components: {
@@ -275,14 +308,20 @@ export default {
     NavigationBarItem,
     BottomBar,
     BottomBarItem,
-    Page
+    Page,
+    ActionSheet,
+    ActionSheetContent,
+    ButtonItem
   },
   data () {
     return {
       show: false,
-      tag: false,
       pages: [],
-      page: 0
+      page: 0,
+      finish: false,
+      pandistance: 0,
+      paning: false,
+      showmore: false
     }
   },
   watch: {
@@ -292,7 +331,11 @@ export default {
   },
   methods: {
     back () {
-      this.$router.go(-1)
+      this.$router.back()
+    },
+    more () {
+      console.log('moretap')
+      this.showmore = true
     },
     tap (e) {
       var width = window.innerWidth
@@ -311,7 +354,7 @@ export default {
     },
     refreshStatusBar () {
       // console.log(this.show)
-      if (this.$statusBar) {
+      if (this.$statusBar && this.$platform === 'ios') {
         if (!this.show) {
           this.$statusBar.hide()
         } else {
@@ -322,140 +365,160 @@ export default {
     prev () {
       // this.tag = true
       console.log('to prev page')
-      document.getElementById('pageContent').innerHTML = ''
-      document.getElementById('pageContent').appendChild(this.pages[--this.page])
+      if (this.pandistance < 0) {
+        this.page++
+      }
+      if (this.pandistance > 0) {
+        this.page--
+      }
+      this.paning = true
+      this.pandistance = 0
+      setTimeout(this.swiperight, 50)
+      // if (this.page > 0) {
+      //   this.page--
+      // }
+      // console.log(this.pages[this.page])
     },
     next () {
       // this.tag = false
       console.log('to next page')
-      document.getElementById('pageContent').innerHTML = ''
-      document.getElementById('pageContent').appendChild(this.pages[++this.page])
+      if (this.pandistance < 0) {
+        this.page++
+      }
+      if (this.pandistance > 0) {
+        this.page--
+      }
+      this.paning = true
+      this.pandistance = 0
+      setTimeout(this.swipeleft, 50)
+      // if (this.page + 1 < this.pages.length) {
+      //   this.page++
+      // }
+      // console.log(this.pages[this.page])
     },
     panstart (e) {
-      // console.log('panstart')
-      this.show = false
-      // this.pan.panDirection = null
-      // this.pan.panStart = e.center
-      // this.paning = true
-    },
-    panend () {
-      // this.paning = false
-      // if (this.panDistanceY > 80) {
-      //   this.tag = !this.tag
-      // }
-      // this.panDistanceY = 0
-    },
-    gao: function () {
-      // console.log(this.$el.children)
-      console.log('开始搞事')
-      var childs = document.getElementById('text').getElementsByTagName('p')
-      var length = childs.length
-      var buffer = document.getElementById('buffer')
-      var count = 0
-      var task = []
-      for (let i = 0; i < length; ++i) {
-        task.push(new Promise(function (resolve) {
-          var chars = childs[i].textContent.split('')
-          var p = document.createElement('p')
-          p.setAttribute('part', i)
-          buffer.appendChild(p)
-          var taskj = []
-          for (let j = 0; j < chars.length; j++) {
-            taskj.push(new Promise((resolve) => {
-              var char = document.createElement('span')
-              char.textContent = chars[j]
-              char.setAttribute('index', count)
-              p.appendChild(char)
-              count++
-              resolve()
-            }))
-          }
-          Promise.all(taskj).then(() => {
-            resolve()
-          })
-          // console.log(1)
-        }))
-      }
-      // var pages = document.getElementById('pages')
-      // pages.innerHTML = ''
-      this.pages = []
-      Promise.all(task).then(() => {
-        var pagecount = 1
-        var pageHeight = document.getElementById('pageContentWrapper').offsetHeight
-        console.log(pageHeight)
-        var pageBottom = buffer.offsetTop + pageHeight
-        console.log(pageBottom)
-        var page = document.createElement('div')
-        page.setAttribute('index', pagecount)
-        var parts = buffer.getElementsByTagName('p')
-        var task2 = []
-        for (let i = 0; i <= parts.length; i++) {
-          task2.push(new Promise((resolve) => {
-            if (i === parts.length) {
-              this.pages.push(page)
-              resolve()
-            }
-            // console.log(parts[i])
-            var chars = parts[i].getElementsByTagName('span')
-            var part = document.createElement('p')
-            part.setAttribute('index', i)
-            var taskj = []
-            for (let j = 0; j <= chars.length; j++) {
-              // console.log(chars[j].offsetTop + chars[j].offsetHeight)
-              taskj.push(new Promise((resolve) => {
-                if (j === chars.length) {
-                  page.appendChild(part)
-                  resolve()
-                }
-                if (chars[j].offsetTop + chars[j].offsetHeight > pageBottom) {
-                // console.log('分页')
-                  pageBottom = chars[j].offsetTop + pageHeight
-                  if (part.getElementsByTagName('span').length !== 0) {
-                    // console.log(j+','+chars.length+','+test)
-                    page.appendChild(part)
-                    part = document.createElement('p')
-                    part.setAttribute('index', i)
-                    part.style.textIndent = '0'
-                  }
-                  this.pages.push(page)
-                  // console.log(1)
-                  page = document.createElement('div')
-                  page.setAttribute('index', ++pagecount)
-                }
-                // test = chars[j].cloneNode(true)
-                part.appendChild(chars[j].cloneNode(true))
-                resolve()
-              }))
-              // console.log(chars[j].textContent)
-            }
-            // console.log(part.getElementsByTagName('span').length)
-            Promise.all(taskj).then(() => {
-              resolve()
-            })
-          }))
+      if (!this.taging) {
+        this.show = false
+        this.paning = true
+        // this.panStart =
+        if (this.pandistance < 0) {
+          this.page++
         }
-        Promise.all(task2).then(() => {
-          buffer.innerHTML = ''
-          // alert(this.pages.length)
-          // alert('分页完毕')
-          document.getElementById('pageContent').appendChild(this.pages[0])
-          this.page = 0
-          console.log(this.pages.length)
-        })
+        if (this.pandistance > 0) {
+          this.page--
+        }
+        this.pandistance = 0
+        this.fixdistance = e.deltaX
+      }
+    },
+    panHorizontal (e) {
+      if (!this.taging) {
+        if ((this.page <= 0 && e.deltaX > 0) || (this.page >= this.pages.length - 1 && e.deltaX < 0)) {
+          this.pandistance = bounce(e.deltaX - this.fixdistance)
+        } else {
+          this.pandistance = e.deltaX - this.fixdistance
+        }
+      }
+    },
+    panend (e) {
+      if (!this.taging) {
+        var width = window.innerWidth
+        // console.log(e.deltaX - this.fixdistance - this.pandistance)
+        // console.log(new Date().getTime() - this.pantime)
+        if (this.pandistance < -width * 0.5 && this.page + 1 < this.pages.length) {
+          this.pandistance = -width
+        } else if (this.pandistance > width * 0.5 && this.page > 0) {
+          this.pandistance = width
+        } else {
+          this.pandistance = 0
+        }
+        this.paning = false
+      }
+    },
+    swiperight () {
+      // console.log('swiperight')
+      this.paning = false
+      // this.paning = true
+      // if (this.pandistance < 0) {
+      //   this.page++
+      // }
+      // if (this.pandistance > 0) {
+      //   this.page--
+      // }
+      // this.paning = false
+      if (this.page > 0) {
+        var width = window.innerWidth
+        this.pandistance = width
+      }
+    },
+    swipeleft () {
+      // console.log('swipeleft')
+      // if (this.pandistance < 0) {
+      //   this.page++
+      // }
+      // if (this.pandistance > 0) {
+      //   this.page--
+      // }
+      // this.paning = false
+      this.paning = false
+      if (this.page + 1 < this.pages.length) {
+        var width = window.innerWidth
+        this.pandistance = -width
+      }
+    },
+    tagstart () {
+      this.show = false
+      this.taging = true
+    },
+    tagend () {
+      this.taging = false
+    },
+    getData: function () {
+      var dataElement = this.$el.getElementsByClassName('text')[0].getElementsByTagName('p')
+      var data = []
+      Array.prototype.forEach.call(dataElement, function (value) {
+        data.push(value.textContent)
       })
-      // console.log(document.getElementById())
-      // var test = new splitInLines(this.$el)
+      return data
+    },
+    paging: function () {
+      // var buffer = this.$el.getElementByClassName()
+      var buffer = this.$el.getElementsByClassName('buffer')[0]
+      var height = this.$el.getElementsByClassName('pageContent')[0].offsetHeight
+      var data = this.getData()
+      var paging = new Paging()
+      console.log(data.length)
+      console.log(this.$el.getElementsByClassName('text')[0].textContent.length)
+      this.$el.getElementsByClassName('text')[0]
+      paging.on('start', () => {
+        this.startTime = new Date().getTime()
+      })
+      paging.on('finish', () => {
+        this.finish = true
+        console.log(new Date().getTime() - this.startTime)
+      })
+      paging.on('page', (page) => {
+        this.pages.push(page)
+        if (this.pages.length > this.page + 2) {
+          this.finish = true
+        }
+      })
+      buffer.innerHTML = ''
+      paging.start(buffer, height, data, '第一章')
     }
   },
   activated () {
+    this.show = false
     this.refreshStatusBar()
-    this.gao()
+  },
+  mounted () {
+    this.paging()
   }
 }
 </script>
 
-<style lang="stylus">
-#read {
+<style lang="stylus" scoped>
+.read {
   position: absolute;
   top: 0;
   left: 0;
@@ -477,9 +540,17 @@ export default {
   .content{
     flex: 1;
     display: flex;
+    .prev{
+      left: -100%;
+      right: 100%;
+    }
+    .next{
+      left: 100%;
+      right: -100%;
+    }
   }
   .trans{   
-    transition: transform .3s cubic-bezier(.3,.5,.29,.99);
+    transition: transform .4s cubic-bezier(.3,.5,.29,.99);
   }
   .bottomBar{
     position: absolute;
@@ -490,19 +561,32 @@ export default {
       transform: translateY(0)
     }
   }
-  #pageContentWrapper{
+  .pageContentWrapper{
     text-indent: 2em;
     text-align: justify;
-    line-height: 1.7em;
-    font-size: 17px;
+    line-height: 1.8em;
+    font-size: 16px;
+    font-family: serif;
   }
-  #pageContentWrapper p {
-    -webkit-margin-before: 0em;
-    -webkit-margin-after: 0em;
+  .noindent>:first-child{
+    text-indent: 0em;
   }
-  // #pageContent p:first-child{
+  .buttonItem{
+    height: 53px;
+  }
+  // .pageContentWrapper p {
+  //   -webkit-margin-before: 0.5em;
+  //   -webkit-margin-after: 0.5em;
+  // }
+  // .pageContent p:first-child{
   //   -webkit-margin-before: 0em;
   // }
-  ::-webkit-scrollbar{width:0px;}
+  // ::-webkit-scrollbar{width:0px;}
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="nav-bar-item" :class="{'right-icon': rightIcon, disable: disable}" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
-    <icon class="icon" v-if="icon" :name="icon"></icon>
-    <span>{{text}}</span>
+    <icon class="icon" v-if="icon" :name="icon" :only="!text"></icon>
+    <span v-if="text">{{text}}</span>
   </div>
 </template>
 
@@ -18,7 +18,7 @@ export default {
     icon: String,
     text: {
       type: String,
-      default: 'navigation-bar-item'
+      default: ''
     },
     rightIcon: {
       type: Boolean,
@@ -62,6 +62,10 @@ export default {
   .icon{
     width: 25px;
     height: 25px;
+    &[only]{
+      width: 39px;
+      height: 25px;
+    }
   }
   .right-icon{
     flex-direction: row-reverse;

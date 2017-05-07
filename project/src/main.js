@@ -13,7 +13,10 @@ var VueTouch = require('vue-touch')
 Vue.use(VueTouch, {name: 'touch'})
 
 var axios = require('axios')
-Vue.prototype.$http = axios
+Vue.prototype.$http = axios.create({
+  baseURL: 'http://oott.me',
+  timeout: 1000
+})
 axios.interceptors.request.use(
   config => {
     if (store.state.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
@@ -40,7 +43,7 @@ document.addEventListener('deviceready', () => {
   if (window.cordova.platformId === 'android') {
     window.LightStatusBar.isSupported(function (success) {
       if (success) {
-        window.LightStatusBar.setStatusBarColor('#00000000')
+        window.LightStatusBar.setStatusBarColor('#ffffffff')
       }
     })
   }

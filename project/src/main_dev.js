@@ -11,7 +11,10 @@ import router from './router'
 import store from './store'
 
 var axios = require('axios')
-Vue.prototype.$http = axios
+Vue.prototype.$http = axios.create({
+  baseURL: 'http://oott.me',
+  timeout: 1000
+})
 axios.interceptors.request.use(
   config => {
     if (store.state.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token

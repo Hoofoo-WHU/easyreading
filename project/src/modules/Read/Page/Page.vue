@@ -1,16 +1,20 @@
 <template>
   <touch class="page" @panstart="panstart" @panend="panend" :pan-options="{ direction: 'vertical' }" @panmove="panVertival">
     <div style="height: 100%; width: 100%; position: relative">
-      <transition name="remove" @before-leave="removing=true" @after-leave="removing=false">
+      <transition name="remove" @before-leave="removing=true" @after-leave="tagend">
         <div v-if="paning" class="pull-tag" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}">{{tagMessage}}</div>
       </transition>
       <span  class="pull-tag-icon" :tag="tag" :active="activePull && !tag" :noactive="activePull && tag" :class="{trans: removing}" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}"><icon name="tag"></icon></span>
       <div class="content-wrapper" :class="{trans: !paning}" :style="{transform: 'translateY(' + pullDistance + 'px) translateZ(0)'}">
-        <span class="chapter">{{chapter}}</span>
+        <transition name="fade" appear>
+          <span v-if="chapter" class="chapter">{{chapter}}</span>
+        </transition>
         <div class="pageContent">
           <slot></slot>
         </div>
-        <span class="pageIndex">{{page}}</span>
+        <transition name="fade" appear>
+          <span v-if="page" class="pageIndex">{{page}}</span>
+        </transition>
       </div>
     </div>
   </touch>
@@ -18,6 +22,7 @@
 
 <script>
 import Icon from '@/components/Icon'
+import bounce from '../lib/bounce.js'
 export default {
   name: 'page',
   components: {
@@ -67,18 +72,15 @@ export default {
         // console.log('panstart')
         // e.srcEvent.stopImmediatePropagation()
         this.paning = true
+        this.distancefix = e.deltaY
         this.$emit('tagstart')
       }
     },
     panVertival (e) {
       if (this.canPullTag && !this.removing && this.paning) {
         e.srcEvent.stopImmediatePropagation()
-        const distance = e.deltaY > 0 ? e.deltaY : 0
-        // console.log(distance / 2)
-        // console.log(distance)
-        var a = 1.005
-        var b = 0.6
-        this.pullDistance = ~~(-1 / (b * Math.pow(a, b * distance) * Math.log(a)) + 1 / Math.log(a) / b) / 2
+        const distance = e.deltaY - this.distancefix > 0 ? e.deltaY - this.distancefix : 0
+        this.pullDistance = bounce(distance)
       }
     },
     panend (e) {
@@ -94,6 +96,10 @@ export default {
         this.pullDistance = 0
         this.paning = false
       }
+    },
+    tagend () {
+      this.removing = false
+      this.$emit('tagend')
     }
   }
 }
@@ -182,5 +188,11 @@ export default {
 .remove-leave-active {
   transform: translateY(0) !important;
   transition: transform .4s cubic-bezier(.3,.5,.29,.99);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
 }
 </style>

@@ -1,6 +1,10 @@
 <template>
-  <router-content>
-    <scroller style="flex:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
+  <router-content style="flex-direction: column;">
+    <navigation-bar title="测试">
+      <navigation-bar-item @tap="read" slot="left" text="读书" icon="back"/>
+      <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
+    </navigation-bar>
+    <scroller style="flex-grow:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
       <touch v-for="(item, index) in items" :key="item.index"
           class="row" :class="{'grey-bg': index % 2 == 0}" @tap="onItemClick({index:index})">
         {{ item }}
@@ -12,11 +16,14 @@
 <script>
   import Scroller from '@/components/Scroller'
   import RouterContent from '@/components/RouterContent'
+  import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
   export default {
     name: 'test',
     components: {
       Scroller,
-      RouterContent
+      RouterContent,
+      NavigationBarItem,
+      NavigationBar
     },
     data () {
       return {
@@ -60,6 +67,26 @@
           }
           over(noMore)
         }, 2000)
+      },
+      read () {
+        console.log('Tap read')
+        this.to('read')
+        // alert(this.$statusBar.isVisible)
+        // if (this.$statusBar.isVisible) {
+        //   // alert('111111')
+        //   this.$statusBar.hide()
+        // } else {
+        //   // alert('2222222')
+        //   this.$statusBar.show()
+        // }
+      },
+      login () {
+        this.to('login')
+      },
+      to: function (name) {
+        // console.log(params.name)
+        this.$router.push({'name': name})
+        // console.log(this.activeMoudle)
       }
     }
   }

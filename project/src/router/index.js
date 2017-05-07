@@ -4,6 +4,20 @@ import modules from '@/modules'
 
 Vue.use(Router)
 
+Router.prototype.go = function (n) {
+  if (n < 0) {
+    this.isBack = true
+  } else {
+    this.isBack = false
+  }
+  this.history.go(n)
+}
+
+Router.prototype.push = function (location, onComplete, onAbort) {
+  this.isBack = false
+  this.history.push(location, onComplete, onAbort)
+}
+
 function getRoutes (el) {
   var component = el.module || el
   if (!component.name) {

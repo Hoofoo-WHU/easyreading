@@ -1,7 +1,10 @@
 <template>
   <touch class="bottom-bar-item" :class="{active: active, disable: disable}" @tap="tap">
-    <icon class="icon" v-if="icon" :class="{only: !text}" :name="icon"></icon>
-    <div class="text" :class="{only: !icon}" v-if="text">{{ text }}</div>
+      <span class="icon" v-if="icon" :class="{only: !text, badge: badge}">
+        <icon :name="icon"></icon>
+      </span>
+      <div class="text" :class="{only: !icon, badge: badge}" v-if="text">{{ text }}</div>
+    </div>
   </touch>
 </template>
 
@@ -23,6 +26,10 @@ export default {
     disable: {
       type: Boolean,
       default: false
+    },
+    badge: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -30,7 +37,6 @@ export default {
   },
   data () {
     return {
-
     }
   },
   methods: {
@@ -60,10 +66,17 @@ export default {
     left: 50%;
     transform: translate(-50%, -18px);
     &[class*=only]{
-      position: static;
-      transform: translate(0, 0);
-      flex: 1;
-      align-self: center;
+      transform: translate(-50%, -50%);
+    }
+    &[class*=badge]:before{
+      content: '';
+      width: 8px;
+      height: 8px;
+      position: absolute;
+      top: 0;
+      right: -4px;
+      border-radius: 50%;
+      background-color: #fe3824;
     }
   }
   .text{
@@ -73,12 +86,18 @@ export default {
     left: 50%;
     transform: translate(-50%, 8px);
     &[class*=only]{
-      position: static;
-      text-align: center;
-      transform: translate(0, 0);
-      flex: 1;
-      align-self: center;
+      transform: translate(-50%, -50%);
       font-size: 17px;
+      &[class*=badge]:before{
+        content: '';
+        width: 8px;
+        height: 8px;
+        position: absolute;
+        top: 0;
+        right: -4px;
+        border-radius: 50%;
+        background-color: #fe3824;
+      }
     }
   }
 }
@@ -88,5 +107,8 @@ export default {
 .disable{
   pointer-events: none;
   color: #c7c7cc;
+  // .badge{
+  //   background-color: rgb(143, 140, 146);
+  // }
 }
 </style>

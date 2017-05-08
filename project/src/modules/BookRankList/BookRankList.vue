@@ -18,17 +18,12 @@
                     <div class="book-info">
                         <p>{{ book.name }}</p>
                         <div class="operate">
-                            <label class="addFavor">
-                                <input type="checkbox" v-model="favorList" :value="book.id">
-                                <icon class="icon" v-if="isFavor(book.id)" name="favor"></icon>
-                                <icon class="icon" v-else name="unfavor"></icon>
-                            </label>
-                            <label class="addCart">
-                                <input type="checkbox" v-model="buyList" :value="book.id">
-                                <icon name="addCart"></icon>
-                            </label>
-
-
+                            <div class="addShelf">
+                                <icon class="icon" :name="'addShelf'"></icon>
+                            </div>
+                            <div class="addCart">
+                                <icon :name="'addCart'"></icon>
+                            </div>
                         </div>
                     </div>
                     <div class="book-price">
@@ -107,10 +102,11 @@ export default {
             .rank-icon {
                 width: 7%;
                 font-size: 20px;
+                margin: 12px;
             }
             .book-img {
                 img {
-                    width: 55%;
+                    width: 58%;
                 }
             }
             .book-info{
@@ -118,19 +114,15 @@ export default {
                 flex-grow: 2;
                 .operate {
                     display: flex;
-                    justify-content: flex-start
-                    .addFavor {
+                    justify-content: space-between;
+                    margin: 15px 0;
+                    width: 35%;
+                    .addShelf {
                         margin-right: 5px
-                        width: 7%
-                        input {
-                            display: none;
-                        }
+                        width: 18px
                     }
                     .addCart {
-                        width: 7%
-                        input {
-                            display: none;
-                        }
+                        width: 18px
                     }
                 }
             }

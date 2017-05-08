@@ -1,15 +1,15 @@
 <template>
   <router-content>
-    <scroller class="scroller" ref="scroller">
+    <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
       <slider></slider>
+      <container :title="'分类'"></container>
       <div class="category">
-          <div class="section-title">
-              分类
-          </div>
           <div class="section-content">
               <div class="type" v-for="icon in categoryIcon">
                 <touch @tap="toBookCategoryList(icon.id)">
-                  <icon class="icon" :name="icon.name"></icon>
+                  <div class="icon-border">
+                      <icon class="icon" :name="icon.name"></icon>
+                  </div>
                   <span> {{ icon.text }} </span>
                 </touch>
               </div>
@@ -17,19 +17,16 @@
       </div>
 
       <!--排行榜-->
+      <container :title="'排行榜'"></container>
       <div class="rank-list">
-          <div class="section-title">
-              <p>排行榜</p>
-
-          </div>
           <div class="section-content">
               <ul class="book-show" >
-                 <li v-for="book in mockData">
-                        <touch @tap="toBookDetail(book.id)">
-                         <img :src=" book.img " alt="">
-                        </touch>
-                     <p>{{ book.name }}</p>
-                 </li>
+                  <touch v-for="book in mockData" track-by="book.id" @tap="toBookDetail(book.id)">
+                  <li>
+                      <img :src=" book.img " alt="">
+                      <p>{{ book.name }}</p>
+                  </li>
+                </touch>
               </ul>
 
               <div class="more">
@@ -44,16 +41,24 @@
       </div>
 
       <!--个性化推荐-->
+      <container :title="'个性推荐'"></container>
       <div class="per-recommand">
-          <div class="section-title">
-              <p>个性化推荐</p>
-          </div>
           <div class="section-content">
               <ul class="book-show" >
-                 <li v-for="book in mockData" track-by="book.id" @click="messageShow=!messageShow">
-                     <img :src=" book.img " alt="">
-                     <p>{{ book.name }}</p>
-                 </li>
+                  <touch  class="book-border" v-for="book in mockData" @tap="toBookDetail(book.id)">
+                  <li>
+                      <div class="book-img">
+                          <img :src=" book.img " :alt=" book.name ">
+                      </div>
+                      <div class="book-info">
+                          <p>{{ book.name }}</p>
+                      </div>
+                      <div class="book-price">
+                          ￥ {{ book.price }}
+                      </div>
+                  </li>
+                  </touch>
+
               </ul>
 
           </div>
@@ -72,6 +77,7 @@ import Icon from '@/components/Icon'
 import Slider from '@/components/Slider'
 import Modal from '@/components/Modal'
 import Message from '@/components/Message'
+import Container from '@/components/Container'
 
 export default {
   name: 'store',
@@ -104,11 +110,12 @@ export default {
     Icon,
     Slider,
     Modal,
-    Message
+    Message,
+    Container
   },
   methods: {
-    scrollTop () {
-      this.$refs.scroller.scrollTop()
+    loadMore (over) {
+      setTimeout(over, 3000)
     },
     replace (name, id) {
       this.$router.push({'name': name, params: {'typeId': id}})
@@ -128,34 +135,32 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-.scroller{
-  flex: 1
-}
-.section-title {
-    text-align: left
-    font-size: 14px
-    margin: 5px 5px 0 10px;
-
-}
 .category {
-    border-bottom: 1px #d3d3d3 solid
     .section-content {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-end;
         height: 70%
         .type {
-            width: 20%;
-            height: 40px;
+            width: 25%;
             font-size: 10px;
-            border-radius: 20px;
-            border: 1px #d3d3d3 solid;
             text-align: center;
             line-height: 40px;
-            margin: 10px;
+            box-sizing: border-box;
+            .icon-border {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: 1px #d3d3d3 solid;
+                position: relative;
+                margin: 0 auto;
+            }
             .icon {
-                width: 26%;
-                height: 60%;
+                position: absolute;
+                top: 50%;
+                left: 50%
+                transform: translate(-50%, -50%);
+                width: 75%;
             }
             span {
                 vertical-align: super;
@@ -164,18 +169,31 @@ export default {
     }
 }
 .rank-list {
-    border-bottom: 1px #d3d3d3 solid
-    .section-title {
-        p {
-            margin: 0;
-        }
-    }
     .section-content {
-        height: 90%
-        display: flex;
-        flex-direction: column
-        justify-content: space-between;
-        align-items: center
+        height: 70%;
+        .book-show {
+            list-style: none;
+            height: 70%;
+            margin: 0;
+            padding: 0;
+            display: flex
+            justify-content: space-around;
+            div {
+                width: 25%;
+                box-sizing: border-box;
+                padding: 10px;
+                li {
+                    img {
+                        display: block;
+                        width: 100%;
+                    }
+                    p {
+                        font-size: 10px;
+                        text-align: center;
+                    }
+                }
+            }
+        }
         .more {
             width: 30%;
             height: 20px;
@@ -183,44 +201,49 @@ export default {
             border-radius: 50px;
             text-align: center;
             font-size: 10px;
-            margin: 0 0 10px 0;
+            margin: 10px auto;
             line-height: 20px;
         }
     }
 }
 .per-recommand {
-    height: 160px;
-    .section-title {
-        p {
-            margin: 0;
-        }
-    }
     .section-content {
-        height: 70%
-        .more {
+        height: 70%;
+        .book-show {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            .book-border {
+                width: 50%;
+                box-sizing: border-box;
+                li {
+                    margin: 0;
+                    padding: 10px;
+                    border-bottom: 1px #d3d3d3 solid;
+                    border-right: 1px #d3d3d3 solid;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    .book-img {
+                        width: 40%;
+                        img {
+                            width: 100%;
+                        }
+                    }
+                    .book-info {
+                        width: 35%;
+                        padding: 0 4px;
+                        font-size: 12px;
+                        flex-grow: 2;
+                    }
+                    .book-price {
+                        font-size: 9px;
+                    }
+                }
+            }
 
         }
     }
 }
-.book-show {
-    list-style: none;
-    height: 70%;
-    margin: 0;
-    padding: 0;
-    display: flex
-    justify-content: space-around;
-    li {
-        padding: 10px 20px 0 20px;
-        width: 25%;
-        height: 100%;
-        img {
-            display: block;
-            width: 100%;
-        }
-        p {
-            font-size: 10px;
-            text-align: center;
-        }
-    }
-}
+
 </style>

@@ -27,12 +27,12 @@
                       <img src="../Detail/png/avatar.png" style="width:100%">
                     </div>
                     <p>{{res.name}}</p>
+                    <div class="time">
+                        {{res.time}}
+                    </div>
                     <div class="texts">
                       <div>
                         {{res.text}}
-                      </div>
-                      <div class="time">
-                          {{res.time}}
                       </div>
                       <div class="longHr"></div>
                     </div>
@@ -151,6 +151,11 @@ export default {
             }
             p {
                 font-size: 12px;
+                width: 60%;
+            }
+            .time {
+                font-size: 11px;
+                color: #706f6f;
             }
         }
     }
@@ -171,10 +176,7 @@ export default {
       flex-direction: column;
       width: 90%;
       font-size: 12px;
-      .time {
-          font-size: 11px;
-          color: #706f6f;
-      }
+
     }
     .res {
         font-size: 10px;

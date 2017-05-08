@@ -3,7 +3,9 @@
   <div id="comment">
     <p class="left">
         <b>评论</b>
-        <span class="add-comment" @click="showComment">我也来评</span>
+        <touch class="add-comment" @tap="addComment">
+            我也来评
+        </touch>
     </p>
     <touch v-for="item in comment" @tap="toCommentDetail">
         <div class="list" >
@@ -28,26 +30,7 @@
     </touch>
 
   </div>
-  <modal v-model="commentModalShow">
-      <div slot="header">
-          评论此书
-      </div>
-      <div class="shop-modal">
-          <div class="point">
-              <p>打分：</p>
-              <div class="star" v-for="star in sort(stars)" @click="mark(star.score)" >
-                  <icon class="icon" name="light-star" v-show="star.light">
-                  </icon>
-                  <icon class="icon" name="dark-star" v-show="!star.light">
-                  </icon>
-              </div>
 
-          </div>
-          <div class="content">
-              <textarea name="name" rows="8"></textarea>
-          </div>
-      </div>
-  </modal>
 </div>
 </template>
 
@@ -68,38 +51,23 @@
     },
     data () {
       return {
-        commentModalShow: false,
-        stars: []
+        commentModalShow: false
       }
     },
     methods: {
-      sort (arr) {
-        return arr.slice().sort((item1, item2) => { return item1.score - item2.score })
-      },
-      showComment () {
-        this.commentModalShow = true
-      },
-      mark (score) {
-        for (let i = 0; i < this.stars.length; i++) {
-          if (this.stars[i].score <= score) {
-            this.stars[i].light = true
-          } else {
-            this.stars[i].light = false
-          }
-        }
+      addComment () {
+        this.$emit('showComment')
       },
       toCommentDetail () {
         this.$router.push({'name': 'commentDetail'})
+      },
+      wakeupKeyboard () {
+        // if (this.$Keyboard) {
+          // this.$Keyboard.show()
+        // }
       }
     },
     mounted () {
-      this.stars = [
-        {score: 1, name: 'star', light: false},
-        {score: 2, name: 'star', light: false},
-        {score: 3, name: 'star', light: false},
-        {score: 4, name: 'star', light: false},
-        {score: 5, name: 'star', light: false}
-      ]
     }
   }
 </script>
@@ -160,18 +128,5 @@
   .left{
     margin-bottom: 1em;
   }
-  .point {
-      display: flex;
-      justify-content: flex-start;
-  }
-  .star {
-      width: 10%;
-  }
-  .content {
-      width: 90%
-      textarea {
-          width: 100%;
-      }
 
-  }
 </style>

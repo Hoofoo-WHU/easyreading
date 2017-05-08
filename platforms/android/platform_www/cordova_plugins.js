@@ -39,6 +39,14 @@ module.exports = [
         "merges": [
             "navigator.app"
         ]
+    },
+    {
+        "id": "cordova-plugin-keyboard.keyboard",
+        "file": "plugins/cordova-plugin-keyboard/www/keyboard.js",
+        "pluginId": "cordova-plugin-keyboard",
+        "clobbers": [
+            "window.Keyboard"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -52,7 +60,8 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.3.2",
     "cordova.custom.plugins.exitapp": "1.0.0",
     "it.innowatio.cordova.ios-fullscreen": "0.3.0",
-    "cordova-plugin-crosswalk-webview": "2.3.0"
+    "cordova-plugin-crosswalk-webview": "2.3.0",
+    "cordova-plugin-keyboard": "1.1.5"
 };
 // BOTTOM OF METADATA
 });

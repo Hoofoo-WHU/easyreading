@@ -5,10 +5,25 @@
       <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
     </navigation-bar>
     <scroller style="flex-grow:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
+      <container>
+        <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
+      </container>
+      <container>
+        <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
+      </container>
+      <container>
+        <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
+      </container>
       <touch v-for="(item, index) in items" :key="item.index"
           class="row" :class="{'grey-bg': index % 2 == 0}" @tap="onItemClick({index:index})">
         {{ item }}
       </touch>
+      <container>
+        <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
+      </container>
+      <container>
+        <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
+      </container>
     </scroller>
   </router-content>
 </template>
@@ -17,13 +32,15 @@
   import Scroller from '@/components/Scroller'
   import RouterContent from '@/components/RouterContent'
   import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
+  import Container from '@/components/Container'
   export default {
     name: 'test',
     components: {
       Scroller,
       RouterContent,
       NavigationBarItem,
-      NavigationBar
+      NavigationBar,
+      Container
     },
     data () {
       return {

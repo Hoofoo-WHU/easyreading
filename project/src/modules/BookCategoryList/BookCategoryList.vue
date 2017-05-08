@@ -3,6 +3,7 @@
         <navigation-bar @tap="" :title="type[typeId-1].name">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
+        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
         <div class="book-category-intro">
             {{ type[typeId-1].intro }}
         </div>
@@ -34,18 +35,21 @@
                 </li>
             </ul>
         </div>
+    </scroller>
     </div>
 </template>
 
 <script>
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import Icon from '@/components/Icon'
+import Scroller from '@/components/Scroller'
 export default {
   name: 'bookCategoryList',
   components: {
     NavigationBar,
     NavigationBarItem,
-    Icon
+    Icon,
+    Scroller
   },
   computed: {
     typeId () {
@@ -90,6 +94,9 @@ export default {
     },
     back () {
       this.$router.go(-1)
+    },
+    loadMore (over) {
+      console.log('loadMore')
     }
   }
 }
@@ -97,7 +104,14 @@ export default {
 
 <style lang="stylus" scoped>
 #book-category {
+    width: 100%;
     background: #efeff4;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    overflow: hidden;
 }
 .book-category-intro {
     text-align: center;

@@ -4,6 +4,7 @@ import Read from './Read'
 import BookCategoryList from './BookCategoryList'
 import BookRankList from './BookRankList'
 import Detail from './Detail'
+import CommentDetail from './CommentDetail'
 
 export default {
   Main,
@@ -11,5 +12,6 @@ export default {
   Read,
   BookCategoryList,
   BookRankList,
-  Detail
+  Detail,
+  CommentDetail
 }

@@ -3,6 +3,7 @@
         <navigation-bar @tap="" title="排行列表">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
+        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
             <ul>
                 <li v-for="book in rank(mockData)" :key="book.rank">
                     <div class="rank-icon" v-if="book.rank === 1">
@@ -35,18 +36,21 @@
                     </div>
                 </li>
             </ul>
+        </scroller>
     </div>
 </template>
 
 <script>
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
+import Scroller from '@/components/Scroller'
 import Icon from '@/components/Icon'
 export default {
   name: 'bookRankList',
   components: {
     NavigationBar,
     NavigationBarItem,
-    Icon
+    Icon,
+    Scroller
   },
   data () {
     return {
@@ -71,6 +75,9 @@ export default {
     },
     back () {
       this.$router.go(-1)
+    },
+    loadMore (over) {
+      console.log('loadMore')
     }
   }
 }
@@ -79,7 +86,14 @@ export default {
 <style lang="stylus" scoped>
 #book-rank-list {
     font-size: 15px;
+    width: 100%;
     background: #efeff4;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    overflow: hidden;
     ul {
         margin: 0;
         padding: 0;

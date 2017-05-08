@@ -5,25 +5,28 @@
         <b>评论</b>
         <span class="add-comment" @click="showComment">我也来评</span>
     </p>
-    <div v-for="item in comment" class="list">
-      <div class="avatar">
-        <img src="../png/avatar.png" style="width:100%">
-      </div>
-      <div class="texts">
-        <div class="textTop">
-          <p class="left"><b>{{item.author}}</b></p>
-          <p class="right"> {{item.time}}</p>
+    <touch v-for="item in comment" @tap="toCommentDetail">
+        <div class="list" >
+          <div class="avatar">
+            <img src="../png/avatar.png" style="width:100%">
+          </div>
+          <div class="texts">
+            <div class="textTop">
+              <p class="left"><b>{{item.author}}</b></p>
+              <p class="right"> {{item.time}}</p>
+            </div>
+            <div>
+              {{item.data}}
+            </div>
+            <div class="res">
+              <icon class="icon" name="res"></icon>
+              <span>{{ item.resNum }} 条回复</span>
+            </div>
+            <div class="longHr"></div>
+          </div>
         </div>
-        <div>
-          {{item.data}}
-        </div>
-        <div class="res">
-          <icon class="icon" name="res"></icon>
-          <span>{{ item.resNum }} 条回复</span>
-        </div>
-        <div class="longHr"></div>
-      </div>
-    </div>
+    </touch>
+
   </div>
   <modal v-model="commentModalShow">
       <div slot="header">
@@ -31,10 +34,17 @@
       </div>
       <div class="shop-modal">
           <div class="point">
-              <icon class="icon" v-for="star in sort(stars)" :name="star.name" @tap="mark(star.score)"></icon>
+              <p>打分：</p>
+              <div class="star" v-for="star in sort(stars)" @click="mark(star.score)" >
+                  <icon class="icon" name="light-star" v-show="star.light">
+                  </icon>
+                  <icon class="icon" name="dark-star" v-show="!star.light">
+                  </icon>
+              </div>
+
           </div>
           <div class="content">
-
+              <textarea name="name" rows="8"></textarea>
           </div>
       </div>
   </modal>
@@ -55,15 +65,6 @@
     components: {
       Icon,
       Modal
-    },
-    computed: {
-      light (star) {
-        if (star.light) {
-          return 'yellow'
-        } else {
-          return 'grey'
-        }
-      }
     },
     data () {
       return {
@@ -86,6 +87,9 @@
             this.stars[i].light = false
           }
         }
+      },
+      toCommentDetail () {
+        this.$router.push({'name': 'commentDetail'})
       }
     },
     mounted () {
@@ -156,13 +160,18 @@
   .left{
     margin-bottom: 1em;
   }
-  .icon {
+  .point {
+      display: flex;
+      justify-content: flex-start;
+  }
+  .star {
       width: 10%;
   }
-  .light-score {
-      color: yellow;
-  }
-  .dark-score {
-      color: grey;
+  .content {
+      width: 90%
+      textarea {
+          width: 100%;
+      }
+
   }
 </style>

@@ -3,41 +3,34 @@
   <div id="comment">
     <p class="left">
         <b>评论</b>
-        <span class="add-comment" @click="showComment">我也来评</span>
+        <touch class="add-comment" @tap="addComment">
+            我也来评
+        </touch>
     </p>
-    <div v-for="item in comment" class="list">
-      <div class="avatar">
-        <img src="../png/avatar.png" style="width:100%">
-      </div>
-      <div class="texts">
-        <div class="textTop">
-          <p class="left"><b>{{item.author}}</b></p>
-          <p class="right"> {{item.time}}</p>
-        </div>
-        <div>
-          {{item.data}}
-        </div>
-        <div class="res">
-          <icon class="icon" name="res"></icon>
-          <span>{{ item.resNum }} 条回复</span>
-        </div>
-        <div class="longHr"></div>
-      </div>
-    </div>
-  </div>
-  <modal v-model="commentModalShow">
-      <div slot="header">
-          评论此书
-      </div>
-      <div class="shop-modal">
-          <div class="point">
-              <icon class="icon" v-for="star in sort(stars)" :name="star.name" @tap="mark(star.score)"></icon>
+    <touch v-for="item in comment" @tap="toCommentDetail">
+        <div class="list" >
+          <div class="avatar">
+            <img src="../png/avatar.png" style="width:100%">
           </div>
-          <div class="content">
+          <div class="texts">
+            <div class="textTop">
+              <p class="left"><b>{{item.author}}</b></p>
+              <p class="right"> {{item.time}}</p>
+            </div>
+            <div>
+              {{item.data}}
+            </div>
+            <div class="res">
+              <icon class="icon" name="res"></icon>
+              <span>{{ item.resNum }} 条回复</span>
+            </div>
+            <div class="longHr"></div>
+          </div>
+        </div>
+    </touch>
 
-          </div>
-      </div>
-  </modal>
+  </div>
+
 </div>
 </template>
 
@@ -56,46 +49,25 @@
       Icon,
       Modal
     },
-    computed: {
-      light (star) {
-        if (star.light) {
-          return 'yellow'
-        } else {
-          return 'grey'
-        }
-      }
-    },
     data () {
       return {
-        commentModalShow: false,
-        stars: []
+        commentModalShow: false
       }
     },
     methods: {
-      sort (arr) {
-        return arr.slice().sort((item1, item2) => { return item1.score - item2.score })
+      addComment () {
+        this.$emit('showComment')
       },
-      showComment () {
-        this.commentModalShow = true
+      toCommentDetail () {
+        this.$router.push({'name': 'commentDetail'})
       },
-      mark (score) {
-        for (let i = 0; i < this.stars.length; i++) {
-          if (this.stars[i].score <= score) {
-            this.stars[i].light = true
-          } else {
-            this.stars[i].light = false
-          }
-        }
+      wakeupKeyboard () {
+        // if (this.$Keyboard) {
+          // this.$Keyboard.show()
+        // }
       }
     },
     mounted () {
-      this.stars = [
-        {score: 1, name: 'star', light: false},
-        {score: 2, name: 'star', light: false},
-        {score: 3, name: 'star', light: false},
-        {score: 4, name: 'star', light: false},
-        {score: 5, name: 'star', light: false}
-      ]
     }
   }
 </script>
@@ -156,13 +128,5 @@
   .left{
     margin-bottom: 1em;
   }
-  .icon {
-      width: 10%;
-  }
-  .light-score {
-      color: yellow;
-  }
-  .dark-score {
-      color: grey;
-  }
+
 </style>

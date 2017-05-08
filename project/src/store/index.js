@@ -3,6 +3,13 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+const myPlugin = store => {
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    let book = localStorage.getItem(localStorage.key(i))
+    book = JSON.parse(book)
+    store.state.books.push(book)
+  }
+}
 export default new Vuex.Store({
   state: {
     // xx: {}
@@ -19,13 +26,6 @@ export default new Vuex.Store({
     // mutation: (state, payload) => {
     //   state.xx = payload.xx
     // }
-    init (state) {
-      for (let i = localStorage.length - 1; i >= 0; i--) {
-        let book = localStorage.getItem(localStorage.key(i))
-        book = JSON.parse(book)
-        state.books.push(book)
-      }
-    },
     add (state, payload) {
       state.books.push(payload)
       localStorage.setItem(payload.id, JSON.stringify(payload))
@@ -49,5 +49,6 @@ export default new Vuex.Store({
   getters: {
     // xx: state => state.needScrollTops
     routing: state => state.routing
-  }
+  },
+  plugins: [myPlugin]
 })

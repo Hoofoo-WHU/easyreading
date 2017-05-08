@@ -132,7 +132,7 @@
         alert('可以')
       },
       add () {
-        var book = {'id': this.info.id, 'title': this.info.title, 'cover': this.info.cover}
+        var book = {'id': this.info.id, 'title': this.info.title, 'cover': this.info.cover, 'isEdit': false}
         this.$store.commit('add', book)
       },
       remove () {

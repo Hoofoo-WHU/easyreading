@@ -1,28 +1,25 @@
 <template>
   <router-content style="flex-direction:column">
     <navigation-bar @tap="scrollTop" title="书架" :sub-title="select">
-      <navigation-bar-item @tap="modify" slot="right" text="编辑" v-if="edit"/>
-      <navigation-bar-item @tap="finish" slot="right" text="完成" v-else/>
+      <navigation-bar-item @tap="modify" slot="right" text="编辑" v-if="edit && !empty"/>
+      <navigation-bar-item @tap="finish" slot="right" text="完成" v-else-if="!edit"/>
     </navigation-bar>
-    <scroller class="scroller" ref="scroller" style="position:relative">
+    <scroller class="scroller" ref="scroller" style="flex-grow:1" >
+      <div v-if="empty" class="default">
+        <icon name="myShelf" class="icon"/>
+        <p class="none">您的书架空空如也，去书城看看吧</p>
+      </div>
       <div class="shelf">
-        <touch v-for="item in books" class="book" @tap="clickAll(item.id)">
-            <input type="checkbox" :id="item.id" :value="item.id" v-model="checked" class="check" v-if="!edit" @click.prevent>
-            <img :src="item.cover" alt="" width="100%" for="item.id">
-          <div>{{item.title}}</div>
-          <div v-if="isUpdate" class="status">XXX未读</div>
-          <div v-else class="update">●有更新</div>
+        <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id">
+          <book :cover="item.cover" :title="item.title" :isUpdate="isUpdate" :isEdit="item.isEdit" :edit="edit"/>
         </touch>
-       <!--  <touch class="book" @tap="add">
-            <img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2891742048,3830076574&fm=58" width="100%">
-        </touch> -->
       </div>
     </scroller>
     <transition name="trans">
       <bottom-bar class="bottom" v-if="!edit">
         <bottom-bar-item text="全选" @tap="all" v-if="isAll"></bottom-bar-item>
         <bottom-bar-item text="取消全选" @tap="cancel" v-else></bottom-bar-item>
-        <bottom-bar-item text="删除" @tap="remove" style="color:red "></bottom-bar-item>
+        <bottom-bar-item text="删除" @tap="remove" style="color:red"></bottom-bar-item>
       </bottom-bar>
     </transition>
   </router-content>
@@ -33,6 +30,8 @@ import Scroller from '@/components/Scroller'
 import RouterContent from '@/components/RouterContent'
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import { BottomBar, BottomBarItem } from '@/components/BottomBar'
+import Book from './components/Book'
+import Icon from '@/components/Icon'
 
 export default {
   name: 'shelf',
@@ -42,7 +41,9 @@ export default {
     Scroller,
     RouterContent,
     NavigationBar,
-    NavigationBarItem
+    NavigationBarItem,
+    Book,
+    Icon
   },
   data () {
     return {
@@ -62,6 +63,12 @@ export default {
       } else {
         return ''
       }
+    },
+    empty () {
+      if (this.books.length === 0) {
+        return true
+      }
+      return false
     }
   },
   methods: {
@@ -73,38 +80,35 @@ export default {
     },
     finish () {
       this.edit = !this.edit
-      this.checked = []
+      for (var i = this.books.length - 1; i >= 0; i--) {
+        this.books[i].isEdit = false
+      }
       this.isAll = true
     },
-    clickAll (id) {
+    check (index) {
       if (this.edit === false) {
-        if (this.checked.filter(function (bid) {
-          return id === bid
-        }).length !== 0) {
-          this.checked = this.checked.filter(function (bid) {
-            return bid !== id
-          })
-        } else {
-          this.checked.push(id)
-        }
+        this.books[index].isEdit = !this.books[index].isEdit
       } else {
-        this.$router.push({name: 'detail', params: {id: id}})
+        this.$router.push({name: 'detail', params: {id: this.books[index].id}})
       }
     },
     all () {
-      this.checked = []
       for (var i = this.books.length - 1; i >= 0; i--) {
-        this.checked.push(this.books[i].id)
+        this.books[i].isEdit = true
       }
       this.isAll = !this.isAll
     },
     cancel () {
-      this.checked = []
+      for (var i = this.books.length - 1; i >= 0; i--) {
+        this.books[i].isEdit = false
+      }
       this.isAll = !this.isAll
     },
     remove () {
-      for (var i = this.checked.length - 1; i >= 0; i--) {
-        this.$store.commit('remove', this.checked[i])
+      for (var i = this.books.length - 1; i >= 0; i--) {
+        if (this.books[i].isEdit) {
+          this.$store.commit('remove', this.books[i].id)
+        }
       }
     },
     add () {
@@ -134,25 +138,6 @@ export default {
     padding-right: 5%;
     position: relative;
   }
-  .status{
-    text-align: right;
-    transform: scale(0.8);
-    color: orange;
-  }
-  .update{
-    text-align: right;
-    transform: scale(0.8);
-    color: green;
-  }
-  .check{
-    border-radius: 100%;
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    top: -8px;
-    right: 5px;
-    opacity: 0.4;
-  }
   .bottom{
     position: absolute;
     bottom: -49px;
@@ -166,5 +151,18 @@ export default {
   }
   .trans-enter, .trans-leave-active{
     transform: translateY(100%);
+  }
+  .default{
+    padding-top: 200px;
+  }
+  .icon{
+    width: 40px;
+    height: 40px;
+    position: relative;
+    left: 140px;
+  }
+  .none{
+    font-size: 0.5em;
+    text-align: center;
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <transition :name="transitionName">
+  <transition :name="transitionName" @before-enter="beforeEnter" @before-leave="beforeLeave" @after-enter="afterEnter" @after-leave="afterLeave">
     <keep-alive>
         <router-view/>
     </keep-alive>
@@ -15,7 +15,8 @@ export default {
   },
   data () {
     return {
-      transitionName: 'push'
+      transitionName: 'push',
+      velocity: require('velocity-animate')
     }
   },
   watch: {
@@ -27,6 +28,24 @@ export default {
       // console.log(toDepth === fromDepth)
       this.transitionName = this.$router.isBack ? 'pop' : 'push'
     }
+  },
+  methods: {
+    beforeEnter: function () {
+      this.$store.commit('routing', true)
+    },
+    beforeLeave: function () {
+      this.$store.commit('routing', true)
+    },
+    afterEnter: function () {
+      this.$store.commit('routing', false)
+    },
+    afterLeave: function () {
+      this.$store.commit('routing', false)
+    }
+  },
+  mounted () {
+    // console.log(this.velocity)
+    // this.velocity(this.$el, { translateX: '-50%' }, { duration: 600 })
   }
 }
 </script>
@@ -42,14 +61,12 @@ body {
   padding: 0;
 }
 .push-enter-active, .push-leave-active, .pop-enter-active, .pop-leave-active {
-  transition: all 0.6s ease;
+  transition: all 0.4s ease;
   /*box-shadow: 0 0 10px #888;*/
-}
-.push-enter, .push-leave, .pop-enter, .pop-leave {
-   /*box-shadow: 0 0 10px #888;*/
 }
 .push-leave-active{
   z-index: -10;
+  transition: all 0.6s ease;
   transform: translateX(-50%) translateZ(0);
 }
 .push-enter{

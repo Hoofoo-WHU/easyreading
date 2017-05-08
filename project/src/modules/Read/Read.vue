@@ -7,33 +7,27 @@
     </navigation-bar>
     <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal' }" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
       <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page - 1].chapter" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <transition name="fade" appear>
-          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
-            <div :class="{noindent: !pages[page - 1].start}">
-              <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+          <div :class="{noindent: !pages[page - 1].start}">
+            <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
-        </transition>
+        </div>
       </page>
       <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page + 1].chapter" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <transition name="fade" appear>
-          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
-            <div :class="{noindent: !pages[page + 1].start}">
-              <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+          <div :class="{noindent: !pages[page + 1].start}">
+            <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
-        </transition>
+        </div>
       </page>
       <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page] ? pages[page].chapter : ''" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
         <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
           <div style="height: 0; overflow: hidden">
             <div class="buffer" style="visibility: hidden"></div>
           </div>
-          <transition name="fade" appear>
-            <div v-if="pages[page]" :class="{noindent: !pages[page].start}">
-              <p v-for="(parts, index) in pages[page].data">{{parts}}<span v-if="!pages[page].end && index + 1 === pages[page].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
-          </transition>
+          <div v-if="pages[page]" :class="{noindent: !pages[page].start}">
+            <p v-for="(parts, index) in pages[page].data">{{parts}}<span v-if="!pages[page].end && index + 1 === pages[page].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+          </div>
         </div>
       </page>
     </touch>
@@ -45,7 +39,7 @@
     </bottom-bar>
     <action-sheet :show="showmore" @cancel="showmore = false">
       <action-sheet-item><button-item class="buttonItem">加入书架</button-item></action-sheet-item>
-      <action-sheet-item><button-item class="buttonItem">书籍详情</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem" @tap="toDetail">书籍详情</button-item></action-sheet-item>
       <action-sheet-item><button-item class="buttonItem">测试</button-item></action-sheet-item>
     </action-sheet>
     <div class="text" style="display: none">
@@ -333,6 +327,9 @@ export default {
     back () {
       this.$router.back()
     },
+    toDetail () {
+      this.$router.push({'name': 'detail'})
+    },
     more () {
       console.log('moretap')
       this.showmore = true
@@ -412,7 +409,7 @@ export default {
       }
     },
     panHorizontal (e) {
-      if (!this.taging) {
+      if (!this.taging && this.paning) {
         if ((this.page <= 0 && e.deltaX > 0) || (this.page >= this.pages.length - 1 && e.deltaX < 0)) {
           this.pandistance = bounce(e.deltaX - this.fixdistance)
         } else {
@@ -421,7 +418,7 @@ export default {
       }
     },
     panend (e) {
-      if (!this.taging) {
+      if (!this.taging && this.paning) {
         var width = window.innerWidth
         // console.log(e.deltaX - this.fixdistance - this.pandistance)
         // console.log(new Date().getTime() - this.pantime)
@@ -446,7 +443,7 @@ export default {
       //   this.page--
       // }
       // this.paning = false
-      if (this.page > 0) {
+      if (this.page > 0 && !this.taging) {
         var width = window.innerWidth
         this.pandistance = width
       }
@@ -461,7 +458,7 @@ export default {
       // }
       // this.paning = false
       this.paning = false
-      if (this.page + 1 < this.pages.length) {
+      if (this.page + 1 < this.pages.length && !this.taging) {
         var width = window.innerWidth
         this.pandistance = -width
       }
@@ -511,8 +508,12 @@ export default {
     this.show = false
     this.refreshStatusBar()
   },
+  deactivated () {
+    this.showmore = false
+    this.refreshStatusBar()
+  },
   mounted () {
-    this.paging()
+    setTimeout(this.paging, 400)
   }
 }
 </script>

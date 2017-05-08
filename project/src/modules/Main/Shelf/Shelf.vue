@@ -11,7 +11,7 @@
       </div>
       <div class="shelf">
         <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id">
-          <book :cover="item.cover" :title="item.title" :isUpdate="isUpdate" :isEdit="item.isEdit" :edit="edit"/>
+          <book :cover="item.cover" :title="item.title" :isEdit="item.isEdit" :edit="edit"/>
         </touch>
       </div>
     </scroller>
@@ -129,13 +129,14 @@ export default {
     flex-wrap: wrap;
     width: 90%;
     padding-top: 10px;
-    margin-left: 7%;
+    margin-left: 4%;
     font-size: 12px;
+    width: 100%;
   }
   .book{
-    width: 80px;
+    width: 28%;
     margin-bottom: 20px;
-    padding-right: 5%;
+    padding-right: 4%;
     position: relative;
   }
   .bottom{

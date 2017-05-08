@@ -1,5 +1,5 @@
 <template>
-<touch class="bottom-bar border">
+<touch class="bottom-bar border" :routing='routing'>
   <slot></slot>
 </touch>
 </template>
@@ -10,6 +10,14 @@ export default {
   data () {
     return {
 
+    }
+  },
+  computed: {
+    routing: function () {
+      if (this.$store && this.$store.getters.routing) {
+        return this.$store.getters.routing
+      }
+      return false
     }
   }
 }
@@ -23,6 +31,9 @@ export default {
   flex-direction: row;
   z-index: 100;
 }
+.bottom-bar[routing]{
+  background: #fff
+}
 @supports not (-webkit-backdrop-filter: blur(8px)){
   .bottom-bar{
     background: #fff;
@@ -30,8 +41,8 @@ export default {
 }
 @supports (-webkit-backdrop-filter: blur(8px)){
   .bottom-bar{
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
   }
 }
 .border:before { 

@@ -1,21 +1,35 @@
 <template>
-  <transition :name="transitionName">
-    <keep-alive>
-        <router-view/>
-    </keep-alive>
-  </transition>
+  <div>
+    <transition :name="transitionName" @before-enter="beforeEnter" @before-leave="beforeLeave" @after-enter="afterEnter" @after-leave="afterLeave">
+      <keep-alive>
+          <router-view/>
+      </keep-alive>
+    </transition>
+    <action-sheet :show="$store.state.read.showmore" @cancel="$store.state.read.showmore = false">
+      <action-sheet-item><button-item class="buttonItem">加入书架</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem" @tap="toDetail">书籍详情</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem">测试</button-item></action-sheet-item>
+    </action-sheet>
+  </div>
 </template>
 
 <script>
 import RouterWrapper from '@/components/RouterWrapper'
+import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
+import ButtonItem from '@/components/ButtonItem'
 export default {
   name: 'app',
   components: {
-    RouterWrapper
+    RouterWrapper,
+    ActionSheet,
+    ActionSheetItem,
+    ButtonItem
   },
   data () {
     return {
-      transitionName: 'push'
+      transitionName: 'push',
+      velocity: require('velocity-animate'),
+      routing: false
     }
   },
   watch: {
@@ -27,6 +41,29 @@ export default {
       // console.log(toDepth === fromDepth)
       this.transitionName = this.$router.isBack ? 'pop' : 'push'
     }
+  },
+  methods: {
+    toDetail () {
+      this.routing = true
+      console.log(this.$store.state.read.bookid)
+      this.$router.push({'name': 'detail'})
+    },
+    beforeEnter: function () {
+      this.$store.commit('routing', true)
+    },
+    beforeLeave: function () {
+      this.$store.commit('routing', true)
+    },
+    afterEnter: function () {
+      this.$store.commit('routing', false)
+    },
+    afterLeave: function () {
+      this.$store.commit('routing', false)
+    }
+  },
+  mounted () {
+    // console.log(this.velocity)
+    // this.velocity(this.$el, { translateX: '-50%' }, { duration: 600 })
   }
 }
 </script>
@@ -42,14 +79,12 @@ body {
   padding: 0;
 }
 .push-enter-active, .push-leave-active, .pop-enter-active, .pop-leave-active {
-  transition: all 0.6s ease;
+  transition: all 0.4s ease;
   /*box-shadow: 0 0 10px #888;*/
-}
-.push-enter, .push-leave, .pop-enter, .pop-leave {
-   /*box-shadow: 0 0 10px #888;*/
 }
 .push-leave-active{
   z-index: -10;
+  transition: all 0.6s ease;
   transform: translateX(-50%) translateZ(0);
 }
 .push-enter{

@@ -1,5 +1,5 @@
 <template>
-  <touch class="page" @panstart="panstart" @panend="panend" :pan-options="{ direction: 'vertical' }" @panmove="panVertival">
+  <touch class="page" @panstart="panstart" @panend="panend" swipe :pan-options="{ direction: 'vertical' }" @panmove="panVertival">
     <div style="height: 100%; width: 100%; position: relative">
       <transition name="remove" @before-leave="removing=true" @after-leave="tagend">
         <div v-if="paning" class="pull-tag" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}">{{tagMessage}}</div>

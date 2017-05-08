@@ -1,5 +1,5 @@
 <template>
-  <div class="buttonItem" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
+  <div class="buttonItem" :active="touch" @touchstart.prevent.stop="touchStart" @mousedown.prevent.stop="touchStart" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
     <span class="content">
       <slot></slot>
     </span>
@@ -12,15 +12,19 @@ export default {
   name: 'ButtonItem',
   data () {
     return {
-
+      touch: false
     }
   },
   mixins: [InnerEvent],
   methods: {
+    touchStart (e) {
+      this.touch = true
+    },
     touchEnd (e) {
-      if (this.isInnerEvent(e, this.$el)) {
+      if (this.isInnerEvent(e, this.$el) && this.touch) {
         this.$emit('tap')
       }
+      this.touch = false
     }
   }
 }
@@ -33,8 +37,8 @@ export default {
   user-select: none;
   position: relative;
   transition: all .3s ease;
-  &:active{
-    background: #00000008;
+  &[active]{
+    background: rgba(0,0,0,0.031);
   }
   .content{
     position: absolute;

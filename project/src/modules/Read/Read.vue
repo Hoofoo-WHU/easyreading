@@ -1,39 +1,33 @@
 <template>
   <div class="read">
     <navigation-bar title="读书" class="navigation" :show="show">
-      <navigation-bar-item slot="left" icon="back" text="返回" @tap="back" :disable="showmore"/>
-      <navigation-bar-item slot="right" icon="shop" @tap="more" :disable="showmore"/>
-      <navigation-bar-item slot="right" icon="more" @tap="more" :disable="showmore"/>
+      <navigation-bar-item slot="left" icon="back" text="返回" @tap="back" :disable="$store.state.read.showmore"/>
+      <navigation-bar-item slot="right" icon="shop" @tap="$store.state.readMore = true" :disable="$store.state.read.showmore"/>
+      <navigation-bar-item slot="right" icon="more" @tap="more" :disable="$store.state.read.showmore"/>
     </navigation-bar>
     <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal' }" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
       <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page - 1].chapter" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <transition name="fade" appear>
-          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
-            <div :class="{noindent: !pages[page - 1].start}">
-              <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+          <div :class="{noindent: !pages[page - 1].start}">
+            <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
-        </transition>
+        </div>
       </page>
       <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page + 1].chapter" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <transition name="fade" appear>
-          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
-            <div :class="{noindent: !pages[page + 1].start}">
-              <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+          <div :class="{noindent: !pages[page + 1].start}">
+            <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
-        </transition>
+        </div>
       </page>
       <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page] ? pages[page].chapter : ''" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
         <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
           <div style="height: 0; overflow: hidden">
             <div class="buffer" style="visibility: hidden"></div>
           </div>
-          <transition name="fade" appear>
-            <div v-if="pages[page]" :class="{noindent: !pages[page].start}">
-              <p v-for="(parts, index) in pages[page].data">{{parts}}<span v-if="!pages[page].end && index + 1 === pages[page].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
-          </transition>
+          <div v-if="pages[page]" :class="{noindent: !pages[page].start}">
+            <p v-for="(parts, index) in pages[page].data">{{parts}}<span v-if="!pages[page].end && index + 1 === pages[page].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
+          </div>
         </div>
       </page>
     </touch>
@@ -43,11 +37,6 @@
       <bottom-bar-item icon="light"/>
       <bottom-bar-item icon="font"/>
     </bottom-bar>
-    <action-sheet :show="showmore" @cancel="showmore = false">
-      <action-sheet-item><button-item class="buttonItem">加入书架</button-item></action-sheet-item>
-      <action-sheet-item><button-item class="buttonItem">书籍详情</button-item></action-sheet-item>
-      <action-sheet-item><button-item class="buttonItem">测试</button-item></action-sheet-item>
-    </action-sheet>
     <div class="text" style="display: none">
       <p>“秋是一个歌，但是‘桂花蒸’的夜，像在厨里吹的箫调，白天像小孩子唱的歌，又热又熟又清又湿。”</p>
 
@@ -316,12 +305,15 @@ export default {
   data () {
     return {
       show: false,
-      pages: [],
-      page: 0,
+      pages: this.$store.state.read.pages,
       finish: false,
       pandistance: 0,
-      paning: false,
-      showmore: false
+      paning: false
+    }
+  },
+  computed: {
+    page () {
+      return this.$store.state.read.page
     }
   },
   watch: {
@@ -335,7 +327,7 @@ export default {
     },
     more () {
       console.log('moretap')
-      this.showmore = true
+      this.$store.state.read.showmore = true
     },
     tap (e) {
       var width = window.innerWidth
@@ -366,35 +358,35 @@ export default {
       // this.tag = true
       console.log('to prev page')
       if (this.pandistance < 0) {
-        this.page++
+        this.$store.state.read.page++
       }
       if (this.pandistance > 0) {
-        this.page--
+        this.$store.state.read.page--
       }
       this.paning = true
       this.pandistance = 0
       setTimeout(this.swiperight, 50)
-      // if (this.page > 0) {
-      //   this.page--
+      // if (this.$store.state.read.page > 0) {
+      //   this.$store.state.read.page--
       // }
-      // console.log(this.pages[this.page])
+      // console.log(this.pages[this.$store.state.read.page])
     },
     next () {
       // this.tag = false
       console.log('to next page')
       if (this.pandistance < 0) {
-        this.page++
+        this.$store.state.read.page++
       }
       if (this.pandistance > 0) {
-        this.page--
+        this.$store.state.read.page--
       }
       this.paning = true
       this.pandistance = 0
       setTimeout(this.swipeleft, 50)
-      // if (this.page + 1 < this.pages.length) {
-      //   this.page++
+      // if (this.$store.state.read.page + 1 < this.pages.length) {
+      //   this.$store.state.read.page++
       // }
-      // console.log(this.pages[this.page])
+      // console.log(this.pages[this.$store.state.read.page])
     },
     panstart (e) {
       if (!this.taging) {
@@ -402,18 +394,18 @@ export default {
         this.paning = true
         // this.panStart =
         if (this.pandistance < 0) {
-          this.page++
+          this.$store.state.read.page++
         }
         if (this.pandistance > 0) {
-          this.page--
+          this.$store.state.read.page--
         }
         this.pandistance = 0
         this.fixdistance = e.deltaX
       }
     },
     panHorizontal (e) {
-      if (!this.taging) {
-        if ((this.page <= 0 && e.deltaX > 0) || (this.page >= this.pages.length - 1 && e.deltaX < 0)) {
+      if (!this.taging && this.paning) {
+        if ((this.$store.state.read.page <= 0 && e.deltaX > 0) || (this.$store.state.read.page >= this.pages.length - 1 && e.deltaX < 0)) {
           this.pandistance = bounce(e.deltaX - this.fixdistance)
         } else {
           this.pandistance = e.deltaX - this.fixdistance
@@ -421,13 +413,13 @@ export default {
       }
     },
     panend (e) {
-      if (!this.taging) {
+      if (!this.taging && this.paning) {
         var width = window.innerWidth
         // console.log(e.deltaX - this.fixdistance - this.pandistance)
         // console.log(new Date().getTime() - this.pantime)
-        if (this.pandistance < -width * 0.5 && this.page + 1 < this.pages.length) {
+        if (this.pandistance < -width * 0.5 && this.$store.state.read.page + 1 < this.pages.length) {
           this.pandistance = -width
-        } else if (this.pandistance > width * 0.5 && this.page > 0) {
+        } else if (this.pandistance > width * 0.5 && this.$store.state.read.page > 0) {
           this.pandistance = width
         } else {
           this.pandistance = 0
@@ -440,13 +432,13 @@ export default {
       this.paning = false
       // this.paning = true
       // if (this.pandistance < 0) {
-      //   this.page++
+      //   this.$store.state.read.page++
       // }
       // if (this.pandistance > 0) {
-      //   this.page--
+      //   this.$store.state.read.page--
       // }
       // this.paning = false
-      if (this.page > 0) {
+      if (this.$store.state.read.page > 0 && !this.taging) {
         var width = window.innerWidth
         this.pandistance = width
       }
@@ -454,14 +446,14 @@ export default {
     swipeleft () {
       // console.log('swipeleft')
       // if (this.pandistance < 0) {
-      //   this.page++
+      //   this.$store.state.read.page++
       // }
       // if (this.pandistance > 0) {
-      //   this.page--
+      //   this.$store.state.read.page--
       // }
       // this.paning = false
       this.paning = false
-      if (this.page + 1 < this.pages.length) {
+      if (this.$store.state.read.page + 1 < this.pages.length && !this.taging) {
         var width = window.innerWidth
         this.pandistance = -width
       }
@@ -499,7 +491,7 @@ export default {
       })
       paging.on('page', (page) => {
         this.pages.push(page)
-        if (this.pages.length > this.page + 2) {
+        if (this.pages.length > this.$store.state.read.page + 2) {
           this.finish = true
         }
       })
@@ -511,8 +503,14 @@ export default {
     this.show = false
     this.refreshStatusBar()
   },
+  deactivated () {
+    this.showmore = false
+    this.refreshStatusBar()
+  },
   mounted () {
-    this.paging()
+    console.log(this.$route.query.bookid)
+    this.$store.state.read.bookid = this.$route.query.bookid
+    setTimeout(this.paging, 400)
   }
 }
 </script>

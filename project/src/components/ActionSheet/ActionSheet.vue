@@ -5,10 +5,10 @@
     </transition>
     <transition name="trans">
       <div v-if="show" class="content">
-        <touch @tap="stop" class="items blur">
+        <touch @tap="stop" class="items">
           <slot></slot>
         </touch>
-        <touch class="cancel blur" @tap="stop">
+        <touch class="cancel" @tap="stop">
           <button-item  @tap="cancel">取消</button-item>
         </touch>
       </div>
@@ -47,14 +47,16 @@ export default {
 
 <style lang="stylus" scoped>
 .wrapper{
-  z-index: 200;
+  z-index: 300;
+  // position: relative;
   .back{
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
     right: 0;
-    background: #0003;
+    background: #0005;
+    z-index: 300;
   }
   .content{
     position: absolute;
@@ -62,29 +64,22 @@ export default {
     right: 0;
     bottom: 0;
     margin: 10px;
+    border-radius: 12px;
     overflow: hidden;
+    z-index: 300;
     .items{
       overflow: hidden;
       border-radius: 12px;
+      background: #FAFAFA;
     }
     .cancel{
+      background: #FAFAFA;
       margin-top: 10px;
       height: 53px;
       border-radius: 12px;
       overflow: hidden;
     }
   } 
-}
-@supports not (-webkit-backdrop-filter: blur(8px)){
-  .blur{
-    background: #fff;
-  }
-}
-@supports (-webkit-backdrop-filter: blur(8px)){
-  .blur{
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(8px) brightness(1.2);
-  }
 }
 .fade-enter-active, .fade-leave-active{
   transition: all 0.4s cubic-bezier(.3,.5,.29,.99);

@@ -90,6 +90,7 @@ export default {
   display: flex;
   flex-direction: column;
   user-select: none;
+  background: #ffffff;
 }
 .view{
   /*width: 100%;*/

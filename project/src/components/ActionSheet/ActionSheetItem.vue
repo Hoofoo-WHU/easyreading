@@ -5,7 +5,7 @@
 </template>
 <script>
 export default {
-  name: 'ActionSheetContent',
+  name: 'ActionSheetItem',
   data () {
     return {
 

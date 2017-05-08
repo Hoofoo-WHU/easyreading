@@ -44,9 +44,9 @@
       <bottom-bar-item icon="font"/>
     </bottom-bar>
     <action-sheet :show="showmore" @cancel="showmore = false">
-      <action-sheet-content><button-item class="buttonItem">加入书架</button-item></action-sheet-content>
-      <action-sheet-content><button-item class="buttonItem">书籍详情</button-item></action-sheet-content>
-      <action-sheet-content><button-item class="buttonItem">测试</button-item></action-sheet-content>
+      <action-sheet-item><button-item class="buttonItem">加入书架</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem">书籍详情</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem">测试</button-item></action-sheet-item>
     </action-sheet>
     <div class="text" style="display: none">
       <p>“秋是一个歌，但是‘桂花蒸’的夜，像在厨里吹的箫调，白天像小孩子唱的歌，又热又熟又清又湿。”</p>
@@ -296,7 +296,7 @@
 <script>
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
-import {ActionSheet, ActionSheetContent} from '@/components/ActionSheet'
+import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
 import ButtonItem from '@/components/ButtonItem'
 import Page from './Page'
 import Paging from './lib/page.js'
@@ -310,7 +310,7 @@ export default {
     BottomBarItem,
     Page,
     ActionSheet,
-    ActionSheetContent,
+    ActionSheetItem,
     ButtonItem
   },
   data () {

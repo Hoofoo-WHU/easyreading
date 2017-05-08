@@ -1,22 +1,35 @@
 <template>
-  <transition :name="transitionName" @before-enter="beforeEnter" @before-leave="beforeLeave" @after-enter="afterEnter" @after-leave="afterLeave">
-    <keep-alive>
-        <router-view/>
-    </keep-alive>
-  </transition>
+  <div>
+    <transition :name="transitionName" @before-enter="beforeEnter" @before-leave="beforeLeave" @after-enter="afterEnter" @after-leave="afterLeave">
+      <keep-alive>
+          <router-view/>
+      </keep-alive>
+    </transition>
+    <action-sheet :show="$store.state.read.showmore" @cancel="$store.state.read.showmore = false">
+      <action-sheet-item><button-item class="buttonItem">加入书架</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem" @tap="toDetail">书籍详情</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem">测试</button-item></action-sheet-item>
+    </action-sheet>
+  </div>
 </template>
 
 <script>
 import RouterWrapper from '@/components/RouterWrapper'
+import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
+import ButtonItem from '@/components/ButtonItem'
 export default {
   name: 'app',
   components: {
-    RouterWrapper
+    RouterWrapper,
+    ActionSheet,
+    ActionSheetItem,
+    ButtonItem
   },
   data () {
     return {
       transitionName: 'push',
-      velocity: require('velocity-animate')
+      velocity: require('velocity-animate'),
+      routing: false
     }
   },
   watch: {
@@ -30,6 +43,11 @@ export default {
     }
   },
   methods: {
+    toDetail () {
+      this.routing = true
+      console.log(this.$store.state.read.bookid)
+      this.$router.push({'name': 'detail'})
+    },
     beforeEnter: function () {
       this.$store.commit('routing', true)
     },

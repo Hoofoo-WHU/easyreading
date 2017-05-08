@@ -56,6 +56,7 @@ export default {
     bottom: 0;
     right: 0;
     background: #0005;
+    z-index: 300;
   }
   .content{
     position: absolute;
@@ -65,6 +66,7 @@ export default {
     margin: 10px;
     border-radius: 12px;
     overflow: hidden;
+    z-index: 300;
     .items{
       overflow: hidden;
       border-radius: 12px;

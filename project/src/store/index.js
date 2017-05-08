@@ -7,7 +7,13 @@ export default new Vuex.Store({
   state: {
     // xx: {}
     books: [],
-    routing: false
+    routing: false,
+    read: {
+      bookid: undefined,
+      pages: [],
+      page: 0,
+      showmore: false
+    }
   },
   mutations: {
     // mutation: (state, payload) => {
@@ -35,6 +41,9 @@ export default new Vuex.Store({
     },
     routing: (state, payload) => {
       state.routing = payload
+      if (state.routing) {
+        state.read.showmore = false
+      }
     }
   },
   getters: {

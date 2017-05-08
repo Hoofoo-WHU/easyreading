@@ -5,7 +5,7 @@
       <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
     </navigation-bar>
     <scroller style="flex-grow:1;" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
-      <container>
+      <container title="标题党">
         <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
       </container>
       <container>

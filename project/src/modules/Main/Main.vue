@@ -51,7 +51,11 @@ export default {
       // console.log(this.activeMoudle)
     },
     replace: function (name) {
-      this.$router.replace({'name': name})
+      if (this.router === name) {
+        this.scrollTop()
+      } else {
+        this.$router.replace({'name': name})
+      }
     },
     scrollTop: function () {
       if (this.activeMoudle.scrollTop) {

@@ -20,7 +20,8 @@ export default new Vuex.Store({
       pages: [],
       page: 0,
       showmore: false
-    }
+    },
+    modalcount: 0
   },
   mutations: {
     // mutation: (state, payload) => {
@@ -42,8 +43,14 @@ export default new Vuex.Store({
     routing: (state, payload) => {
       state.routing = payload
       if (state.routing) {
-        state.read.showmore = false
+        // console.log(this.a)
+        this.a.commit('closemodal')
       }
+    },
+    closemodal: (state) => {
+      // console.log('closemodal')
+      state.read.showmore = false
+      state.modalcount = 0
     }
   },
   getters: {

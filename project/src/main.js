@@ -48,6 +48,7 @@ document.addEventListener('deviceready', () => {
     })
   }
   // window.alert(window.StatusBar)
+  Vue.prototype.$app = window.navigator.app
   Vue.prototype.$statusBar = window.StatusBar
   Vue.prototype.$splashScreen = window.navigator.splashscreen
   Vue.prototype.$platform = window.cordova.platformId

@@ -1,9 +1,12 @@
 <template>
-  <div class='container border'>
-    <slot name="title">
-      <span class="title" v-if="title">{{title}}</span>
-    </slot>
-    <slot></slot>
+  <div>
+    <div class='container border'>
+      <slot name="title">
+        <span class="title" v-if="title">{{title}}</span>
+      </slot>
+      <slot></slot>
+    </div>
+    <div style="margin: 0;padding: 0;border:none;height:15px;width:100%;background: none;"></div>
   </div>
 </template>
 
@@ -34,7 +37,6 @@ export default {
   width: 100%;
   position: relative;
   height: inherit;
-  margin-bottom: 15px;
   .title{
     text-align: left;
     display: block;
@@ -63,8 +65,8 @@ export default {
     width: 100%;
     position: absolute;
     border-bottom: 1px solid #c8c7cc;
-    bottom: 0;
-    transform-origin: left bottom;
+    bottom: -1px;
+    transform-origin: left top;
   }
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 2.0),

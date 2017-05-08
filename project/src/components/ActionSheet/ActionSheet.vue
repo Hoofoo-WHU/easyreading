@@ -32,6 +32,15 @@ export default {
     return {
     }
   },
+  watch: {
+    show (val) {
+      if (val) {
+        this.$emit('show')
+      } else {
+        this.$emit('hide')
+      }
+    }
+  },
   methods: {
     cancel (e) {
       setTimeout(() => {

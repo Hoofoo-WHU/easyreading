@@ -13,7 +13,14 @@ const myPlugin = store => {
 export default new Vuex.Store({
   state: {
     // xx: {}
-    books: []
+    books: [],
+    routing: false,
+    read: {
+      bookid: undefined,
+      pages: [],
+      page: 0,
+      showmore: false
+    }
   },
   mutations: {
     // mutation: (state, payload) => {
@@ -31,10 +38,17 @@ export default new Vuex.Store({
         return false
       })
       localStorage.removeItem(payload)
+    },
+    routing: (state, payload) => {
+      state.routing = payload
+      if (state.routing) {
+        state.read.showmore = false
+      }
     }
   },
   getters: {
     // xx: state => state.needScrollTops
+    routing: state => state.routing
   },
   plugins: [myPlugin]
 })

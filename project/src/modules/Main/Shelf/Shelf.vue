@@ -1,10 +1,14 @@
 <template>
   <router-content style="flex-direction:column">
     <navigation-bar @tap="scrollTop" title="书架" :sub-title="select">
-      <navigation-bar-item @tap="modify" slot="right" text="编辑" v-if="edit"/>
-      <navigation-bar-item @tap="finish" slot="right" text="完成" v-else/>
+      <navigation-bar-item @tap="modify" slot="right" text="编辑" v-if="edit && !empty"/>
+      <navigation-bar-item @tap="finish" slot="right" text="完成" v-else-if="!edit"/>
     </navigation-bar>
     <scroller class="scroller" ref="scroller" style="flex-grow:1" >
+      <div v-if="empty" class="default">
+        <icon name="myShelf" class="icon"/>
+        <p class="none">您的书架空空如也，去书城看看吧</p>
+      </div>
       <div class="shelf">
         <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id">
           <book :cover="item.cover" :title="item.title" :isUpdate="isUpdate" :isEdit="item.isEdit" :edit="edit"/>
@@ -15,7 +19,7 @@
       <bottom-bar class="bottom" v-if="!edit">
         <bottom-bar-item text="全选" @tap="all" v-if="isAll"></bottom-bar-item>
         <bottom-bar-item text="取消全选" @tap="cancel" v-else></bottom-bar-item>
-        <bottom-bar-item text="删除" @tap="remove" style="color:red "></bottom-bar-item>
+        <bottom-bar-item text="删除" @tap="remove" style="color:red,"></bottom-bar-item>
       </bottom-bar>
     </transition>
   </router-content>
@@ -27,6 +31,7 @@ import RouterContent from '@/components/RouterContent'
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import { BottomBar, BottomBarItem } from '@/components/BottomBar'
 import Book from './components/Book'
+import Icon from '@/components/Icon'
 
 export default {
   name: 'shelf',
@@ -37,7 +42,8 @@ export default {
     RouterContent,
     NavigationBar,
     NavigationBarItem,
-    Book
+    Book,
+    Icon
   },
   data () {
     return {
@@ -57,6 +63,12 @@ export default {
       } else {
         return ''
       }
+    },
+    empty () {
+      if (this.books.length === 0) {
+        return true
+      }
+      return false
     }
   },
   methods: {
@@ -139,5 +151,18 @@ export default {
   }
   .trans-enter, .trans-leave-active{
     transform: translateY(100%);
+  }
+  .default{
+    padding-top: 200px;
+  }
+  .icon{
+    width: 40px;
+    height: 40px;
+    position: relative;
+    left: 140px;
+  }
+  .none{
+    font-size: 0.5em;
+    text-align: center;
   }
 </style>

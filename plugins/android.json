@@ -38,6 +38,9 @@
             "XWALK_MODE": "embedded",
             "XWALK_MULTIPLEAPK": "true",
             "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-keyboard": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
         }
     },
     "dependent_plugins": {}

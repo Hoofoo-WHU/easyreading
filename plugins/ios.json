@@ -27,6 +27,9 @@
         },
         "cordova-plugin-crosswalk-webview": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-keyboard": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
         }
     },
     "dependent_plugins": {}

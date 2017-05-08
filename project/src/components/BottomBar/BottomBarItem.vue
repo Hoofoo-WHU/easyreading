@@ -107,8 +107,8 @@ export default {
 .disable{
   pointer-events: none;
   color: #c7c7cc;
-  // .badge{
-  //   background-color: rgb(143, 140, 146);
-  // }
+  .badge:before{
+    background-color: rgb(143, 140, 146) !important;
+  }
 }
 </style>

@@ -19,7 +19,7 @@
       <bottom-bar class="bottom" v-if="!edit">
         <bottom-bar-item text="全选" @tap="all" v-if="isAll"></bottom-bar-item>
         <bottom-bar-item text="取消全选" @tap="cancel" v-else></bottom-bar-item>
-        <bottom-bar-item text="删除" @tap="remove" style="color:red,"></bottom-bar-item>
+        <bottom-bar-item text="删除" @tap="remove" style="color:red"></bottom-bar-item>
       </bottom-bar>
     </transition>
   </router-content>

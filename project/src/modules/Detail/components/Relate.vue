@@ -4,7 +4,8 @@
       <p class="left"><b>相关推荐</b></p>
       <div class="recommend">
         <div v-for="item in info" style="width:30%">
-          <img :src="item.cover" alt="" width="100%">
+          <!-- <img :src="item.cover" alt="" width="100%"> -->
+          <img src="../../Main/Shelf/3310.jpg" alt="" width="100%">
           {{item.title}}
         </div>
       </div>
@@ -52,7 +53,6 @@
     text-align: left;
     padding-left: 5%;
     padding-right: 5%;
-    padding-top: 10px;
     padding-bottom: 10px;
   }
   .relate p{

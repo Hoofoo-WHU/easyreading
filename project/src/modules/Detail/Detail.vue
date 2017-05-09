@@ -7,19 +7,39 @@
         <div class="top">
           <Cover :info='info' />
         </div>
-        <div class="space"></div>
+        <container></container>
         <div class="centerTop">
           <info :data="info.data" :update="update"/>
-          <div class="space"></div>
+        <container></container>
           <relate :initialInfo='recommendInfo'/>
         </div>
-        <div class="space"></div>
+        <container></container>
         <div class="bottom">
-          <comment :comment='comment'/>
+          <comment :comment='comment' @showComment="showCommentModal"/>
         </div>
     </scroller>
     <shop v-model="shopModalShow" @paySuccess="showMessage"></shop>
     <message v-model="messageShow" :message-text="messageText"></message>
+    <modal v-model="commentModalShow">
+        <div slot="header">
+            评论此书
+        </div>
+        <div class="shop-modal">
+            <div class="point">
+                <p>打分：</p>
+                <div class="star" v-for="star in sort(stars)" @click="mark(star.score)" >
+                    <icon class="icon" name="light-star" v-show="star.light">
+                    </icon>
+                    <icon class="icon" name="dark-star" v-show="!star.light">
+                    </icon>
+                </div>
+
+            </div>
+            <div class="content">
+                <touch><textarea name="name" rows="8"></textarea></touch>
+            </div>
+        </div>
+    </modal>
     <bottom-bar>
       <bottom-bar-item  v-if="!isIn" text="+书架" icon="add" @tap="add"></bottom-bar-item>
       <bottom-bar-item  v-else text="-书架" icon="remove" @tap="remove"></bottom-bar-item>
@@ -39,6 +59,9 @@
   import Comment from './components/comment'
   import Shop from './components/shop'
   import Message from '@/components/Message'
+  import Modal from '@/components/Modal'
+  import Container from '@/components/Container'
+  import Icon from '@/components/Icon'
   export default {
     name: 'detail',
     components: {
@@ -52,7 +75,10 @@
       Relate,
       Comment,
       Shop,
-      Message
+      Message,
+      Container,
+      Modal,
+      Icon
     },
     data () {
       return {
@@ -66,7 +92,9 @@
         ],
         shopModalShow: false,
         messageShow: false,
-        messageText: ''
+        messageText: '',
+        commentModalShow: false,
+        stars: []
       }
     },
     mounted () {
@@ -89,6 +117,13 @@
       for (let i = 1; i <= 10; i++) {
         this.comment.push({author: 'sx', time: '2017-03-18 08:08', data: '评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论', resNum: 122})
       }
+      this.stars = [
+        {score: 1, name: 'star', light: false},
+        {score: 2, name: 'star', light: false},
+        {score: 3, name: 'star', light: false},
+        {score: 4, name: 'star', light: false},
+        {score: 5, name: 'star', light: false}
+      ]
     },
     computed: {
       isIn () {
@@ -145,11 +180,26 @@
       showMessage (text) {
         this.messageText = text
         this.messageShow = true
+      },
+      showCommentModal () {
+        this.commentModalShow = true
+      },
+      sort (arr) {
+        return arr.slice().sort((item1, item2) => { return item1.score - item2.score })
+      },
+      mark (score) {
+        for (let i = 0; i < this.stars.length; i++) {
+          if (this.stars[i].score <= score) {
+            this.stars[i].light = true
+          } else {
+            this.stars[i].light = false
+          }
+        }
       }
     }
   }
 </script>
-<style lang="css" scoped>
+<style lang="stylus" scoped>
   #detail{
     width: 100%;
     background: #efeff4;
@@ -166,10 +216,6 @@
     display: flex;
     flex-direction: column ;
     font-size: 12px;
-  }
-  .space{
-    height: 5px;
-    background: white;
   }
   .centerTop{
     display: flex;
@@ -188,5 +234,22 @@
   .center{
     flex-grow: 1.5;
     background: #6bc4f5;
+  }
+  .container {
+      height: 10px
+  }
+  .point {
+      display: flex;
+      justify-content: flex-start;
+  }
+  .star {
+      width: 10%;
+  }
+  .content {
+      width: 90%
+      textarea {
+          width: 100%;
+      }
+
   }
 </style>

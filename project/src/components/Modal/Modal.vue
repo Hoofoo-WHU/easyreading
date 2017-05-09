@@ -1,8 +1,10 @@
 <template lang="html">
     <div>
           <transition name="modal-zoom">
-              <div class="modal-wrapper" v-show="show" @click.self="cancel">
-                  <div class="modal">
+              <div>
+                  <div class="modal-wrapper" v-show="show" @click.self="cancel">
+                  </div>
+                  <div class="modal" v-show="show">
                           <div class="modal-header" v-if="showHeader">
                               <slot name="header">
                                   <span class="modal-title">{{title}}</span>
@@ -24,6 +26,7 @@
                           </div>
                   </div>
               </div>
+
           </transition>
       </div>
 </template>
@@ -136,10 +139,10 @@ export default {
 .modal {
     z-index: 1001;
     font-size: 14px;
-    position: relative;
-    margin: 0 auto;
+    position: absolute;
+    left: 50%;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     padding: 0;
     background-color: #fff;
     border-radius: 12px;

@@ -18,6 +18,7 @@
 		78BDD141B21D42B889D87DA1 /* CDVViewController+SplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C56F16BA8134194A106CE42 /* CDVViewController+SplashScreen.m */; };
 		9DF6A243FE404F8C838017F2 /* CDVSplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AFFCF56B48347049E5F97B2 /* CDVSplashScreen.m */; };
 		DF751C65E4584032A035014B /* CDVLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 65814348F4E64B03B1359DB1 /* CDVLogger.m */; };
+		6D79B4C8D56C43B18CC4177E /* CDVKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 491B693750E342258183F03E /* CDVKeyboard.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,8 @@
 		ED33DF2A687741AEAF9F8254 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		EFD3B0EA0FBC46E48D333FF2 /* AppVersion.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = AppVersion.h; path = "cordova-plugin-app-version/AppVersion.h"; sourceTree = "<group>"; };
 		F840E1F0165FE0F500CFE078 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = "随阅易/config.xml"; sourceTree = "<group>"; };
+		491B693750E342258183F03E /* CDVKeyboard.m */ = {isa = PBXFileReference; name = "CDVKeyboard.m"; path = "cordova-plugin-keyboard/CDVKeyboard.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		60AB3982457A49FBA10DEED9 /* CDVKeyboard.h */ = {isa = PBXFileReference; name = "CDVKeyboard.h"; path = "cordova-plugin-keyboard/CDVKeyboard.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +184,8 @@
 				DA6AD9EEAA0045C5A1234B7A /* CDVViewController+SplashScreen.h */,
 				4529EE0940C741739E8ECFAF /* CDVStatusBar.m */,
 				27C2617FC2A64915840D2451 /* CDVStatusBar.h */,
+				491B693750E342258183F03E /* CDVKeyboard.m */,
+				60AB3982457A49FBA10DEED9 /* CDVKeyboard.h */,
 			);
 			name = Plugins;
 			path = "随阅易/Plugins";
@@ -306,6 +311,7 @@
 				9DF6A243FE404F8C838017F2 /* CDVSplashScreen.m in Sources */,
 				78BDD141B21D42B889D87DA1 /* CDVViewController+SplashScreen.m in Sources */,
 				2B343C40549F4EBEA9261A64 /* CDVStatusBar.m in Sources */,
+				6D79B4C8D56C43B18CC4177E /* CDVKeyboard.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

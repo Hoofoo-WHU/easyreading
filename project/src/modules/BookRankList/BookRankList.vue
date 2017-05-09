@@ -3,6 +3,7 @@
         <navigation-bar @tap="" title="排行列表">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
+        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
             <ul>
                 <li v-for="book in rank(mockData)" :key="book.rank">
                     <div class="rank-icon" v-if="book.rank === 1">
@@ -17,17 +18,12 @@
                     <div class="book-info">
                         <p>{{ book.name }}</p>
                         <div class="operate">
-                            <label class="addFavor">
-                                <input type="checkbox" v-model="favorList" :value="book.id">
-                                <icon class="icon" v-if="isFavor(book.id)" name="favor"></icon>
-                                <icon class="icon" v-else name="unfavor"></icon>
-                            </label>
-                            <label class="addCart">
-                                <input type="checkbox" v-model="buyList" :value="book.id">
-                                <icon name="addCart"></icon>
-                            </label>
-
-
+                            <div class="addShelf">
+                                <icon class="icon" :name="'addShelf'"></icon>
+                            </div>
+                            <div class="addCart">
+                                <icon :name="'addCart'"></icon>
+                            </div>
                         </div>
                     </div>
                     <div class="book-price">
@@ -35,18 +31,21 @@
                     </div>
                 </li>
             </ul>
+        </scroller>
     </div>
 </template>
 
 <script>
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
+import Scroller from '@/components/Scroller'
 import Icon from '@/components/Icon'
 export default {
   name: 'bookRankList',
   components: {
     NavigationBar,
     NavigationBarItem,
-    Icon
+    Icon,
+    Scroller
   },
   data () {
     return {
@@ -71,6 +70,9 @@ export default {
     },
     back () {
       this.$router.go(-1)
+    },
+    loadMore (over) {
+      console.log('loadMore')
     }
   }
 }
@@ -79,7 +81,14 @@ export default {
 <style lang="stylus" scoped>
 #book-rank-list {
     font-size: 15px;
+    width: 100%;
     background: #efeff4;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    overflow: hidden;
     ul {
         margin: 0;
         padding: 0;
@@ -93,10 +102,11 @@ export default {
             .rank-icon {
                 width: 7%;
                 font-size: 20px;
+                margin: 12px;
             }
             .book-img {
                 img {
-                    width: 55%;
+                    width: 58%;
                 }
             }
             .book-info{
@@ -104,19 +114,15 @@ export default {
                 flex-grow: 2;
                 .operate {
                     display: flex;
-                    justify-content: flex-start
-                    .addFavor {
+                    justify-content: space-between;
+                    margin: 15px 0;
+                    width: 35%;
+                    .addShelf {
                         margin-right: 5px
-                        width: 7%
-                        input {
-                            display: none;
-                        }
+                        width: 18px
                     }
                     .addCart {
-                        width: 7%
-                        input {
-                            display: none;
-                        }
+                        width: 18px
                     }
                 }
             }

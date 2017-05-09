@@ -1,10 +1,11 @@
 <template>
   <div id="book">
-    <img :src="cover" alt="" width="100%">
-    <div>{{title}}</div>
-    <div v-if="isUpdate" class="status">XXX未读</div>
-    <div v-else class="update">●有更新</div>
-    <icon v-if="!edit" name="unchecked" class="icon" :class='{gray:!isEdit, blue:isEdit}'/>
+    <div class="cover">
+      <!-- <img :src="cover" alt="" width="100%" > -->
+      <img src="../3310.jpg" alt="" width="100%">
+      <icon v-if="!edit" name="unchecked" class="icon" :class='{gray:!isEdit, blue:isEdit}'/>
+    </div> 
+    <div>{{title}}</div>  
     <!-- <icon v-else name="checked" class="icon" /> -->
   </div>
 </template>
@@ -26,10 +27,6 @@
         type: String,
         default: ''
       },
-      isUpdate: {
-        type: Boolean,
-        default: true
-      },
       isEdit: {
         type: Boolean,
         default: false
@@ -43,6 +40,15 @@
 </script>
 
 <style scoped>
+  .cover{
+    position: relative;
+    width: 100%;
+    /*min-height: 10px;*/
+    height: 0;
+    padding-bottom: 125%;
+    overflow: visible;
+    margin-bottom: 4%
+  }
   .status{
     text-align: right;
     transform: 0.5em;
@@ -54,11 +60,11 @@
     color: green;
   }
   .icon{
-    width: 1.5em;
-    height: 1.5em;
+    width: 20%;
+    height: 20%;
     position: absolute;
-    left: 58px;
-    top: 83px;
+    left: 78%;
+    top: 78%;
     transition: all .3s;
   }
   .blue{

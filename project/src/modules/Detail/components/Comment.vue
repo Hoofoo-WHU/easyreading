@@ -7,7 +7,7 @@
             我也来评
         </touch>
     </p>
-    <touch v-for="item in comment" @tap="toCommentDetail">
+    <touch v-for="(item,index) in comment" :key="index" @tap="toCommentDetail">
         <div class="list" >
           <div class="avatar">
             <img src="../png/avatar.png" style="width:100%">
@@ -76,7 +76,6 @@
   #comment{
     padding-left: 5%;
     padding-right: 5%;
-    padding-top: 1em;
   }
   .add-comment {
     display: inline-block;

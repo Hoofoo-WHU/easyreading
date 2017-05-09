@@ -58,6 +58,7 @@ export default {
   color: #5a6773;
   transition: color .3s;
   position: relative;
+  transform: opacity .2s ease;
   &[left-divide]:before{
     content: ''
     position: absolute;
@@ -124,9 +125,6 @@ export default {
 }
 .disable{
   pointer-events: none;
-  color: #c7c7cc;
-  .badge:before{
-    background-color: rgb(143, 140, 146) !important;
-  }
+  opacity: 0.5 !important;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
-  <router-content style="flex-direction: column;background: #fff">
+  <router-content style="flex-direction: column;">
     <navigation-bar title="测试" :border="!istop">
       <navigation-bar-item @tap="read" slot="left" text="读书" icon="back"/>
       <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
     </navigation-bar>
-    <scroller style="flex-grow:1;background: #f2f2f2" ref="scroller" v-model="istop" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
+    <scroller style="flex-grow:1;" ref="scroller" v-model="istop" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
       <container title="标题党">
         <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
       </container>

@@ -76,9 +76,6 @@ export default {
         this.$splashScreen.hide()
       }
     }, 1000)
-    document.addEventListener('backbutton', function () {
-      navigator.app.exitApp()
-    }, false)
   }
 }
 </script>

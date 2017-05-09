@@ -19,7 +19,12 @@ export default new Vuex.Store({
       bookid: undefined,
       pages: [],
       page: 0,
-      showmore: false
+      showmore: false,
+      showtoc: false
+    },
+    modal: {
+      close: undefined,
+      size: 0
     }
   },
   mutations: {
@@ -42,13 +47,40 @@ export default new Vuex.Store({
     routing: (state, payload) => {
       state.routing = payload
       if (state.routing) {
-        state.read.showmore = false
+        // console.log(this.a)
+        this.a.commit('closemodal')
+      }
+    },
+    addmodal: (state, payload) => {
+      if (!state.modal.close) {
+        state.modal.close = new Set()
+      }
+      state.modal.size++
+      state.modal.close.add(payload)
+
+      // console.log(state.modal.close.size)
+    },
+    removemodal: (state, payload) => {
+      if (state.modal.close && state.modal.close.has(payload)) {
+        state.modal.close.delete(payload)
+        state.modal.size--
+      }
+    },
+    closemodal: (state) => {
+      // console.log('closemodal')
+      if (state.modal.close && state.modal.close.size > 0) {
+        for (let i of state.modal.close) {
+          i()
+        }
+        state.modal.close.clear()
+        state.modal.size = 0
       }
     }
   },
   getters: {
     // xx: state => state.needScrollTops
-    routing: state => state.routing
+    routing: state => state.routing,
+    hasModal: state => state.modal.size > 0
   },
   plugins: [myPlugin]
 })

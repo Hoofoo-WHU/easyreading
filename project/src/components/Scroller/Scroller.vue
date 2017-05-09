@@ -9,12 +9,8 @@
             <div class="pull-refresh-text">{{ _pullRefreshText }}</div>
           </div>
         </transition>
-<!--         <div>{{x}},{{y}}</div>
-        <div>{{ scrolling }}</div>
-        <div>{{ pullRefreshState }}</div> -->
-        
         <slot></slot>
-        <div v-if="canLoadMore && !noMore" class="loadmoreWrapper"><div class="loadmore"><icon class="loadmore-icon" :name="loadIcon" spin></icon>&nbsp&nbsp<span>{{loadmoreText}}</span></div></div>
+        <div v-if="canLoadMore && !noMore && showLoading" class="loadmoreWrapper"><div class="loadmore"><icon class="loadmore-icon" :name="loadIcon" spin></icon>&nbsp&nbsp<span>{{loadmoreText}}</span></div></div>
       </div>
     </touch>
   </div>
@@ -64,6 +60,11 @@ export default {
   },
   watch: {
     y: function (val, oldVal) {
+      if (val === 0) {
+        this.$emit('input', true)
+      } else {
+        this.$emit('input', false)
+      }
       if (this.canPullRefresh && this.pullRefreshState !== 2) {
         if (val > this.pullRefreshHeight) {
           this.pullRefreshState = 1
@@ -96,7 +97,8 @@ export default {
       loadMoreHeigth: 60,
       noMore: false,
       pullshow: false,
-      deactivated: false
+      deactivated: false,
+      showLoading: false
     }
   },
   mounted () {
@@ -132,6 +134,13 @@ export default {
           }
           // console.log(fix)
           this.iScroll.refresh(fix)
+          if (!this.iScroll.hasVerticalScroll) {
+            this.showLoading = false
+          }
+          if (this.iScroll.hasVerticalScroll && !this.showLoading) {
+            this.showLoading = true
+            this.refresh()
+          }
           this.iScroll.hasVerticalScroll = true
         }, 0)
       }
@@ -152,6 +161,7 @@ export default {
       if (this.canLoadMore && !this.noMore && this.iScroll.y <= this.iScroll.maxScrollY + this.loadMoreHeigth) {
         this.loadMore()
       }
+      this.scroll()
       this.$emit('scrollEnd')
     },
     scrollTop () {
@@ -189,7 +199,7 @@ export default {
       this.refresh()
     },
     loadMore () {
-      if (!this.loading) {
+      if (!this.loading && this.showLoading) {
         this.loading = true
         this.$emit('loadMore', this.endLoadMore)
       }

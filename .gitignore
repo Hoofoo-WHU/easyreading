@@ -3,5 +3,7 @@
 /project/dist/
 /project/npm-debug.log
 /project/yarn-error.log
-
-/platforms/*
+/www/
+/platforms
+/node_modules/
+npm-debug.log

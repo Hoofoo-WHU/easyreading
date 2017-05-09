@@ -1,12 +1,15 @@
 <template>
   <div>
-    <div class='container border'>
+    <div class='container' :class="{border: border}">
       <slot name="title">
-        <span class="title" v-if="title">{{title}}</span>
+        <div style="display: flex;">
+          <span class="title" v-if="title">{{title}}</span>
+          <touch class="more" v-if="title && more">更多 <span style="color: #ccc">></span></touch>
+        </div>
       </slot>
       <slot></slot>
     </div>
-    <div style="margin: 0;padding: 0;border:none;height:15px;width:100%;background: none;"></div>
+    <div style="margin: 0;padding: 0;border:none;height:8px;width:100%;background: none;"></div>
   </div>
 </template>
 
@@ -18,9 +21,13 @@ export default {
       type: String,
       default: ''
     },
-    border: {
+    more: {
       type: Boolean,
       default: true
+    },
+    border: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -38,14 +45,24 @@ export default {
   position: relative;
   height: inherit;
   .title{
+    flex-grow: 1;
     text-align: left;
     display: block;
-    font-size: 16px;
-    font-weight: lighter;
-    padding: 5px;
+    font-size: 12px;
+    // font-weight: lighter;
+    padding: 12px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    color: #030303;
+  }
+  .more{
+    width: auto;
+    display: block;
+    font-size: 10px;
+    // font-weight: lighter;
+    padding: 12px;
+    overflow: hidden;
     color: #030303;
   }
 }

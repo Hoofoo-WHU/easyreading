@@ -1,7 +1,7 @@
 <template>
   <div>
     <transition :name="transitionName" @before-enter="beforeEnter" @before-leave="beforeLeave" @after-enter="afterEnter" @after-leave="afterLeave">
-      <keep-alive>
+      <keep-alive include="main,read">
           <router-view/>
       </keep-alive>
     </transition>
@@ -49,10 +49,13 @@ export default {
       this.$router.push({'name': 'detail'})
     },
     modalshow () {
-      this.$store.state.modalcount++
+      this.$store.commit('addmodal', this.closemodal)
     },
     modalhide () {
-      this.$store.state.modalcount--
+      this.$store.commit('removemodal', this.closemodal)
+    },
+    closemodal () {
+      this.$store.state.read.showmore = false
     },
     beforeEnter: function () {
       this.$store.commit('routing', true)
@@ -69,7 +72,7 @@ export default {
   },
   mounted () {
     document.addEventListener('backbutton', () => {
-      if (this.$store.state.modalcount > 0) {
+      if (this.$store.getters.hasModal) {
         this.$store.commit('closemodal')
       } else if (this.$route.name !== 'main') {
         this.$router.back()

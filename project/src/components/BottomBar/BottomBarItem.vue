@@ -58,6 +58,24 @@ export default {
   color: #5a6773;
   transition: color .3s;
   position: relative;
+  &[left-divide]:before{
+    content: ''
+    position: absolute;
+    top: 13px;
+    bottom: 13px;
+    left: -1px;
+    border-left: 1px solid #5a6773;
+    opacity: 0.2;
+  }
+  &[right-divide]:after{
+    content: ''
+    position: absolute;
+    top: 13px;
+    bottom: 13px;
+    right: 0;
+    border-left: 1px solid #5a6773;
+    opacity: 0.2;
+  }
   .icon{
     width: 25px;
     height: 25px;

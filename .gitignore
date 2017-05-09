@@ -4,6 +4,6 @@
 /project/npm-debug.log
 /project/yarn-error.log
 /www/
-/platforms/*
+/platforms
 /node_modules/
 npm-debug.log

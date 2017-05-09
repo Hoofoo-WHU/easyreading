@@ -4,29 +4,21 @@
       <touch v-if="show" class="back" @tap="cancel"></touch>
     </transition>
     <transition name="trans">
-      <div v-if="show" class="content">
-        <touch @tap="stop" class="items">
-          <slot></slot>
-        </touch>
-        <touch class="cancel" @tap="stop">
-          <button-item  @tap="cancel">取消</button-item>
-        </touch>
-      </div>
+      <touch v-if="show" class="content" @tap="stop">
+        <slot></slot>
+      </touch>
     </transition>
   </div>
 </template>
+
 <script>
-import ButtonItem from '@/components/ButtonItem'
 export default {
-  name: 'ActionSheet',
+  name: 'TocModal',
   props: {
     show: {
       type: Boolean,
       default: false
     }
-  },
-  components: {
-    ButtonItem
   },
   data () {
     return {
@@ -37,7 +29,9 @@ export default {
       if (val) {
         this.$emit('show')
       } else {
-        this.$emit('hide')
+        setTimeout(() => {
+          this.$emit('hide')
+        }, 400)
       }
     }
   },
@@ -70,24 +64,12 @@ export default {
   .content{
     position: absolute;
     left: 0;
-    right: 0;
+    right: 10%;
     bottom: 0;
-    margin: 10px;
-    border-radius: 12px;
+    top: 0;
     overflow: hidden;
     z-index: 300;
-    .items{
-      overflow: hidden;
-      border-radius: 12px;
-      background: #FAFAFA;
-    }
-    .cancel{
-      background: #FAFAFA;
-      margin-top: 10px;
-      height: 53px;
-      border-radius: 12px;
-      overflow: hidden;
-    }
+    background: #fff;
   } 
 }
 .fade-enter-active, .fade-leave-active{
@@ -100,6 +82,6 @@ export default {
   transition: all 0.4s cubic-bezier(.3,.5,.29,.99);
 }
 .trans-enter, .trans-leave-active{
-  transform: translateY(100%) translateZ(0);
+  transform: translateX(-100%) translateZ(0);
 }
 </style>

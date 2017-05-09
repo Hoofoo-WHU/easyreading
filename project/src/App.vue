@@ -1,11 +1,11 @@
 <template>
   <div>
     <transition :name="transitionName" @before-enter="beforeEnter" @before-leave="beforeLeave" @after-enter="afterEnter" @after-leave="afterLeave">
-      <keep-alive>
+      <keep-alive include="main,read">
           <router-view/>
       </keep-alive>
     </transition>
-    <action-sheet :show="$store.state.read.showmore" @cancel="$store.state.read.showmore = false">
+    <action-sheet :show="$store.state.read.showmore" @show="modalshow" @hide="modalhide" @cancel="$store.state.read.showmore = false">
       <action-sheet-item><button-item class="buttonItem">加入书架</button-item></action-sheet-item>
       <action-sheet-item><button-item class="buttonItem" @tap="toDetail">书籍详情</button-item></action-sheet-item>
       <action-sheet-item><button-item class="buttonItem">测试</button-item></action-sheet-item>
@@ -48,6 +48,15 @@ export default {
       console.log(this.$store.state.read.bookid)
       this.$router.push({'name': 'detail'})
     },
+    modalshow () {
+      this.$store.commit('addmodal', this.closemodal)
+    },
+    modalhide () {
+      this.$store.commit('removemodal', this.closemodal)
+    },
+    closemodal () {
+      this.$store.state.read.showmore = false
+    },
     beforeEnter: function () {
       this.$store.commit('routing', true)
     },
@@ -62,6 +71,15 @@ export default {
     }
   },
   mounted () {
+    document.addEventListener('backbutton', () => {
+      if (this.$store.getters.hasModal) {
+        this.$store.commit('closemodal')
+      } else if (this.$route.name !== 'main') {
+        this.$router.back()
+      } else {
+        this.$app.exitApp()
+      }
+    }, false)
     // console.log(this.velocity)
     // this.velocity(this.$el, { translateX: '-50%' }, { duration: 600 })
   }

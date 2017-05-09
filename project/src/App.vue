@@ -1,99 +1,120 @@
 <template>
-  <div id="app">
-    <div class="navigation-bar" v-tap="{methods: scrollTop}">{{ router }}</div>
-    <div class="view">
-      <keep-alive>
-        <router-view></router-view>
+  <div>
+    <transition :name="transitionName" @before-enter="beforeEnter" @before-leave="beforeLeave" @after-enter="afterEnter" @after-leave="afterLeave">
+      <keep-alive include="main,read">
+          <router-view/>
       </keep-alive>
-    </div>
-    <div class="bottom-bar">
-      <span class="router" v-tap="{methods: to, name: 'shelf'}" :class="{active: router === 'shelf'}">书架</span>
-      <span class="router" v-tap="{methods: to, name: 'store'}" :class="{active: router === 'store'}">书城</span>
-      <span class="router" v-tap="{methods: to, name: 'search'}" :class="{active: router === 'search'}">搜索</span>
-      <span class="router" v-tap="{methods: to, name: 'my'}" :class="{active: router === 'my'}">我的</span>
-      <span class="router" v-tap="{methods: to, name: 'test'}" :class="{active: router === 'test'}">测试</span>
-    </div>
+    </transition>
+    <action-sheet :show="$store.state.read.showmore" @show="modalshow" @hide="modalhide" @cancel="$store.state.read.showmore = false">
+      <action-sheet-item><button-item class="buttonItem">加入书架</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem" @tap="toDetail">书籍详情</button-item></action-sheet-item>
+      <action-sheet-item><button-item class="buttonItem">测试</button-item></action-sheet-item>
+    </action-sheet>
   </div>
 </template>
 
 <script>
+import RouterWrapper from '@/components/RouterWrapper'
+import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
+import ButtonItem from '@/components/ButtonItem'
 export default {
   name: 'app',
-  data () {
-    return {}
+  components: {
+    RouterWrapper,
+    ActionSheet,
+    ActionSheetItem,
+    ButtonItem
   },
-  computed: {
-    router: function () {
-      return this.$route.name
-    },
-    activeMoudle: function () {
-      return this.$route.matched[0].instances.default
+  data () {
+    return {
+      transitionName: 'push',
+      velocity: require('velocity-animate'),
+      routing: false
+    }
+  },
+  watch: {
+    '$route': function (to, from) {
+      // console.log(to)
+      // console.log(from)
+      // const toDepth = to.path.split('/').length
+      // const fromDepth = from.path.split('/').length
+      // console.log(toDepth === fromDepth)
+      this.transitionName = this.$router.isBack ? 'pop' : 'push'
     }
   },
   methods: {
-    to: function (params) {
-      // console.log(params.name)
-      this.$router.push({'name': params.name})
-      // console.log(this.activeMoudle)
+    toDetail () {
+      this.routing = true
+      console.log(this.$store.state.read.bookid)
+      this.$router.push({'name': 'detail'})
     },
-    scrollTop: function () {
-      if (this.activeMoudle.scrollTop) {
-        this.activeMoudle.scrollTop()
-      } else {
-        console.error('缺少方法：scrollTop', this.activeMoudle)
-      }
+    modalshow () {
+      this.$store.commit('addmodal', this.closemodal)
+    },
+    modalhide () {
+      this.$store.commit('removemodal', this.closemodal)
+    },
+    closemodal () {
+      this.$store.state.read.showmore = false
+    },
+    beforeEnter: function () {
+      this.$store.commit('routing', true)
+    },
+    beforeLeave: function () {
+      this.$store.commit('routing', true)
+    },
+    afterEnter: function () {
+      this.$store.commit('routing', false)
+    },
+    afterLeave: function () {
+      this.$store.commit('routing', false)
     }
   },
   mounted () {
-    // console.log(this.$router)
-    document.addEventListener('backbutton', function () {
-      navigator.app.exitApp()
+    document.addEventListener('backbutton', () => {
+      if (this.$store.getters.hasModal) {
+        this.$store.commit('closemodal')
+      } else if (this.$route.name !== 'main') {
+        this.$router.back()
+      } else {
+        this.$app.exitApp()
+      }
     }, false)
+    // console.log(this.velocity)
+    // this.velocity(this.$el, { translateX: '-50%' }, { duration: 600 })
   }
 }
 </script>
 
-<style lang="css" scoped>
-#app {
+<style lang="css">
+body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
-.active {
-  color: #2786f3;
+* {
+  margin: 0;
+  padding: 0;
 }
-.view{
-  width: 100%;
-  flex: 1;
-  background: #f2f2f2;
-  text-align: center;
-  overflow: hidden;
-  display: flex;
+.push-enter-active, .push-leave-active, .pop-enter-active, .pop-leave-active {
+  transition: all 0.4s ease;
+  /*box-shadow: 0 0 10px #888;*/
 }
-.navigation-bar{
-  height: 45px;
-  display: inline;
-  text-align: center;
-  line-height: 45px;
-  background-color: #fff;
+.push-leave-active{
+  z-index: -10;
+  transition: all 0.6s ease;
+  transform: translateX(-50%) translateZ(0);
 }
-.bottom-bar{
-  height: 49px;
-  display: flex;
-  background-color: #fff;
+.push-enter{
+  transform: translateX(100%) translateZ(0);
 }
-.router{
-  flex: 1;
-  -webkit-appearance: none;
-  text-align: center;
-  line-height: 49px;
+.pop-enter-active{
+  z-index: -10;
+}
+.pop-enter{
+  transform: translateX(-50%) translateZ(0);
+}
+.pop-leave-active{
+  transform: translateX(100%) translateZ(0);
 }
 </style>

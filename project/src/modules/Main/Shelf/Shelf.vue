@@ -19,7 +19,7 @@
       <bottom-bar class="bottom" v-if="!edit">
         <bottom-bar-item text="全选" @tap="all" v-if="isAll"></bottom-bar-item>
         <bottom-bar-item text="取消全选" @tap="cancel" v-else></bottom-bar-item>
-        <bottom-bar-item text="删除" @tap="remove" style="color:red"></bottom-bar-item>
+        <bottom-bar-item text="删除" @tap="remove" style="color:red" left-divide :disable="selectedNum<=0"></bottom-bar-item>
       </bottom-bar>
     </transition>
   </router-content>
@@ -51,7 +51,8 @@ export default {
       edit: true,
       checked: [],
       isAll: true,
-      top: true
+      top: true,
+      selectedNum: 0
     }
   },
   computed: {
@@ -89,6 +90,11 @@ export default {
     check (index) {
       if (this.edit === false) {
         this.books[index].isEdit = !this.books[index].isEdit
+        if (this.books[index].isEdit) {
+          this.selectedNum++
+        } else {
+          this.selectedNum--
+        }
       } else {
         this.$router.push({name: 'detail', params: {id: this.books[index].id}})
       }

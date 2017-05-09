@@ -1,7 +1,8 @@
 <template>
   <div class="cover">
     <div style="width:30%">
-      <img :src="info.cover" alt="" width="100%">
+      <!-- <img :src="info.cover" alt="" width="100%"> -->
+      <img src="../../Main/Shelf/3310.jpg" alt="" width="100%">
     </div>
     <div class="intro">
       <p style="font-size:17px">{{info.title}}</p>
@@ -48,7 +49,6 @@
     flex-direction: row;
     padding-left: 5%;
     padding-top: 10px;
-    padding-bottom: 10px;
 
   }
   .intro {
@@ -57,7 +57,7 @@
     padding-right: 5%;
   }
   .intro>p{
-    margin-top: 10px;
+    margin-top: 5px;
     margin-bottom: 10px;
   }
   .bg{

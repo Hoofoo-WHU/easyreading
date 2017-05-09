@@ -1,7 +1,8 @@
 <template>
   <div id="book">
     <div class="cover">
-      <img :src="cover" alt="" width="100%">
+      <!-- <img :src="cover" alt="" width="100%" > -->
+      <img src="../3310.jpg" alt="" width="100%">
       <icon v-if="!edit" name="unchecked" class="icon" :class='{gray:!isEdit, blue:isEdit}'/>
     </div> 
     <div>{{title}}</div>  
@@ -42,7 +43,11 @@
   .cover{
     position: relative;
     width: 100%;
-    min-height: 10px;
+    /*min-height: 10px;*/
+    height: 0;
+    padding-bottom: 125%;
+    overflow: visible;
+    margin-bottom: 4%
   }
   .status{
     text-align: right;

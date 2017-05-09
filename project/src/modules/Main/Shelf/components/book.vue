@@ -47,7 +47,8 @@
     height: 0;
     padding-bottom: 125%;
     overflow: visible;
-    margin-bottom: 4%
+    margin-bottom: 4%;
+    box-shadow: 0 0 30px #d9d9d9;
   }
   .status{
     text-align: right;

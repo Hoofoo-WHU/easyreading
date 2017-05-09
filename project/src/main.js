@@ -52,7 +52,7 @@ document.addEventListener('deviceready', () => {
   Vue.prototype.$statusBar = window.StatusBar
   Vue.prototype.$splashScreen = window.navigator.splashscreen
   Vue.prototype.$platform = window.cordova.platformId
-  // Vue.prototype.$Keyboard = window.Keyboard
+  Vue.prototype.$Keyboard = window.Keyboard
   new Vue({
     el: '#app',
     router,

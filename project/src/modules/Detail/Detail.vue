@@ -221,7 +221,6 @@
     display: flex;
     flex-direction: column;
     font-size: 12px;
-    padding-top: 10px;
   }
   .bottom{
     font-size: 12px;

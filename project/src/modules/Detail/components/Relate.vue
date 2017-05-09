@@ -53,7 +53,6 @@
     text-align: left;
     padding-left: 5%;
     padding-right: 5%;
-    padding-top: 10px;
     padding-bottom: 10px;
   }
   .relate p{

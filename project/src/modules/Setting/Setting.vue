@@ -1,5 +1,5 @@
 <template>
-  <router-content style="flex-direction:column">
+  <router-content style="flex-direction:column;background:#fff">
     <navigation-bar title="设置">
       <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
     </navigation-bar>

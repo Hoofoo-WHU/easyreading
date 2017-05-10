@@ -1,39 +1,41 @@
-<template>
-  <router-content>
-    <scroller class="scroller" ref="scroller">
-      <div style="text-align: center">
-        {{ msg }}
-      </div>
-    </scroller>
-  </router-content>
-</template>
-
+<template>  
+    <div class="delete_div">
+        <SliderDelete :sliderConf="sliderConf">
+            <div class="conten"></div>
+        </SliderDelete>
+        <div class="delete_button"></div>
+    </div>
+</template>  
 <script>
-import Scroller from '@/components/Scroller'
-import RouterContent from '@/components/RouterContent'
-export default {
+import SliderDelete from '@/components/SliderDelete'
+export default{
   name: 'search',
-  components: {
-    Scroller,
-    RouterContent
-  },
   data () {
     return {
-      msg: '这里是搜索模块'
+      sliderConf: {
+        distance: '4'
+      }
     }
   },
-  methods: {
-    scrollTop () {
-      this.$refs.scroller.scrollTop()
-    }
+  components: {
+    SliderDelete
   }
 }
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.scroller{
-  flex: 1;
-}
+</script>  
+<style>  
+.conten{
+        background-color: green;
+        width: 24rem;
+        height: 3rem;
+    }
+    .delete_button{
+        position: absolute;
+        background-color: red;
+        right: 0;
+        width: 4rem;
+        height: 3rem;
+    }
+    .delete_div{
+        position: relative;
+    }
 </style>
-

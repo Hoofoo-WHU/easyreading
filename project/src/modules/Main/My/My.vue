@@ -1,36 +1,38 @@
 <template>
-  <router-content style="flex-direction:column">
-  <navigation-bar title="个人中心" id="line">
+  <router-content style="flex-direction:column;bottom:-49px">
+  <navigation-bar title="" :border="!top">
       <navigation-bar-item @tap="setting" slot="left"  icon="set" style="width:20px;height:20px;"/>
       <navigation-bar-item @tap="postnew" slot="right" icon="email" style="width:20px;height:20px;" right-icon/>
     </navigation-bar>
-    <scroller class="scroller" ref="scroller">
+    <scroller class="scroller" v-model="top" ref="scroller">
+      <touch @tap="person" style="width:100px;height:130px;display:block;margin:0 auto">
       <div class="person">
-      	<touch class="headImg" @tap="person"><img id="headImg">头像</touch>
+      	<span class="headImg"><img id="headImg" src=""></span>
+        <span class="editifo">修改个人信息</span>
       </div>
+      </touch>
 
 	    <section>
-	    <i><span class="shubi" style="background-color:rgb(249,204,157)" >阅书币</span></i>
-	    <i><span class="chongzhi" style="background-color:rgb(195,208,136)" >去充值</span></i>
+	    <i><touch @tap="display" :show="show"><span class="shubi" style="background-color:rgb(249,204,157)" >阅书币</span></touch></i>
+	    <i><touch @tap="display1" :show="show1"><span class="chongzhi" style="background-color:rgb(195,208,136)" >去充值</span></touch></i>
 	    <i><touch @tap="cart"><span class="cart" style="background-color:rgb(253,221,155)" >购物车</span></touch></i>
-	    <i><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></i>
+	    <i><touch @tap="display2" :show="show2"><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></touch></i>
 	    </section>
 
 	    <aside class="aside" v-for="item in items">
-        <list-item @tap="bill" right :icon="item.icon" :text="item.title" style="color:grey"></list-item>
-	      <!-- <ul>
-	      	<touch @tap="bill"><li><icon name="form" class="icon2"></icon><p>账单</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li></touch>
-          <touch @tap="star"><li><icon name="favorite" class="icon2"></icon><p>收藏</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li></touch>
-          <li><icon name="good" class="icon2"></icon><p>推荐</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
-          <li><icon name="edit" class="icon2"></icon><p>笔记</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
-          <li><icon name="trade" class="icon2"></icon><p>购买</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
-          <li><icon name="download" class="icon2"></icon><p>下载</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
-          <li><icon name="office" class="icon2"></icon><p>已读</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
-        </ul> -->
-
+        <list-item @tap="bill" right :icon="item.icon" :text="item.title" style="color:grey;height:53px"></list-item>
 	    </aside>
 
     </scroller>
+    <action-sheet :show="show" @cancel="cancel" style="bottom:-49px">
+      <span class="getshubi">350</span>
+    </action-sheet>
+    <action-sheet :show="show1" @cancel="cancel1" style="bottom:-49px">
+      <span class="getchongzhi">来充值</span>
+    </action-sheet>
+    <action-sheet :show="show2" @cancel="cancel2" style="bottom:-49px">
+      <span class="getqiandao">签到</span>
+    </action-sheet>
   </router-content>
 </template>
 
@@ -41,6 +43,7 @@ import Icon from '@/components/Icon'
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import ListItem from '@/components/ListItem'
 import Switches from '@/components/Switches'
+import { ActionSheet, ActionSheetItem, ActionSheetButton } from '@/components/ActionSheet'
 export default {
   name: 'my',
   components: {
@@ -50,20 +53,27 @@ export default {
     NavigationBar,
     NavigationBarItem,
     ListItem,
-    Switches
+    Switches,
+    ActionSheet,
+    ActionSheetItem,
+    ActionSheetButton
   },
   data () {
     return {
       msg: '这里是我的模块',
       switchesState: false,
+      top: true,
+      show: false,
+      show1: true,
+      show2: false,
       items: [
-        {title: '账单', icon: 'form'},
-        {title: '收藏', icon: 'favorite'},
-        {title: '推荐', icon: 'good'},
-        {title: '笔记', icon: 'edit'},
-        {title: '购买', icon: 'trade'},
-        {title: '下载', icon: 'download'},
-        {title: '已读', icon: 'office'}
+        {title: '账单', icon: 'form', tap: 'bill'},
+        {title: '收藏', icon: 'favorite', tap: 'star'},
+        {title: '推荐', icon: 'good', tap: 'star'},
+        {title: '笔记', icon: 'edit', tap: 'star'},
+        {title: '购买', icon: 'trade', tap: 'star'},
+        {title: '下载', icon: 'download', tap: 'star'},
+        {title: '已读', icon: 'office', tap: 'star'}
       ]
     }
   },
@@ -88,6 +98,24 @@ export default {
     },
     cart () {
       this.$router.push({name: 'cart'})
+    },
+    cancel () {
+      this.show = false
+    },
+    display () {
+      this.show = true
+    },
+    cancel1 () {
+      this.show1 = false
+    },
+    display1 () {
+      this.show1 = true
+    },
+    cancel2 () {
+      this.show2 = false
+    },
+    display2 () {
+      this.show2 = true
     }
   }
 }
@@ -97,45 +125,48 @@ export default {
 <style scoped>
 .scroller{
 	flex-grow: 1;
+  margin-bottom:49px;
 }
 
 .icon{
 	width: 20px;
-  height: 20px;
+  height: 80%;
 	color: grey;
 }
-.icon2{
-	width: 16px;
-  height: 16px;
-	color: grey;
-	margin:12px;
-	float:left;
-}
-
 
 .person{
 	width:100%;
-  height:80px;
+  height:130px;
   background-color:#fff;
-  padding:20px 0 20px 0;
 }
 .headImg{
-	height:80px;
-	width:80px;
+	height:100px;
+	width:100px;
 	margin:0 auto;
-	background-color:#e5f0ff;
-	border-radius:40px;
-	line-height:80px;
+	/*background-color:#e5f0ff;*/
+	border-radius:50px;
+	line-height:100px;
 	text-align:center;
+  background-image:url("http://dynamic-image.yesky.com/600x-/uploadImages/upload/20141120/ieoqokgazxxjpg.jpg");
+  background-repeat:no-repeat;
+  background-size: 100px 100px;
+  display:block;
+}
+.editifo{
+  width:100%;
+  height:30px;
+  line-height:30px;
+  text-align:center;
+  margin:5px auto;
+  display:block;
 }
 
-
 section{
-  margin-top:10px;
+  padding:20px 0;
 	width:100%;
-  	height:80px;
-  	background-color:#fff;
-  	display: -webkit-box;
+  height:80px;
+  background-color:#fff;
+  display: -webkit-box;
 }
 section i{
 	-webkit-box-flex: 1;
@@ -157,18 +188,15 @@ section i span{
 aside {
     margin-top:10px;
 }
-aside ul li {
-    height:40px;
-    background: #fff;
-    padding: 0 2%;
-    border-bottom:1px solid #efeff4;
-    display:block;
-}
-aside ul li p{
-	font-size: 12px;
-    color: #000;
-    display: inline-block;
-    float:left;
-    margin:12px 0;
+
+.getshubi{
+  height:100px;
+  width:100%;
+  line-height:100px;
+  font-size:40px;
+  color:#e59b1a;
+  text-align:center;
+  margin: 0 auto;
+  display: block;
 }
 </style>

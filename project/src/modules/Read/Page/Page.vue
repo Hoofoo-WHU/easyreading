@@ -122,6 +122,7 @@ export default {
     z-index: -1;
     // transform: translateZ(0);
     display: flex;
+    background: #f8f8f8;
     .chapter{
       position: absolute;
       font-size: 12px;

@@ -1,7 +1,7 @@
 <template>
   <div class="toc">
     <scroller style="flex-grow:1">
-      <list-item v-for="item in 20" :text="'第'+item+'章'" @tap="tap"></list-item>
+      <list-item v-for="item in 20" style="height: 53px;line-height: 53px;font-family: serif" :text="'第'+item+'章'" @tap="tap"></list-item>
     </scroller>
   </div>
 </template>

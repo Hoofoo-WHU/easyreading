@@ -2,6 +2,12 @@
   <button-item class="button border" @tap="tap">
     <icon v-if="icon" class="icon" :name="icon"></icon>
     <div class="content">{{text}}</div>
+    <div class="right">
+      <slot>
+        <icon v-if="right" style="width: 12px;height: 100%;color:#c8c7cc" name="front">
+        </icon>
+      </slot>
+    </div>
   </button-item>
 </template>
 
@@ -22,6 +28,10 @@ export default {
     text: {
       type: String,
       default: ''
+    },
+    right: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -52,6 +62,13 @@ export default {
 .content{
   padding-left: 22px;
   text-indent: 1em;
+}
+.right{
+  height: 100%;
+  position: absolute;
+  right: 1em;
+  top: 0;
+  bottom: 0;
 }
 .border:before{
   content: none;

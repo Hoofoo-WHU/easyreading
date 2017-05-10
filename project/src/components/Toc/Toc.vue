@@ -1,7 +1,7 @@
 <template>
   <div class="toc">
     <scroller style="flex-grow:1">
-      <list-item v-for="item in 20" :text="'第'+item+'章'" right></list-item>
+      <list-item v-for="item in 20" :text="'第'+item+'章'" @tap="tap"></list-item>
     </scroller>
   </div>
 </template>
@@ -19,6 +19,11 @@ export default {
   },
   data () {
     return {
+    }
+  },
+  methods: {
+    tap () {
+      console.log('tap')
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
-  <div class="buttonItem" :active="touch" @touchstart.prevent="touchStart" @mousedown.prevent="touchStart" @touchend.prevent="touchEnd" @mouseup.prevent="touchEnd">
+  <touch class="buttonItem" :deactive="paning" @tap="tap" @panstart="panstart" @panend="panend" :pan-options="{direction: 'vertical'}" :tap-options="{threshold: 99999999,time: 99999999}">
     <slot></slot>
-  </div>
+  </touch>
 </template>
 
 <script>
@@ -10,19 +10,28 @@ export default {
   name: 'ButtonItem',
   data () {
     return {
-      touch: false
+      paning: false
+    }
+  },
+  computed: {
+    height () {
+      return parseInt(getComputedStyle(this.$el).height)
     }
   },
   mixins: [InnerEvent],
   methods: {
-    touchStart (e) {
-      this.touch = true
+    panstart () {
+      this.paning = true
     },
-    touchEnd (e) {
-      if (this.isInnerEvent(e, this.$el) && this.touch) {
+    panend () {
+      setTimeout(() => {
+        this.paning = false
+      }, 0)
+    },
+    tap (e) {
+      if (!this.paning && this.isInnerEvent(e.srcEvent, this.$el)) {
         this.$emit('tap')
       }
-      this.touch = false
     }
   }
 }
@@ -35,8 +44,11 @@ export default {
   user-select: none;
   position: relative;
   transition: all .3s ease;
-  &[active]{
+  &:active{
     background: rgba(0,0,0,0.031);
+  }
+  &[deactive]{
+    background: none;
   }
 }
 </style>

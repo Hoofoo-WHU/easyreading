@@ -279,7 +279,17 @@
 
       <p class="date">（一九四四年九月）</p>
     </div>
-    <toc-modal :show="$store.state.read.showtoc" @cancel="$store.state.read.showtoc = false"></toc-modal>
+    <toc-modal :show="this.$store.state.read.showtoc" @show="tocShow" @hide="tocHide" @cancel="closeToc">
+      <navigation-bar title="霸气侧漏的书籍信息"></navigation-bar>
+      <div style="flex-grow:1; position:relative">
+        <toc v-if="tocTab === 'toc'"></toc>
+        <div v-if="tocTab === 'tags'">书签</div>
+      </div>
+      <bottom-bar>
+        <bottom-bar-item text="目录" @tap="tocTab = 'toc'" :active="tocTab === 'toc'"></bottom-bar-item>
+        <bottom-bar-item text="书签" @tap="tocTab = 'tags'" :active="tocTab === 'tags'" left-divide></bottom-bar-item>
+      </bottom-bar>
+    </toc-modal>
   </div>
 </template>
 
@@ -288,6 +298,7 @@ import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
 import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
 import ButtonItem from '@/components/ButtonItem'
+import Toc from '@/components/Toc'
 import TocModal from './TocModal'
 import Page from './Page'
 import Paging from './lib/page.js'
@@ -303,7 +314,8 @@ export default {
     ActionSheet,
     ActionSheetItem,
     ButtonItem,
-    TocModal
+    TocModal,
+    Toc
   },
   data () {
     return {
@@ -312,7 +324,8 @@ export default {
       finish: false,
       pandistance: 0,
       paning: false,
-      showToc: false
+      showToc: false,
+      tocTab: 'toc'
     }
   },
   computed: {
@@ -336,8 +349,17 @@ export default {
     closeMore () {
       this.$store.state.read.showmore = false
     },
+    tocShow () {
+      this.$store.commit('addmodal', this.closeToc)
+    },
+    tocHide () {
+      this.$store.commit('removemodal', this.closeToc)
+    },
     toc () {
       this.$store.state.read.showtoc = true
+    },
+    closeToc () {
+      this.$store.state.read.showtoc = false
     },
     tap (e) {
       var width = window.innerWidth

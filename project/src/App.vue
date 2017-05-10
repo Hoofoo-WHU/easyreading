@@ -6,24 +6,23 @@
       </keep-alive>
     </transition>
     <action-sheet :show="$store.state.read.showmore" @show="modalshow" @hide="modalhide" @cancel="$store.state.read.showmore = false">
-      <action-sheet-item><button-item class="buttonItem">加入书架</button-item></action-sheet-item>
-      <action-sheet-item><button-item class="buttonItem" @tap="toDetail">书籍详情</button-item></action-sheet-item>
-      <action-sheet-item><button-item class="buttonItem">测试</button-item></action-sheet-item>
+      <action-sheet-button text="加入书架"></action-sheet-button>
+      <action-sheet-button text="书籍详情" @tap="toDetail"></action-sheet-button>
+      <action-sheet-button text="测试"></action-sheet-button>
     </action-sheet>
   </div>
 </template>
 
 <script>
 import RouterWrapper from '@/components/RouterWrapper'
-import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
-import ButtonItem from '@/components/ButtonItem'
+import {ActionSheet, ActionSheetItem, ActionSheetButton} from '@/components/ActionSheet'
 export default {
   name: 'app',
   components: {
     RouterWrapper,
     ActionSheet,
     ActionSheetItem,
-    ButtonItem
+    ActionSheetButton
   },
   data () {
     return {

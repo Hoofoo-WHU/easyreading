@@ -1,12 +1,22 @@
 <template>
   <div class="toc">
-    目录
+    <scroller style="flex-grow:1">
+      <list-item v-for="item in 20" :text="'第'+item+'章'" right></list-item>
+    </scroller>
   </div>
 </template>
 
 <script>
+import Scroller from '@/components/Scroller'
+import ListItem from '@/components/ListItem'
+import Container from '@/components/Container'
 export default {
   name: 'Toc',
+  components: {
+    Scroller,
+    ListItem,
+    Container
+  },
   data () {
     return {
     }
@@ -16,8 +26,11 @@ export default {
 
 <style lang="stylus" scoped>
 .toc{
-  width: 100%;
-  height: 100%;
-  background: red;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
 }
 </style>

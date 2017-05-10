@@ -1,8 +1,6 @@
 <template>
-  <div class="buttonItem" :active="touch" @touchstart.prevent.stop="touchStart" @mousedown.prevent.stop="touchStart" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
-    <span class="content">
-      <slot></slot>
-    </span>
+  <div class="buttonItem" :active="touch" @touchstart.prevent="touchStart" @mousedown.prevent="touchStart" @touchend.prevent="touchEnd" @mouseup.prevent="touchEnd">
+    <slot></slot>
   </div>
 </template>
 
@@ -32,19 +30,13 @@ export default {
 <style lang="stylus" scoped>
 .buttonItem{
   width: 100%;
-  height: 53px;
+  min-height: 5px;
   overflow: hidden;
   user-select: none;
   position: relative;
   transition: all .3s ease;
   &[active]{
     background: rgba(0,0,0,0.031);
-  }
-  .content{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate3D(-50%, -50%, 0)
   }
 }
 </style>

@@ -1,9 +1,7 @@
 <template>
-  <div class="buttonItem" :active="touch" @touchstart.prevent.stop="touchStart" @mousedown.prevent.stop="touchStart" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
-    <span class="content">
-      <slot></slot>
-    </span>
-  </div>
+  <touch class="buttonItem" :deactive="paning" @tap="tap" @panmove="panmove" @panend="panend" :pan-options="{threshold: 9}" :tap-options="{threshold: 99999999,time: 99999999}">
+    <slot></slot>
+  </touch>
 </template>
 
 <script>
@@ -12,39 +10,55 @@ export default {
   name: 'ButtonItem',
   data () {
     return {
-      touch: false
+      paning: false,
+      oldTop: 0
+    }
+  },
+  computed: {
+    height () {
+      return parseInt(getComputedStyle(this.$el).height)
     }
   },
   mixins: [InnerEvent],
   methods: {
-    touchStart (e) {
-      this.touch = true
+    panmove (e) {
+      if (this.$el.getBoundingClientRect().top !== this.oldTop) {
+        this.oldTop = this.$el.getBoundingClientRect().top
+        this.paning = true
+      }
+      if (!this.isInnerEvent(e.srcEvent, this.$el)) {
+        this.paning = true
+      }
     },
-    touchEnd (e) {
-      if (this.isInnerEvent(e, this.$el) && this.touch) {
+    panend () {
+      setTimeout(() => {
+        this.paning = false
+      }, 0)
+    },
+    tap (e) {
+      if (!this.paning && this.isInnerEvent(e.srcEvent, this.$el)) {
         this.$emit('tap')
       }
-      this.touch = false
     }
+  },
+  mounted () {
+    this.oldTop = this.$el.getBoundingClientRect().top
   }
 }
 </script>
 <style lang="stylus" scoped>
 .buttonItem{
   width: 100%;
-  height: 53px;
+  min-height: 5px;
   overflow: hidden;
   user-select: none;
   position: relative;
   transition: all .3s ease;
-  &[active]{
+  &:active{
     background: rgba(0,0,0,0.031);
   }
-  .content{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate3D(-50%, -50%, 0)
+  &[deactive]{
+    background: none;
   }
 }
 </style>

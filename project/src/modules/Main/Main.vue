@@ -76,9 +76,6 @@ export default {
         this.$splashScreen.hide()
       }
     }, 1000)
-    document.addEventListener('backbutton', function () {
-      navigator.app.exitApp()
-    }, false)
   }
 }
 </script>
@@ -99,7 +96,6 @@ export default {
 .view{
   /*width: 100%;*/
   flex-grow: 1;
-  background: #efeff4;
   /*display: flex;*/
   /*flex-direction: column;*/
 }

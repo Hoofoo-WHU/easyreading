@@ -100,7 +100,7 @@
     mounted () {
       this.info = {
         title: '三生三世十里桃花',
-        id: '8877',
+        id: '5656',
         author: '唐七',
         data: '那一世，大荒之中一处荒山，成就她与他的初见。桃花灼灼，枝叶蓁蓁，妖娆伤眼。记忆可以封存，可心有时也会背叛，忘得了前世情缘，忘不了桃林十里，亦忘不了十里桃林中玄衣的少年。这一世，东海水晶宫，他们不期而遇。不是每个人都能看透这三生三世的爱恨交织，只要你还在，只要我还爱，那么，这世间，刀山火海，毫不畏惧。有些爱，藏在嘴边，挂在心尖。浮生若梦，情如流水，爱似桃花……',
         cover: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2619242940,2733301503&fm=58',
@@ -221,7 +221,6 @@
     display: flex;
     flex-direction: column;
     font-size: 12px;
-    padding-top: 10px;
   }
   .bottom{
     font-size: 12px;

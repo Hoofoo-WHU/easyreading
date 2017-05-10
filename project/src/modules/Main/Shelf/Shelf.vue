@@ -1,17 +1,17 @@
 <template>
   <router-content style="flex-direction:column">
-    <navigation-bar @tap="scrollTop" title="书架" :sub-title="select">
+    <navigation-bar @tap="scrollTop" title="书架" :sub-title="select" :border="!top">
       <navigation-bar-item @tap="modify" slot="right" text="编辑" v-if="edit && !empty"/>
       <navigation-bar-item @tap="finish" slot="right" text="完成" v-else-if="!edit"/>
     </navigation-bar>
-    <scroller class="scroller" ref="scroller" style="flex-grow:1" >
+    <scroller class="scroller" ref="scroller" style="flex-grow:1" v-model="top">
       <div v-if="empty" class="default">
         <icon name="myShelf" class="icon"/>
         <p class="none">您的书架空空如也，去书城看看吧</p>
       </div>
       <div class="shelf">
         <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id">
-          <book :cover="item.cover" :title="item.title" :isUpdate="isUpdate" :isEdit="item.isEdit" :edit="edit"/>
+          <book :cover="item.cover" :title="item.title" :isEdit="item.isEdit" :edit="edit"/>
         </touch>
       </div>
     </scroller>
@@ -50,7 +50,8 @@ export default {
       isUpdate: false,
       edit: true,
       checked: [],
-      isAll: true
+      isAll: true,
+      top: true
     }
   },
   computed: {
@@ -127,16 +128,17 @@ export default {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 90%;
-    padding-top: 10px;
-    margin-left: 7%;
+    padding-top: 20px;
+    margin-left: 10%;
     font-size: 12px;
+    width: 100%;
   }
   .book{
-    width: 80px;
-    margin-bottom: 20px;
-    padding-right: 5%;
+    width: 20%;
+    margin-bottom: 23px;
+    padding-right: 10%;
     position: relative;
+    margin-top: 10px;
   }
   .bottom{
     position: absolute;

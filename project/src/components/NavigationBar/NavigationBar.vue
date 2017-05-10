@@ -1,5 +1,5 @@
 <template>
-<div class="navigation-bar border" :routing="routing" :class="{ios: $platform === 'ios'}" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
+<div class="navigation-bar border" :showborder="border" :class="{ios: $platform === 'ios'}" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
   <slot>
     <div class="left"><slot name="left"></slot></div>
     <div v-if="title" class="title" :class="{small: subTitle}">{{title}}</div>
@@ -21,6 +21,10 @@ export default {
     subTitle: {
       type: String,
       default: ''
+    },
+    border: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -35,15 +39,15 @@ export default {
         this.$emit('tap', e)
       }
     }
-  },
-  computed: {
-    routing: function () {
-      if (this.$store && this.$store.getters.routing) {
-        return this.$store.getters.routing
-      }
-      return false
-    }
   }
+  // computed: {
+  //   routing: function () {
+  //     if (this.$store && this.$store.getters.routing) {
+  //       return this.$store.getters.routing
+  //     }
+  //     return false
+  //   }
+  // }
 }
 </script>
 
@@ -56,9 +60,9 @@ export default {
   user-select: none;
   position: relative;
   min-height: 49px;
-  &[routing]{
-    background: #fff
-  }
+  // &[routing]{
+  //   background: #fff
+  // }
   .title{
     position: absolute;
     left: 50%;
@@ -70,6 +74,7 @@ export default {
     max-width: 50%;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .small{
     font-size: 15px;
@@ -78,6 +83,7 @@ export default {
     top: 50%;
     transform: translate(-50%, 8px);
     font-size: 9px;
+    white-space: nowrap;
   }
   .left{
     display: flex;
@@ -94,12 +100,17 @@ export default {
   }
 }
 .border:before { 
+  opacity: 0;
   border-bottom: 1px solid #c8c7cc;
   content: '';
   width: 100%;
   position: absolute;
   bottom: 0;
   transform-origin: left bottom;
+  transition: opacity .3s ease;
+}
+.border[showborder]:before{
+  opacity: 1;
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 2.0),
 only screen and (min--moz-device-pixel-ratio: 2.0),
@@ -132,7 +143,7 @@ only screen and (min-device-pixel-ratio: 2.5) {
 @supports (-webkit-backdrop-filter: blur(8px)){
   .navigation-bar{
     background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px) brightness(1.2);
+    backdrop-filter: blur(10px);
   }
 }
 </style>

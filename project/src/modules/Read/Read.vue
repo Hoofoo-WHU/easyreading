@@ -2,7 +2,7 @@
   <div class="read">
     <navigation-bar title="读书" class="navigation" :show="show">
       <navigation-bar-item slot="left" icon="back" text="返回" @tap="back" :disable="$store.state.read.showmore"/>
-      <navigation-bar-item slot="right" icon="shop" @tap="$store.state.readMore = true" :disable="$store.state.read.showmore"/>
+      <navigation-bar-item slot="right" icon="shop" :disable="$store.state.read.showmore"/>
       <navigation-bar-item slot="right" icon="more" @tap="more" :disable="$store.state.read.showmore"/>
     </navigation-bar>
     <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal' }" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
@@ -32,7 +32,7 @@
       </page>
     </touch>
     <bottom-bar class="bottomBar" :show="show">
-      <bottom-bar-item icon="list"/>
+      <bottom-bar-item icon="list" @tap="toc"/>
       <bottom-bar-item icon="slider"/>
       <bottom-bar-item icon="light"/>
       <bottom-bar-item icon="font"/>
@@ -279,6 +279,17 @@
 
       <p class="date">（一九四四年九月）</p>
     </div>
+    <toc-modal :show="this.$store.state.read.showtoc" @show="tocShow" @hide="tocHide" @cancel="closeToc">
+      <navigation-bar title="霸气侧漏的书籍信息"></navigation-bar>
+      <div style="flex-grow:1; position:relative">
+        <toc v-if="tocTab === 'toc'"></toc>
+        <div v-if="tocTab === 'tags'">书签</div>
+      </div>
+      <bottom-bar>
+        <bottom-bar-item text="目录" @tap="tocTab = 'toc'" :active="tocTab === 'toc'"></bottom-bar-item>
+        <bottom-bar-item text="书签" @tap="tocTab = 'tags'" :active="tocTab === 'tags'" left-divide></bottom-bar-item>
+      </bottom-bar>
+    </toc-modal>
   </div>
 </template>
 
@@ -287,6 +298,8 @@ import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
 import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
 import ButtonItem from '@/components/ButtonItem'
+import Toc from '@/components/Toc'
+import TocModal from './TocModal'
 import Page from './Page'
 import Paging from './lib/page.js'
 import bounce from './lib/bounce.js'
@@ -300,7 +313,9 @@ export default {
     Page,
     ActionSheet,
     ActionSheetItem,
-    ButtonItem
+    ButtonItem,
+    TocModal,
+    Toc
   },
   data () {
     return {
@@ -308,7 +323,9 @@ export default {
       pages: this.$store.state.read.pages,
       finish: false,
       pandistance: 0,
-      paning: false
+      paning: false,
+      showToc: false,
+      tocTab: 'toc'
     }
   },
   computed: {
@@ -328,6 +345,21 @@ export default {
     more () {
       console.log('moretap')
       this.$store.state.read.showmore = true
+    },
+    closeMore () {
+      this.$store.state.read.showmore = false
+    },
+    tocShow () {
+      this.$store.commit('addmodal', this.closeToc)
+    },
+    tocHide () {
+      this.$store.commit('removemodal', this.closeToc)
+    },
+    toc () {
+      this.$store.state.read.showtoc = true
+    },
+    closeToc () {
+      this.$store.state.read.showtoc = false
     },
     tap (e) {
       var width = window.innerWidth

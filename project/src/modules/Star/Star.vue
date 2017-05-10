@@ -1,18 +1,38 @@
 <template>
-  <router-content style="flex-direction:column">
-    <navigation-bar title="设置">
-      <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
-    </navigation-bar>
-    <scroller class="scroller" ref="scroller">
-      <aside class="aside">
-        <ul>
-          <li><p>头像</p><icon name="more" class="icon"></icon></li>
-          <li><p>手机号码/电子邮箱</p><p style="float:right;margin-right:10px;color:grey;">18163516131</p></li>
-          <li><p>修改密码</p><icon name="more" class="icon"></icon></li>
-        </ul>
-      </aside>
-    </scroller>
-  </router-content>
+  <div id="booklist">
+        <navigation-bar @tap="" title="收藏列表">
+          	<navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
+        </navigation-bar>
+        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
+            <ul>
+                <li v-for="book in rank(mockData)" :key="book.rank">
+                    <div class="rank-icon" v-if="book.rank === 1">
+                        <icon class="icon" name="first"></icon>
+                    </div>
+                    <div class="rank-icon" v-else>
+                        {{ book.rank }}
+                    </div>
+                    <div class="book-img">
+                        <img :src=" book.img " :alt=" book.name ">
+                    </div>
+                    <div class="book-info">
+                        <p>{{ book.name }}</p>
+                        <div class="operate">
+                            <div class="addShelf">
+                                <icon class="icon" :name="'addShelf'"></icon>
+                            </div>
+                            <div class="addCart">
+                                <icon :name="'addCart'"></icon>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="book-price">
+                        ￥ {{ book.price }}
+                    </div>
+                </li>
+            </ul>
+        </scroller>
+    </div>
 </template>
 
 <script>
@@ -42,7 +62,10 @@ export default {
       this.$refs.scroller.scrollTop()
     },
     back () {
-      this.$router.go(-1)
+      this.$router.push({name: 'my'})
+    },
+    out () {
+      this.$router.push({name: 'login'})
     }
   }
 }
@@ -78,5 +101,15 @@ aside ul li p{
   text-align: center;
   color: #000;
   display: inline-block;
+}
+.out{
+  width:90%;
+  height:42px;
+  margin:30px 5%;
+  background-color: #cc0000;
+  line-height: 38px;
+  text-align: center;
+  color:#fff;
+  border-radius:12px;
 }
 </style>

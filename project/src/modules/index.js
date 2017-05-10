@@ -8,6 +8,9 @@ import Detail from './Detail'
 import Setting from './Setting'
 import New from './New'
 import Star from './Star'
+import Person from './Person'
+import Bill from './Bill'
+import Cart from './Cart'
 
 export default {
   Main,
@@ -19,5 +22,8 @@ export default {
   Detail,
   Setting,
   New,
-  Star
+  Star,
+  Person,
+  Bill,
+  Cart
 }

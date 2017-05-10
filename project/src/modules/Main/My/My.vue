@@ -6,21 +6,20 @@
     </navigation-bar>
     <scroller class="scroller" ref="scroller">
       <div class="person">
-      	<touch class="headImg" @tap="star"><img id="headImg">头像</touch>
+      	<touch class="headImg" @tap="person"><img id="headImg">头像</touch>
       </div>
 
 	    <section>
 	    <i><span class="shubi" style="background-color:rgb(249,204,157)" >阅书币</span></i>
 	    <i><span class="chongzhi" style="background-color:rgb(195,208,136)" >去充值</span></i>
-	    <i><span class="cart" style="background-color:rgb(253,221,155)" >购物车</span></i>
+	    <i><touch @tap="cart"><span class="cart" style="background-color:rgb(253,221,155)" >购物车</span></touch></i>
 	    <i><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></i>
 	    </section>
 
-
 	    <aside class="aside">
 	      <ul>
-	      	<li><icon name="form" class="icon2"></icon><p>账单</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
-          <li><icon name="favorite" class="icon2"></icon><p>收藏</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
+	      	<touch @tap="bill"><li><icon name="form" class="icon2"></icon><p>账单</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li></touch>
+          <touch @tap="star"><li><icon name="favorite" class="icon2"></icon><p>收藏</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li></touch>
           <li><icon name="good" class="icon2"></icon><p>推荐</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
           <li><icon name="edit" class="icon2"></icon><p>笔记</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
           <li><icon name="trade" class="icon2"></icon><p>购买</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
@@ -62,8 +61,17 @@ export default {
     postnew () {
       this.$router.push({name: 'new'})
     },
+    person () {
+      this.$router.push({name: 'person'})
+    },
+    bill () {
+      this.$router.push({name: 'bill'})
+    },
     star () {
       this.$router.push({name: 'star'})
+    },
+    cart () {
+      this.$router.push({name: 'cart'})
     }
   }
 }
@@ -73,6 +81,7 @@ export default {
 <style scoped>
 .scroller{
 	flex-grow: 1;
+  background-color:#eee;
 }
 
 .icon{

@@ -1,7 +1,7 @@
 <template>
 <router-content style="flex-direction:column">
   <navigation-bar title="">
-    <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
+    <navigation-bar-item @tap="back" slot="left" text="取消" icon=""/>
     <navigation-bar-item @tap="relogin" slot="right" text="登录" icon=""/>
   </navigation-bar>
   <div class="di">
@@ -46,7 +46,7 @@ export default {
       this.$router.push({name: 'login'})
     },
     back () {
-      this.$router.push({name: 'my'})
+      this.$router.push({name: 'person'})
     },
     logup () {
       console.log('Tap logup')

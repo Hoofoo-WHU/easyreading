@@ -13,6 +13,15 @@
         "cordova-plugin-console": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-keyboard": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
+        "cordova-plugin-light-statusbar": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
@@ -22,13 +31,10 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         },
+        "cordova.custom.plugins.exitapp": {
+            "PACKAGE_NAME": "com.whu.suiyueyi"
+        },
         "it.innowatio.cordova.ios-fullscreen": {
-            "PACKAGE_NAME": "com.whu.suiyueyi"
-        },
-        "cordova-plugin-crosswalk-webview": {
-            "PACKAGE_NAME": "com.whu.suiyueyi"
-        },
-        "cordova-plugin-keyboard": {
             "PACKAGE_NAME": "com.whu.suiyueyi"
         }
     },

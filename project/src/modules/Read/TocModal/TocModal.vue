@@ -70,6 +70,8 @@ export default {
     overflow: hidden;
     z-index: 300;
     background: #fff;
+    display: flex;
+    flex-direction: column;
   } 
 }
 .fade-enter-active, .fade-leave-active{

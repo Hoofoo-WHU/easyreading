@@ -9,14 +9,14 @@
           <slot></slot>
         </touch>
         <touch class="cancel" @tap="stop">
-          <button-item  @tap="cancel">取消</button-item>
+          <action-sheet-button @tap="cancel" text="取消"></action-sheet-button>
         </touch>
       </div>
     </transition>
   </div>
 </template>
 <script>
-import ButtonItem from '@/components/ButtonItem'
+import ActionSheetButton from './ActionSheetButton.vue'
 export default {
   name: 'ActionSheet',
   props: {
@@ -26,7 +26,7 @@ export default {
     }
   },
   components: {
-    ButtonItem
+    ActionSheetButton
   },
   data () {
     return {

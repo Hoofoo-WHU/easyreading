@@ -1,5 +1,5 @@
 <template>
-  <touch class="buttonItem" :deactive="paning" @tap="tap" @panstart="panstart" @panend="panend" :pan-options="{direction: 'vertical'}" :tap-options="{threshold: 99999999,time: 99999999}">
+  <touch class="buttonItem" :deactive="paning" @tap="tap" @panmove="panmove" @panend="panend" :pan-options="{threshold: 9}" :tap-options="{threshold: 99999999,time: 99999999}">
     <slot></slot>
   </touch>
 </template>
@@ -10,7 +10,8 @@ export default {
   name: 'ButtonItem',
   data () {
     return {
-      paning: false
+      paning: false,
+      oldTop: 0
     }
   },
   computed: {
@@ -20,8 +21,14 @@ export default {
   },
   mixins: [InnerEvent],
   methods: {
-    panstart () {
-      this.paning = true
+    panmove (e) {
+      if (this.$el.getBoundingClientRect().top !== this.oldTop) {
+        this.oldTop = this.$el.getBoundingClientRect().top
+        this.paning = true
+      }
+      if (!this.isInnerEvent(e.srcEvent, this.$el)) {
+        this.paning = true
+      }
     },
     panend () {
       setTimeout(() => {
@@ -33,6 +40,9 @@ export default {
         this.$emit('tap')
       }
     }
+  },
+  mounted () {
+    this.oldTop = this.$el.getBoundingClientRect().top
   }
 }
 </script>

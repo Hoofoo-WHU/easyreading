@@ -16,8 +16,8 @@
 	    <i><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></i>
 	    </section>
 
-	    <aside class="aside">
-        <list-item @tap="bill" right icon="form" text="账单" style="color:grey"><switches @tap="switchesState=!switchesState" :on="switchesState" class="icon"></switches></list-item>
+	    <aside class="aside" v-for="item in items">
+        <list-item @tap="bill" right :icon="item.icon" :text="item.title" style="color:grey"></list-item>
 	      <!-- <ul>
 	      	<touch @tap="bill"><li><icon name="form" class="icon2"></icon><p>账单</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li></touch>
           <touch @tap="star"><li><icon name="favorite" class="icon2"></icon><p>收藏</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li></touch>
@@ -55,7 +55,16 @@ export default {
   data () {
     return {
       msg: '这里是我的模块',
-      switchesState: false
+      switchesState: false,
+      items: [
+        {title: '账单', icon: 'form'},
+        {title: '收藏', icon: 'favorite'},
+        {title: '推荐', icon: 'good'},
+        {title: '笔记', icon: 'edit'},
+        {title: '购买', icon: 'trade'},
+        {title: '下载', icon: 'download'},
+        {title: '已读', icon: 'office'}
+      ]
     }
   },
   methods: {

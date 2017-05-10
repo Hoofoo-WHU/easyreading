@@ -3,14 +3,18 @@
     <ul class="x-title">
       <li v-on:click="tab(index)" v-for="(item, index) in items" :class="{active: activeIndex === index}">{{item.title}}</li>
     </ul>
-    <div class="x-content">{{items[activeIndex].content}}</div>
+    <div><list-item @tap="" v-for="content in items[activeIndex].contents" icon="" :text="content.con" style="color:grey;height:50px;line-height:50px"></list-item>
+    </div>
   </div>
 </template>
 
 <script>
-
+import ListItem from '@/components/ListItem'
 export default {
   name: 'app',
+  components: {
+    ListItem
+  },
   data () {
     return {
       activeIndex: 0

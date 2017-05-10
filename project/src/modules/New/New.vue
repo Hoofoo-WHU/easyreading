@@ -30,7 +30,7 @@ export default {
     return {
       msg: '这里是搜索模块',
       items: [
-        {title: '提醒', content: '1111111111111'},
+        {title: '提醒', content: [{con: '1111111111111'}, {con: '1111111111111'}]},
         {title: '通知', content: '2222222222222'},
         {title: '推荐', content: '3333333333333'}
       ]

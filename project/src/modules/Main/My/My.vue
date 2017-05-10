@@ -17,7 +17,8 @@
 	    </section>
 
 	    <aside class="aside">
-	      <ul>
+        <list-item @tap="bill" right icon="form" text="账单" style="color:grey"><switches @tap="switchesState=!switchesState" :on="switchesState" class="icon"></switches></list-item>
+	      <!-- <ul>
 	      	<touch @tap="bill"><li><icon name="form" class="icon2"></icon><p>账单</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li></touch>
           <touch @tap="star"><li><icon name="favorite" class="icon2"></icon><p>收藏</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li></touch>
           <li><icon name="good" class="icon2"></icon><p>推荐</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
@@ -25,7 +26,8 @@
           <li><icon name="trade" class="icon2"></icon><p>购买</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
           <li><icon name="download" class="icon2"></icon><p>下载</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
           <li><icon name="office" class="icon2"></icon><p>已读</p><icon style="float: right; margin:10px" name="more" class="icon"></icon></li>
-        </ul>
+        </ul> -->
+
 	    </aside>
 
     </scroller>
@@ -37,6 +39,8 @@ import Scroller from '@/components/Scroller'
 import RouterContent from '@/components/RouterContent'
 import Icon from '@/components/Icon'
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
+import ListItem from '@/components/ListItem'
+import Switches from '@/components/Switches'
 export default {
   name: 'my',
   components: {
@@ -44,11 +48,14 @@ export default {
     RouterContent,
     Icon,
     NavigationBar,
-    NavigationBarItem
+    NavigationBarItem,
+    ListItem,
+    Switches
   },
   data () {
     return {
-      msg: '这里是我的模块'
+      msg: '这里是我的模块',
+      switchesState: false
     }
   },
   methods: {
@@ -81,7 +88,6 @@ export default {
 <style scoped>
 .scroller{
 	flex-grow: 1;
-  background-color:#eee;
 }
 
 .icon{

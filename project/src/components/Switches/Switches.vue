@@ -1,5 +1,5 @@
 <template>
-  <touch v-on:tap="toggle"><icon :name="iconname" class="icon"></icon></touch>
+  <touch v-on:tap="toggle" @touchstart.stop.prevent.native @touchend.stop.prevent.native @mouseup.stop.prevent.native @mousedown.stop.prevent.native class="switches"><icon :name="iconname" class="icon"></icon></touch>
 </template>
 
 <script>
@@ -15,8 +15,12 @@ export default {
     }
   },
   methods: {
-    toggle: function () {
+    toggle: function (e) {
+      this.stop(e)
       this.$emit('tap')
+    },
+    stop (e) {
+      e.srcEvent.stopImmediatePropagation()
     }
   },
   computed: {
@@ -37,6 +41,15 @@ export default {
 <style scoped>
 .icon{
   width: 40px;
-  height: 20px;
+  height: 40px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+.switches{
+  height: 100%;
+  position: relative;
+  width: 40px;
 }
 </style>

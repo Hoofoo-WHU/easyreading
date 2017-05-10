@@ -40,7 +40,6 @@ export default {
 <style lang="stylus" scoped>
 .container{
   user-select: none;
-  background-color: #fff;
   width: 100%;
   position: relative;
   height: inherit;

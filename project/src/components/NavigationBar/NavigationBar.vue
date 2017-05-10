@@ -1,5 +1,5 @@
 <template>
-<div class="navigation-bar border" :showborder="border" :routing="routing" :class="{ios: $platform === 'ios'}" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
+<div class="navigation-bar border" :showborder="border" :class="{ios: $platform === 'ios'}" @touchend.prevent.stop="touchEnd" @mouseup.prevent.stop="touchEnd">
   <slot>
     <div class="left"><slot name="left"></slot></div>
     <div v-if="title" class="title" :class="{small: subTitle}">{{title}}</div>
@@ -39,15 +39,15 @@ export default {
         this.$emit('tap', e)
       }
     }
-  },
-  computed: {
-    routing: function () {
-      if (this.$store && this.$store.getters.routing) {
-        return this.$store.getters.routing
-      }
-      return false
-    }
   }
+  // computed: {
+  //   routing: function () {
+  //     if (this.$store && this.$store.getters.routing) {
+  //       return this.$store.getters.routing
+  //     }
+  //     return false
+  //   }
+  // }
 }
 </script>
 
@@ -60,9 +60,9 @@ export default {
   user-select: none;
   position: relative;
   min-height: 49px;
-  &[routing]{
-    background: #fff
-  }
+  // &[routing]{
+  //   background: #fff
+  // }
   .title{
     position: absolute;
     left: 50%;
@@ -74,6 +74,7 @@ export default {
     max-width: 50%;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .small{
     font-size: 15px;
@@ -82,6 +83,7 @@ export default {
     top: 50%;
     transform: translate(-50%, 8px);
     font-size: 9px;
+    white-space: nowrap;
   }
   .left{
     display: flex;

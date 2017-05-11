@@ -20,7 +20,7 @@
 	    </section>
 
 	    <aside class="aside" v-for="item in items">
-        <list-item @tap="bill" right :icon="item.icon" :text="item.title" style="color:grey;height:53px"></list-item>
+        <list-item @tap="bill" right :icon="item.icon" :text="item.title" style="height:53px;line-height:53px"></list-item>
 	    </aside>
 
     </scroller>
@@ -28,10 +28,28 @@
       <span class="getshubi">350</span>
     </action-sheet>
     <action-sheet :show="show1" @cancel="cancel1" style="bottom:-49px">
-      <span class="getchongzhi">来充值</span>
+      <span>
+      <span class="getchongzhi">
+        <i><touch @tap=""><span class="yuan"><p>1元</p><p>100书币</p></span></touch></i>
+        <i><touch @tap=""><span class="yuan"><p>5元</p><p>500书币</p></span></touch></i>
+        <i><touch @tap=""><span class="yuan"><p>10元</p><p>1000书币</p></span></touch></i>
+      </span>
+      <span class="getchongzhi">
+        <i><touch @tap=""><span class="yuan"><p>20元</p><p>2000书币</p></span></touch></i>
+        <i><touch @tap=""><span class="yuan"><p>50元</p><p>5000书币</p></span></touch></i>
+        <i><touch @tap=""><span class="yuan"><p>100元</p><p>10000书币</p></span></touch></i>
+      </span>
+      </span>
     </action-sheet>
     <action-sheet :show="show2" @cancel="cancel2" style="bottom:-49px">
-      <span class="getqiandao">签到</span>
+      <span>
+      <list-item @tap="" right icon="sign" text="每日签到" style="height:50px;line-height:50px;margin: 10px 0;">
+        <touch @tap=""><span class="lb">签到</span></touch>
+      </list-item>
+      <list-item @tap="" right icon="sign1" text="其他福利" style="height:50px;;line-height:50px;margin: 10px 0;">
+        <touch @tap=""><span class="lb" style="color:#e59b1a">领取</span></touch>
+      </list-item>
+      </span>
     </action-sheet>
   </router-content>
 </template>
@@ -64,8 +82,8 @@ export default {
       switchesState: false,
       top: true,
       show: false,
-      show1: true,
-      show2: false,
+      show1: false,
+      show2: true,
       items: [
         {title: '账单', icon: 'form', tap: 'bill'},
         {title: '收藏', icon: 'favorite', tap: 'star'},
@@ -170,8 +188,8 @@ section{
 }
 section i{
 	-webkit-box-flex: 1;
-    text-align: center;
-    display: block;
+  text-align: center;
+  display: block;
 }
 section i span{
 	border-radius:30px;
@@ -198,5 +216,52 @@ aside {
   text-align:center;
   margin: 0 auto;
   display: block;
+}
+
+.getchongzhi{
+  padding:20px 0;
+  width:100%;
+  height:60px;
+  display: -webkit-box;
+}
+
+.getchongzhi i{
+  -webkit-box-flex: 1;
+  text-align: center;
+  display: block;
+}
+
+.getchongzhi i span{
+  border-radius:4px;
+  width:80px;
+  margin: 0 auto;
+  display: block;
+  font-size:13px;
+  font-style:normal;
+  height:60px;
+  line-height:60px;
+  border:1px solid rgb(249,204,157);
+  color:#f29639;
+}
+.getchongzhi i span p{
+  width:80px;
+  display: block;
+  height:30px;
+  line-height:30px;
+  margin:0;
+}
+
+.lb{
+  height: 28px;
+  width: 50px;
+  text-align: center;
+  border-radius: 4px;
+  line-height: 28px;
+  display: inline-block;
+  font-size: 15px;
+  float: right;
+  color: #8080ff;
+  margin: 10px 10px 0 0;
+  border: 1px solid;
 }
 </style>

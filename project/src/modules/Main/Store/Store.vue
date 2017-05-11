@@ -1,68 +1,72 @@
 <template>
-  <router-content>
-    <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
+  <router-content style="flex-direction:column">
+    <navigation-bar @tap="scrollTop" title="书城" ref="scroller" >
+    </navigation-bar>
+    <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more >
       <slider></slider>
-      <container :title="'分类'"></container>
-      <div class="category">
-          <div class="section-content">
-              <div class="type" v-for="icon in categoryIcon">
-                <touch @tap="toBookCategoryList(icon.id)">
-                  <div class="icon-border">
-                      <icon class="icon" :name="icon.name"></icon>
+      <container :title="'分类'" :more="false" :divider="true">
+          <div class="category">
+              <div class="section-content">
+                  <div class="type" v-for="icon in categoryIcon">
+                    <touch @tap="toBookCategoryList(icon.id)">
+                      <div class="icon-border">
+                          <icon class="icon" :name="icon.name"></icon>
+                      </div>
+                      <span> {{ icon.text }} </span>
+                    </touch>
                   </div>
-                  <span> {{ icon.text }} </span>
-                </touch>
               </div>
           </div>
-      </div>
+      </container>
+
 
       <!--排行榜-->
-      <container :title="'排行榜'"></container>
-      <div class="rank-list">
-          <div class="section-content">
-              <ul class="book-show" >
-                  <touch v-for="book in mockData" track-by="book.id" @tap="toBookDetail(book.id)">
-                  <li>
-                      <img :src=" book.img " alt="">
-                      <p>{{ book.name }}</p>
-                  </li>
-                </touch>
-              </ul>
+      <container :title="'排行榜'" :more="false" :divider="true">
+          <div class="rank-list">
+              <div class="section-content">
+                  <ul class="book-show" >
+                      <touch v-for="book in mockData" track-by="book.id" @tap="toBookDetail(book.id)">
+                      <li>
+                          <img :src=" book.img " alt="">
+                          <p>{{ book.name }}</p>
+                      </li>
+                    </touch>
+                  </ul>
 
-              <div class="more">
-              <touch @tap="toBookRankList">
-               更多>>>
-              </touch>
+                  <div class="see-more">
+                  <touch @tap="toBookRankList">
+                   更多>>>
+                  </touch>
+                  </div>
               </div>
-
-
           </div>
+      </container>
 
-      </div>
 
       <!--个性化推荐-->
-      <container :title="'个性推荐'"></container>
-      <div class="per-recommand">
-          <div class="section-content">
-              <ul class="book-show" >
-                  <touch  class="book-border" v-for="book in mockData" @tap="toBookDetail(book.id)">
-                  <li>
-                      <div class="book-img">
-                          <img :src=" book.img " :alt=" book.name ">
-                      </div>
-                      <div class="book-info">
-                          <p>{{ book.name }}</p>
-                      </div>
-                      <div class="book-price">
-                          ￥ {{ book.price }}
-                      </div>
-                  </li>
-                  </touch>
+      <container :title="'个性推荐'" :more="false">
+          <div class="per-recommand">
+              <div class="section-content">
+                  <ul class="book-show" >
+                      <touch  class="book-border" v-for="book in mockData" @tap="toBookDetail(book.id)">
+                      <li>
+                          <div class="book-img">
+                              <img :src=" book.img " :alt=" book.name ">
+                          </div>
+                          <div class="book-info">
+                              <p>{{ book.name }}</p>
+                          </div>
+                          <div class="book-price">
+                              ￥ {{ book.price }}
+                          </div>
+                      </li>
+                      </touch>
 
-              </ul>
+                  </ul>
 
+              </div>
           </div>
-      </div>
+      </container>
       <modal v-model="modalShow"></modal>
       <message v-model="messageShow" :message-text="'购买成功'"></message>
 
@@ -71,6 +75,7 @@
 </template>
 
 <script>
+import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import RouterContent from '@/components/RouterContent'
 import Scroller from '@/components/Scroller'
 import Icon from '@/components/Icon'
@@ -105,6 +110,8 @@ export default {
     }
   },
   components: {
+    NavigationBar,
+    NavigationBarItem,
     Scroller,
     RouterContent,
     Icon,
@@ -114,6 +121,12 @@ export default {
     Container
   },
   methods: {
+    back () {
+      this.$router.go(-1)
+    },
+    scrollTop: function () {
+      this.$refs.scroller.scrollTop()
+    },
     loadMore (over) {
       setTimeout(over, 3000)
     },
@@ -170,10 +183,9 @@ export default {
 }
 .rank-list {
     .section-content {
-        height: 70%;
+        padding: 10px 0;
         .book-show {
             list-style: none;
-            height: 70%;
             margin: 0;
             padding: 0;
             display: flex
@@ -194,7 +206,7 @@ export default {
                 }
             }
         }
-        .more {
+        .see-more {
             width: 30%;
             height: 20px;
             border: 1px #d3d3d3 solid
@@ -208,6 +220,7 @@ export default {
 }
 .per-recommand {
     .section-content {
+        border-top: 1px #d3d3d3 solid;
         height: 70%;
         .book-show {
             display: flex;

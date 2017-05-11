@@ -4,7 +4,7 @@
     </navigation-bar>
     <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more >
       <slider></slider>
-      <container :title="'分类'" :more="false">
+      <container :title="'分类'" :more="false" :divider="true">
           <div class="category">
               <div class="section-content">
                   <div class="type" v-for="icon in categoryIcon">
@@ -21,7 +21,7 @@
 
 
       <!--排行榜-->
-      <container :title="'排行榜'" :more="false">
+      <container :title="'排行榜'" :more="false" :divider="true">
           <div class="rank-list">
               <div class="section-content">
                   <ul class="book-show" >
@@ -183,6 +183,7 @@ export default {
 }
 .rank-list {
     .section-content {
+        padding: 10px 0;
         .book-show {
             list-style: none;
             margin: 0;

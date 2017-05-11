@@ -10,6 +10,7 @@
       <action-sheet-button text="书籍详情" @tap="toDetail"></action-sheet-button>
       <action-sheet-button text="测试"></action-sheet-button>
     </action-sheet>
+    <p class="prefont">预加载字体</p>
   </div>
 </template>
 
@@ -86,6 +87,10 @@ export default {
 </script>
 
 <style lang="css">
+@font-face{
+  font-family: SourceHanSerif;
+  src: url(./fonts/SourceHanSerif.otf)
+}
 body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -95,25 +100,45 @@ body {
   margin: 0;
   padding: 0;
 }
-.push-enter-active, .push-leave-active, .pop-enter-active, .pop-leave-active {
-  transition: all 0.4s ease;
+.prefont{
+  visibility: hidden;
+  font-family: SourceHanSerif;
+}
+.push-enter-to, .push-leave-to, .pop-enter-to, .pop-leave-to {
+  transition: all .5s ease;
   /*box-shadow: 0 0 10px #888;*/
 }
 .push-leave-active{
   z-index: -10;
-  transition: all 0.6s ease;
-  transform: translateX(-50%) translateZ(0);
+  filter: brightness(1);
 }
-.push-enter{
+.push-leave-to{
+  filter: brightness(0.9);
+  transform: translateX(-25%) translateZ(0);
+}
+.push-enter-active{
   transform: translateX(100%) translateZ(0);
+  /*box-shadow: 0 0 30px rgba(0,0,0,0);*/
+}
+.push-enter-to{
+  /*box-shadow: 0 0 30px rgba(0,0,0,0.3);*/
+  transform: translateX(0) translateZ(0);
 }
 .pop-enter-active{
   z-index: -10;
+  filter: brightness(0.9);
+  transform: translateX(-25%) translateZ(0);
 }
-.pop-enter{
-  transform: translateX(-50%) translateZ(0);
+.pop-enter-to{
+  filter: brightness(1);
+  transform: translateX(0) translateZ(0);
 }
 .pop-leave-active{
+  /*box-shadow: 0 0 30px rgba(0,0,0,0.3);*/
+  transform: translateX(0) translateZ(0);
+}
+.pop-leave-to{
+  /*box-shadow: 0 0 30px rgba(0,0,0,0);*/
   transform: translateX(100%) translateZ(0);
 }
 </style>

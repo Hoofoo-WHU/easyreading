@@ -106,7 +106,7 @@ export default {
     transform: translate(-50%, 8px);
     &[class*=only]{
       transform: translate(-50%, -50%);
-      font-size: 17px;
+      font-size: 14px;
       &[class*=badge]:before{
         content: '';
         width: 8px;

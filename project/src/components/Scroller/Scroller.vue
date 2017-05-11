@@ -60,10 +60,10 @@ export default {
   },
   watch: {
     y: function (val, oldVal) {
-      if (val === 0) {
-        this.$emit('input', true)
+      if (this.canPullRefresh) {
+        val === 0 ? this.$emit('input', true) : this.$emit('input', false)
       } else {
-        this.$emit('input', false)
+        val >= 0 ? this.$emit('input', true) : this.$emit('input', false)
       }
       if (this.canPullRefresh && this.pullRefreshState !== 2) {
         if (val > this.pullRefreshHeight) {

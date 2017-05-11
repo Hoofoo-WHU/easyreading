@@ -13,17 +13,19 @@
                         {{ book.rank }}
                     </div>
                     <div class="book-img">
+                        <touch @tap="toBookDetail()">
                         <img :src=" book.img " :alt=" book.name ">
+                        </touch>
                     </div>
                     <div class="book-info">
                         <p>{{ book.name }}</p>
                         <div class="operate">
-                            <div class="addShelf">
+                            <touch class="addShelf" @tap="add(book)">
                                 <icon class="icon" :name="'addShelf'"></icon>
-                            </div>
-                            <div class="addCart">
+                            </touch>
+                            <touch class="addCart" @tap="shop(book.name, book.price)">
                                 <icon :name="'addCart'"></icon>
-                            </div>
+                            </touch>
                         </div>
                     </div>
                     <div class="book-price">
@@ -32,6 +34,19 @@
                 </li>
             </ul>
         </scroller>
+        <!--购买框-->
+        <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
+          <div slot="header">
+              购买本书
+          </div>
+          <div class="shop-modal">
+              <p>{{ shopBook.name }}</p>
+              <p class="price">价格：{{ shopBook.price }}代币</p>
+              <p>您还剩余 {{ userHold }}阅币</p>
+          </div>
+        </modal>
+        <!--购买框结束-->
+        <message v-model="messageShow" :message-text="messageText"></message>
     </div>
 </template>
 
@@ -39,13 +54,17 @@
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import Scroller from '@/components/Scroller'
 import Icon from '@/components/Icon'
+import Modal from '@/components/Modal'
+import Message from '@/components/Message'
 export default {
   name: 'bookRankList',
   components: {
     NavigationBar,
     NavigationBarItem,
     Icon,
-    Scroller
+    Scroller,
+    Message,
+    Modal
   },
   data () {
     return {
@@ -55,24 +74,65 @@ export default {
         {id: 3, name: '朝花夕拾', price: 17.80, rank: 4, img: 'http://img13.360buyimg.com/n3/jfs/t655/238/1195078491/109034/b41afb59/54bdf6e0Nf74bdaaf.jpg'},
         {id: 4, name: '我的心只悲伤七次', price: 22.60, rank: 3, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'}
       ],
-      favorList: [],
-      buyList: []
+      shopModalShow: false,
+      messageShow: false,
+      shopBook: {
+        name: '',
+        price: 0
+      },
+      userHold: 4000,
+      messageText: ''
+    }
+  },
+  watch: {
+    shopModalShow (val) {
+      if (val) {
+        this.$store.commit('addmodal', () => { this.shopModalShow = true })
+      } else {
+        this.$store.commit('removemodal', () => { this.shopModalShow = false })
+      }
     }
   },
   methods: {
+    isIn (id) {
+      let books = this.$store.state.books
+      for (let i = books.length - 1; i >= 0; i--) {
+        if (id === books[i].id) {
+          return true
+        }
+      }
+      return false
+    },
     rank (arr) {
       return arr.slice().sort((item1, item2) => { return item1.rank - item2.rank })
-    },
-    isFavor (id) {
-      return this.favorList.some((x) => {
-        return x === id
-      })
     },
     back () {
       this.$router.go(-1)
     },
     loadMore (over) {
       console.log('loadMore')
+    },
+    add (book) {
+      let data = {'id': book.id, 'title': book.name, 'cover': book.img, 'isEdit': false}
+      if (this.isIn(data.id)) {
+        this.showMessage('已添加')
+      } else {
+        this.$store.commit('add', data)
+        this.showMessage('添加成功')
+      }
+    },
+    shop (name, price) {
+      this.shopBook.name = name
+      this.shopBook.price = price
+      this.shopModalShow = true
+    },
+    confirmShop () {
+      this.shopModalShow = false
+      this.showMessage('购买成功')
+    },
+    showMessage (text) {
+      this.messageText = text
+      this.messageShow = true
     }
   }
 }
@@ -82,7 +142,7 @@ export default {
 #book-rank-list {
     font-size: 15px;
     width: 100%;
-    background: #efeff4;
+    background-color: #ffffff;
     top: 0;
     left: 0;
     right: 0;

@@ -8,8 +8,8 @@
     <div class="con">
       <div class="title"></div>
       <div class="login">
-        <input class="input" placeholder="电子邮箱/手机号码"/>
-        <input class="input" placeholder="请输入密码"/>
+        <input class="input" placeholder="电子邮箱/手机号码" v-model="phonenum"/>
+        <input class="input" placeholder="请输入密码" v-model="password"/>
         <touch @tap="login" class="denglu">登录</touch>
       </div>
     </div>
@@ -33,10 +33,9 @@ export default {
   data () {
     return {
       state: 'login',
-      message: '',
       phonenum: '',
       password: '',
-      code: ''
+      message: ''
     }
   },
   methods: {
@@ -44,7 +43,19 @@ export default {
       this.$router.push({name: 'logup'})
     },
     login () {
-      console.log('Tap login')
+      this.$http.post('/user/login', {'identifier': this.phonenum, 'password': this.password})
+      .then(response => {
+        console.log(response.data)
+        this.$store.state.token = response.data.token
+        this.message = this.$store.state.token
+        console.log(this.message)
+        console.log(this.$store.state.token)
+        this.$router.push({name: 'my'})
+      })
+      .catch(function (error) {
+        alert('您输入的账号密码有误')
+        console.log(error)
+      })
     },
     back () {
       this.$router.push({name: 'person'})

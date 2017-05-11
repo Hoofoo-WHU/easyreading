@@ -1,5 +1,5 @@
 <template lang="html">
-  <transition name="message-show">
+  <transition name="message-show" style="z-index:1000">
       <div class="message" v-show="show">
           <icon class="icon" :name="iconName"></icon>
           <p> {{ messageText }} </p>

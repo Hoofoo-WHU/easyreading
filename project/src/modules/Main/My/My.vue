@@ -13,44 +13,46 @@
       </touch>
 
 	    <section>
-	    <i><touch @tap="display" :show="show"><span class="shubi" style="background-color:rgb(249,204,157)" >阅书币</span></touch></i>
-	    <i><touch @tap="display1" :show="show1"><span class="chongzhi" style="background-color:rgb(195,208,136)" >去充值</span></touch></i>
-	    <i><touch @tap="cart"><span class="cart" style="background-color:rgb(253,221,155)" >购物车</span></touch></i>
+	    <i><touch @tap="display" :show="show"><span class="shubi" style="background-color:rgb(249,204,157)" >书币</span></touch></i>
+	    <i><touch @tap="display1" :show="show1"><span class="chongzhi" style="background-color:rgb(195,208,136)" >充值</span></touch></i>
+	    <i><touch @tap="notice(text)"><span class="cart" style="background-color:rgb(253,221,155)" >{{text}}</span></touch></i>
 	    <i><touch @tap="display2" :show="show2"><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></touch></i>
 	    </section>
 
-	    <aside class="aside" v-for="item in items">
-        <list-item @tap="bill" right :icon="item.icon" :text="item.title" style="height:53px;line-height:53px"></list-item>
+	    <aside class="aside">
+        <list-item @tap="bill" right icon="form" text="账单" style="height:53px;line-height:53px"></list-item>
+        <list-item @tap="bill" v-for="item in items" right :icon="item.icon" :text="item.title" style="height:53px;line-height:53px"></list-item>
 	    </aside>
 
     </scroller>
-    <action-sheet :show="show" @cancel="cancel" style="bottom:-49px">
-      <span class="getshubi">350</span>
+    <action-sheet :show="show0" @cancel="cancel" style="bottom:-49px">
+      <span class="getshubi">{{currency}}</span>
     </action-sheet>
     <action-sheet :show="show1" @cancel="cancel1" style="bottom:-49px">
       <span>
       <span class="getchongzhi">
-        <i><touch @tap=""><span class="yuan"><p>1元</p><p>100书币</p></span></touch></i>
-        <i><touch @tap=""><span class="yuan"><p>5元</p><p>500书币</p></span></touch></i>
-        <i><touch @tap=""><span class="yuan"><p>10元</p><p>1000书币</p></span></touch></i>
+        <i><touch @tap="pay()"><span class="yuan"><p>1元</p><p>100书币</p></span></touch></i>
+        <i><touch @tap="pay()"><span class="yuan"><p>5元</p><p>500书币</p></span></touch></i>
+        <i><touch @tap="pay()"><span class="yuan"><p>10元</p><p>1000书币</p></span></touch></i>
       </span>
       <span class="getchongzhi">
-        <i><touch @tap=""><span class="yuan"><p>20元</p><p>2000书币</p></span></touch></i>
-        <i><touch @tap=""><span class="yuan"><p>50元</p><p>5000书币</p></span></touch></i>
-        <i><touch @tap=""><span class="yuan"><p>100元</p><p>10000书币</p></span></touch></i>
+        <i><touch @tap="pay()"><span class="yuan"><p>20元</p><p>2000书币</p></span></touch></i>
+        <i><touch @tap="pay()"><span class="yuan"><p>50元</p><p>5000书币</p></span></touch></i>
+        <i><touch @tap="pay()"><span class="yuan"><p>100元</p><p>10000书币</p></span></touch></i>
       </span>
       </span>
     </action-sheet>
     <action-sheet :show="show2" @cancel="cancel2" style="bottom:-49px">
       <span>
-      <list-item @tap="" right icon="sign" text="每日签到" style="height:50px;line-height:50px;margin: 10px 0;">
-        <touch @tap=""><span class="lb">签到</span></touch>
+      <list-item @tap="notice" right icon="sign" text="每日签到" style="height:50px;line-height:50px;margin: 10px 0;">
+      <span class="lb">签到</span>
       </list-item>
       <list-item @tap="" right icon="sign1" text="其他福利" style="height:50px;;line-height:50px;margin: 10px 0;">
-        <touch @tap=""><span class="lb" style="color:#e59b1a">领取</span></touch>
+      <span class="lb" style="color:#e59b1a">领取</span>
       </list-item>
       </span>
     </action-sheet>
+    <message v-model="messageShow" :message-text="messageText"></message>
   </router-content>
 </template>
 
@@ -62,6 +64,7 @@ import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import ListItem from '@/components/ListItem'
 import Switches from '@/components/Switches'
 import { ActionSheet, ActionSheetItem, ActionSheetButton } from '@/components/ActionSheet'
+import Message from '@/components/Message'
 export default {
   name: 'my',
   components: {
@@ -74,25 +77,33 @@ export default {
     Switches,
     ActionSheet,
     ActionSheetItem,
-    ActionSheetButton
+    ActionSheetButton,
+    Message
   },
   data () {
     return {
       msg: '这里是我的模块',
       switchesState: false,
       top: true,
-      show: false,
+      show0: false,
       show1: false,
-      show2: true,
+      show2: false,
       items: [
-        {title: '账单', icon: 'form', tap: 'bill'},
         {title: '收藏', icon: 'favorite', tap: 'star'},
         {title: '推荐', icon: 'good', tap: 'star'},
         {title: '笔记', icon: 'edit', tap: 'star'},
         {title: '购买', icon: 'trade', tap: 'star'},
         {title: '下载', icon: 'download', tap: 'star'},
         {title: '已读', icon: 'office', tap: 'star'}
-      ]
+      ],
+      iconName: 'ok',
+      messageText: '已签到',
+      value: false,
+      closeTime: 1000,
+      messageShow: false,
+      show: false,
+      text: '签到',
+      currency: '560'
     }
   },
   methods: {
@@ -118,10 +129,21 @@ export default {
       this.$router.push({name: 'cart'})
     },
     cancel () {
-      this.show = false
+      this.show0 = false
     },
     display () {
-      this.show = true
+      this.show0 = true
+      console.log('1')
+      console.log(this.$store.state.token)
+      this.$http.get('/deposit/balance')
+      .then(response => {
+        console.log(response.data)
+        this.currency = response.data.balance_book
+      })
+      .catch(function (error) {
+        alert(error)
+        console.log(error)
+      })
     },
     cancel1 () {
       this.show1 = false
@@ -134,6 +156,25 @@ export default {
     },
     display2 () {
       this.show2 = true
+    },
+    showMessage () {
+      this.messageShow = true
+    },
+    notice () {
+      if (this.text === '签到') {
+        this.messageShow = true
+        this.messageText = '签到成功'
+        this.text = '已签到'
+      } else if (this.text === '已签到') {
+        this.messageShow = false
+      }
+    },
+    pay () {
+      this.messageShow = true
+      this.messageText = '充值成功'
+      setTimeout(() => {
+        this.show1 = false
+      }, 2000)
     }
   }
 }
@@ -263,5 +304,22 @@ aside {
   color: #8080ff;
   margin: 10px 10px 0 0;
   border: 1px solid;
+}
+
+label{
+  position:absolute;
+  display:block;
+  top:45%;
+  bottom:55%;
+  left:30%;
+  right:30%;
+  z-index:500;
+  color:#ff6600;
+  background-color:#fff;
+  width:40%;
+  height:30px;
+  line-height:30px;
+  text-align:center;
+  border-radius:12px;
 }
 </style>

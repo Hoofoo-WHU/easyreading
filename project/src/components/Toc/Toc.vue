@@ -9,13 +9,11 @@
 <script>
 import Scroller from '@/components/Scroller'
 import ListItem from '@/components/ListItem'
-import Container from '@/components/Container'
 export default {
   name: 'Toc',
   components: {
     Scroller,
-    ListItem,
-    Container
+    ListItem
   },
   data () {
     return {

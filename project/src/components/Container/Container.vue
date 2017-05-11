@@ -4,7 +4,7 @@
       <slot name="title">
         <div style="display: flex;">
           <span class="title" v-if="title">{{title}}</span>
-          <touch class="more" v-if="title && more" @tap="more"><span style="line-height: 48px; color:#787488">更多</span><icon name="front" style="width: 10px; height: 100%;color:#787488"></icon></touch>
+          <touch class="more" v-if="title && more" @tap="moreTap"><span style="line-height: 48px; color:#787488">更多</span><icon name="front" style="width: 10px; height: 100%;color:#787488"></icon></touch>
         </div>
       </slot>
       <slot></slot>
@@ -38,7 +38,7 @@ export default {
     }
   },
   methods: {
-    more () {
+    moreTap () {
       this.$emit('more')
     }
   }

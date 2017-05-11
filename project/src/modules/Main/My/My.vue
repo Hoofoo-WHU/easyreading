@@ -7,7 +7,7 @@
     <scroller class="scroller" v-model="top" ref="scroller">
       <touch @tap="person" style="width:100px;height:130px;display:block;margin:0 auto">
       <div class="person">
-      	<span class="headImg"><img id="headImg" src=""></span>
+      	<span class="headImg"><img id="headImg" :src="img" style="height:100px;width:100px;border-radius:50px;"></span>
         <span class="editifo">修改个人信息</span>
       </div>
       </touch>
@@ -16,7 +16,7 @@
 	    <i><touch @tap="display" :show="show"><span class="shubi" style="background-color:rgb(249,204,157)" >书币</span></touch></i>
 	    <i><touch @tap="display1" :show="show1"><span class="chongzhi" style="background-color:rgb(195,208,136)" >充值</span></touch></i>
 	    <i><touch @tap="notice(text)"><span class="cart" style="background-color:rgb(253,221,155)" >{{text}}</span></touch></i>
-	    <i><touch @tap="display2" :show="show2"><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></touch></i>
+	    <i><touch @tap="cart"><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></touch></i>
 	    </section>
 
 	    <aside class="aside">
@@ -31,17 +31,14 @@
     <action-sheet :show="show1" @cancel="cancel1" style="bottom:-49px">
       <span>
       <span class="getchongzhi">
-        <i><touch @tap="pay()"><span class="yuan"><p>1元</p><p>100书币</p></span></touch></i>
-        <i><touch @tap="pay()"><span class="yuan"><p>5元</p><p>500书币</p></span></touch></i>
-        <i><touch @tap="pay()"><span class="yuan"><p>10元</p><p>1000书币</p></span></touch></i>
+        <i v-for="money in moneys"><touch @tap="pay(money.mon)"><span class="yuan"><p>{{money.mon}}元</p><p>{{money.bi}}书币</p></span></touch></i>
       </span>
       <span class="getchongzhi">
-        <i><touch @tap="pay()"><span class="yuan"><p>20元</p><p>2000书币</p></span></touch></i>
-        <i><touch @tap="pay()"><span class="yuan"><p>50元</p><p>5000书币</p></span></touch></i>
-        <i><touch @tap="pay()"><span class="yuan"><p>100元</p><p>10000书币</p></span></touch></i>
+        <i v-for="money1 in moneys1"><touch @tap="pay(money1.mon)"><span class="yuan"><p>{{money1.mon}}元</p><p>{{money1.bi}}书币</p></span></touch></i>
       </span>
       </span>
     </action-sheet>
+    <!--
     <action-sheet :show="show2" @cancel="cancel2" style="bottom:-49px">
       <span>
       <list-item @tap="notice" right icon="sign" text="每日签到" style="height:50px;line-height:50px;margin: 10px 0;">
@@ -52,6 +49,7 @@
       </list-item>
       </span>
     </action-sheet>
+    -->
     <message v-model="messageShow" :message-text="messageText"></message>
   </router-content>
 </template>
@@ -87,7 +85,6 @@ export default {
       top: true,
       show0: false,
       show1: false,
-      show2: false,
       items: [
         {title: '收藏', icon: 'favorite', tap: 'star'},
         {title: '推荐', icon: 'good', tap: 'star'},
@@ -103,7 +100,18 @@ export default {
       messageShow: false,
       show: false,
       text: '签到',
-      currency: '560'
+      currency: '560',
+      moneys: [
+        {mon: '1', bi: '100'},
+        {mon: '5', bi: '500'},
+        {mon: '10', bi: '1000'}
+      ],
+      moneys1: [
+        {mon: '20', bi: '2000'},
+        {mon: '50', bi: '5000'},
+        {mon: '100', bi: '10000'}
+      ],
+      img: 'http://dynamic-image.yesky.com/600x-/uploadImages/upload/20141120/ieoqokgazxxjpg.jpg'
     }
   },
   methods: {
@@ -132,16 +140,13 @@ export default {
       this.show0 = false
     },
     display () {
-      this.show0 = true
-      console.log('1')
-      console.log(this.$store.state.token)
       this.$http.get('/deposit/balance')
       .then(response => {
+        this.show0 = true
         console.log(response.data)
         this.currency = response.data.balance_book
       })
       .catch(function (error) {
-        alert(error)
         console.log(error)
       })
     },
@@ -150,12 +155,6 @@ export default {
     },
     display1 () {
       this.show1 = true
-    },
-    cancel2 () {
-      this.show2 = false
-    },
-    display2 () {
-      this.show2 = true
     },
     showMessage () {
       this.messageShow = true
@@ -169,13 +168,34 @@ export default {
         this.messageShow = false
       }
     },
-    pay () {
-      this.messageShow = true
-      this.messageText = '充值成功'
-      setTimeout(() => {
-        this.show1 = false
-      }, 2000)
+    pay (val) {
+      console.log(val)
+      this.$http.post('/deposit/record', {'amount': val})
+      .then(response => {
+        this.messageShow = true
+        this.messageText = '充值成功' + val + '元'
+        setTimeout(() => {
+          this.show1 = false
+        }, 2000)
+        console.log(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
     }
+  },
+  activated () {
+    console.log('1234')
+    this.$http.get('/user/profile')
+      .then(response => {
+        console.log(response.data)
+        if (response.data.avatar !== '') {
+          this.img = 'http://oott.me' + response.data.avatar
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   }
 }
 </script>
@@ -206,7 +226,7 @@ export default {
 	border-radius:50px;
 	line-height:100px;
 	text-align:center;
-  background-image:url("http://dynamic-image.yesky.com/600x-/uploadImages/upload/20141120/ieoqokgazxxjpg.jpg");
+  background-image:url("");
   background-repeat:no-repeat;
   background-size: 100px 100px;
   display:block;

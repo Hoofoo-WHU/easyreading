@@ -45,11 +45,8 @@ export default {
     login () {
       this.$http.post('/user/login', {'identifier': this.phonenum, 'password': this.password})
       .then(response => {
-        console.log(response.data)
         this.$store.state.token = response.data.token
         this.message = this.$store.state.token
-        console.log(this.message)
-        console.log(this.$store.state.token)
         this.$router.push({name: 'my'})
       })
       .catch(function (error) {
@@ -58,7 +55,7 @@ export default {
       })
     },
     back () {
-      this.$router.push({name: 'person'})
+      this.$router.back()
     }
   }
 }

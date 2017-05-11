@@ -27,6 +27,21 @@ Vue.prototype.$http.interceptors.request.use(
   }
 )
 
+Vue.prototype.$http.interceptors.response.use(
+  response => {
+  // Do something with response data
+    return response
+  },
+  err => {
+    if (err.response) {
+      switch (err.response.status) {
+        case 401:
+          router.push({name: 'login'})
+      }
+    }
+    return Promise.reject(err)
+  }
+)
 Vue.config.productionTip = false
 // Vue.use(Tap)
 Vue.prototype.$platform = 'dev'

@@ -25,7 +25,6 @@ export default {
       this.oldTop = this.$el.getBoundingClientRect().top
     },
     panmove (e) {
-      console.log(this.oldTop)
       if (this.$el.getBoundingClientRect().top !== this.oldTop) {
         this.oldTop = this.$el.getBoundingClientRect().top
         this.paning = true

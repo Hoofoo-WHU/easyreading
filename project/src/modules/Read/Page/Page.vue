@@ -122,6 +122,7 @@ export default {
     z-index: -1;
     // transform: translateZ(0);
     display: flex;
+    background: #f8f8f8;
     .chapter{
       position: absolute;
       font-size: 12px;
@@ -143,7 +144,7 @@ export default {
     .pageContent{
       display: flex;
       flex: 1;
-      margin: 40px 20px 40px 20px;
+      margin: 40px 20px 35px 20px;
       overflow: hidden;
     }
     // z-index: 0;

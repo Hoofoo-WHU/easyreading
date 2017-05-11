@@ -4,7 +4,7 @@
     <div class="content">{{text}}</div>
     <div class="right">
       <slot>
-        <icon v-if="right" style="width: 12px;height: 100%;color:#c8c7cc" name="front">
+        <icon v-if="right" style="width: 12px;height: 100%;color:#787488" name="front">
         </icon>
       </slot>
     </div>

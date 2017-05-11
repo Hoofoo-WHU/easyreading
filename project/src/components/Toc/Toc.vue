@@ -1,7 +1,7 @@
 <template>
   <div class="toc">
     <scroller style="flex-grow:1">
-      <list-item v-for="item in 20" style="height: 53px;line-height: 53px;font-family: serif" :text="'第'+item+'章'" @tap="tap"></list-item>
+      <list-item v-for="item in 20" :key="item" style="height: 53px;line-height: 53px;font-family: serif" :text="'第'+item+'章'" @tap="tap"></list-item>
     </scroller>
   </div>
 </template>
@@ -9,13 +9,11 @@
 <script>
 import Scroller from '@/components/Scroller'
 import ListItem from '@/components/ListItem'
-import Container from '@/components/Container'
 export default {
   name: 'Toc',
   components: {
     Scroller,
-    ListItem,
-    Container
+    ListItem
   },
   data () {
     return {

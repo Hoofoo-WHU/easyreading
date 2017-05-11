@@ -10,6 +10,7 @@
       <action-sheet-button text="书籍详情" @tap="toDetail"></action-sheet-button>
       <action-sheet-button text="测试"></action-sheet-button>
     </action-sheet>
+    <p class="prefont">预加载字体</p>
   </div>
 </template>
 
@@ -86,6 +87,10 @@ export default {
 </script>
 
 <style lang="css">
+@font-face{
+  font-family: SourceHanSerif;
+  src: url(./fonts/SourceHanSerif.otf)
+}
 body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -94,6 +99,10 @@ body {
 * {
   margin: 0;
   padding: 0;
+}
+.prefont{
+  visibility: hidden;
+  font-family: SourceHanSerif;
 }
 .push-enter-to, .push-leave-to, .pop-enter-to, .pop-leave-to {
   transition: all .5s ease;

@@ -144,7 +144,7 @@ export default {
     .pageContent{
       display: flex;
       flex: 1;
-      margin: 40px 20px 40px 20px;
+      margin: 40px 20px 35px 20px;
       overflow: hidden;
     }
     // z-index: 0;

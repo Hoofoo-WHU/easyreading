@@ -39,6 +39,12 @@ function Paging () {
   }
   this.cancel = () => {
     state.paging = false
+    emit('cancel')
+  }
+  this.distroy = () => {
+    state.paging = false
+    emitter.removeAllListeners()
+    emit('destroyed')
   }
   this.on = function () {
     EventEmitter2.prototype.on.apply(emitter, arguments)
@@ -46,7 +52,7 @@ function Paging () {
   var _start = () => {
     state.paging = true
     page = new Page(para.chapter)
-    _paging()
+    setTimeout(_paging, 0)
   }
   var _paging = () => {
     if (state.paging) {

@@ -76,6 +76,7 @@
   #comment{
     padding-left: 5%;
     padding-right: 5%;
+    margin: 20px 0;
   }
   .add-comment {
     display: inline-block;
@@ -123,9 +124,13 @@
   }
   .textTop p{
     width: 50%;
+    color: #706f6f;
   }
   .left{
     margin-bottom: 1em;
+  }
+  .right {
+      text-align: right;
   }
 
 </style>

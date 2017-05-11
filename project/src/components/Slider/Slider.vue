@@ -28,12 +28,12 @@ export default {
           {
             id: 2,
             show: false,
-            url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490699762627&di=3dbb1331ce99460463f234b31bce0c94&imgtype=0&src=http%3A%2F%2Fpic.35pic.com%2Fnormal%2F07%2F51%2F91%2F446817_151444723000_2.jpg'
+            url: 'http://7xw3pf.com1.z0.glb.clouddn.com/easyreading-slider01C03821-45E1-4936-986B-3E801637A790.png'
           },
           {
             id: 3,
             show: false,
-            url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490699888711&di=68a6c8c2e04e381bbf276d8a74d23f19&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2Fqk%2Fback_origin_pic%2F00%2F04%2F00%2Fb06bebdeb9ed7b54b78d9ab244b455f7.jpg'
+            url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494505687766&di=16dcd86b89a4873ed7cc19d86e72e1df&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F010e68566c1fdf6ac7256b29b6f91c.jpg%40900w_1l_2o_100sh.jpg'
           }
         ]
       }

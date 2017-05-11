@@ -10,10 +10,10 @@
         <div class="bg">
            <span class="star" :style='{width:getStarWidth}'></span>
         </div>
-        <span style="font-size:14px,white-space:nowrap">{{info.score}}分（800人评价）</span>     
+        <span style="font-size:14px,white-space:nowrap">{{info.score}}分（800人评价）</span>
       </div>
-      <p style="color:blue">{{info.author}}</p>
-      <p style="color:red">{{info.price}}阅币</p>
+      <p style="color:#3e88e8">{{info.author}}</p>
+      <p style="color:#fc8332">{{info.price}}阅币</p>
     </div>
   </div>
 </template>

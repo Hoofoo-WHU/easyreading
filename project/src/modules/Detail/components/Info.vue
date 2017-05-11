@@ -16,7 +16,7 @@
     <div class="info">
       <touch  @tap="changeOverflow">
         <p class="left"><b>作品简介</b></p>
-        <p class="right">{{overflow}}</p>
+        <p class="display">{{overflow}}</p>
       </touch>
       <div class="data">
         <p :class='{overflow:isOverflow, visible:!isOverflow}' id="data">{{data}}</p>
@@ -65,11 +65,13 @@
 <style lang="css" scoped>
   #info{
     padding-bottom: 0.5em;
+    margin: 20px 0;
   }
  .catalog div, .info div{
    display: flex;
    flex-direction: row;
    padding: 0 5%;
+   justify-content: space-between;
  }
  .catalog p, .info div:first-child p{
    width: 50%;
@@ -81,6 +83,13 @@
  }
  .right{
    text-align: right;
+ }
+ .display {
+     text-align: center;
+     width: 40px!important;
+     border: 1px solid #d3d3d3;
+     border-radius: 12px;
+     color: grey;
  }
  .overflow{
    overflow: hidden;

@@ -7,39 +7,31 @@
         <div class="top">
           <Cover :info='info' />
         </div>
-        <container></container>
         <div class="centerTop">
-          <info :data="info.data" :update="update"/>
-        <container></container>
-          <relate :initialInfo='recommendInfo'/>
+            <info :data="info.data" :update="update"/>
+            <relate :initialInfo='recommendInfo'/>
         </div>
-        <container></container>
+
         <div class="bottom">
-          <comment :comment='comment' @showComment="showCommentModal"/>
+            <comment :comment='comment' @showComment="showCommentModal"/>
         </div>
     </scroller>
-    <shop v-model="shopModalShow" @paySuccess="showMessage"></shop>
     <message v-model="messageShow" :message-text="messageText"></message>
-    <modal v-model="commentModalShow">
-        <div slot="header">
-            评论此书
-        </div>
-        <div class="shop-modal">
-            <div class="point">
-                <p>打分：</p>
-                <div class="star" v-for="star in sort(stars)" @click="mark(star.score)" >
-                    <icon class="icon" name="light-star" v-show="star.light">
-                    </icon>
-                    <icon class="icon" name="dark-star" v-show="!star.light">
-                    </icon>
-                </div>
 
-            </div>
-            <div class="content">
-                <touch><textarea name="name" rows="8"></textarea></touch>
-            </div>
-        </div>
+    <!--评论框-->
+    <add-comment v-model="addCommentShow"></add-comment>
+    <!--购买框-->
+    <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
+      <div slot="header">
+          购买本书
+      </div>
+      <div class="shop-modal">
+          <p>{{ shopBook.name }}</p>
+          <p class="price">价格：{{ shopBook.price }}阅币</p>
+          <p>您还剩余 {{ userHold }}阅币</p>
+      </div>
     </modal>
+    <!--购买框结束-->
     <bottom-bar>
       <bottom-bar-item  v-if="!isIn" text="+书架" icon="add" @tap="add"></bottom-bar-item>
       <bottom-bar-item  v-else text="-书架" icon="remove" @tap="remove"></bottom-bar-item>
@@ -57,7 +49,7 @@
   import Info from './components/Info'
   import Relate from './components/relate'
   import Comment from './components/comment'
-  import Shop from './components/shop'
+  import AddComment from './components/AddComment'
   import Message from '@/components/Message'
   import Modal from '@/components/Modal'
   import Container from '@/components/Container'
@@ -74,7 +66,7 @@
       Info,
       Relate,
       Comment,
-      Shop,
+      AddComment,
       Message,
       Container,
       Modal,
@@ -93,8 +85,13 @@
         shopModalShow: false,
         messageShow: false,
         messageText: '',
-        commentModalShow: false,
-        stars: []
+        stars: [],
+        shopBook: {
+          name: '变形计',
+          price: '13代币'
+        },
+        userHold: 4000,
+        addCommentShow: false
       }
     },
     mounted () {
@@ -134,6 +131,15 @@
           }
         }
         return false
+      }
+    },
+    watch: {
+      shopModalShow (val) {
+        if (val) {
+          this.$store.commit('addmodal', () => { this.shopModalShow = true })
+        } else {
+          this.$store.commit('removemodal', () => { this.shopModalShow = false })
+        }
       }
     },
     methods: {
@@ -182,7 +188,11 @@
         this.messageShow = true
       },
       showCommentModal () {
-        this.commentModalShow = true
+        this.addCommentShow = true
+      },
+      confirmShop () {
+        this.shopModalShow = false
+        this.showMessage('购买成功')
       },
       sort (arr) {
         return arr.slice().sort((item1, item2) => { return item1.score - item2.score })

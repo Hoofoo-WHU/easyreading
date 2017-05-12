@@ -152,7 +152,7 @@ export default {
 
 }
 .modal-body {
-    padding: 20px 30px;
+    padding: 10px 20px;
 }
 
 .modal-header {

@@ -1,15 +1,19 @@
 <template>
   <div id="detail">
-    <navigation-bar @tap="scrollTop" title="书籍详情" ref="scroller" >
+    <navigation-bar @tap="scrollTop" title="书籍详情" ref="scroller" :border="!top">
       <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
     </navigation-bar>
-     <scroller style="flex-grow:1" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
+     <scroller style="flex-grow:1" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more v-model="top">
         <div class="top">
           <Cover :info='info' />
         </div>
         <div class="centerTop">
             <info :data="info.data" :update="update"/>
+            <div class="divider">
+            </div>
             <relate :initialInfo='recommendInfo'/>
+            <div class="divider">
+            </div>
         </div>
 
         <div class="bottom">
@@ -22,14 +26,14 @@
     <add-comment v-model="addCommentShow"></add-comment>
     <!--购买框-->
     <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
-      <div slot="header">
-          购买本书
-      </div>
-      <div class="shop-modal">
-          <p>{{ shopBook.name }}</p>
-          <p class="price">价格：{{ shopBook.price }}阅币</p>
-          <p>您还剩余 {{ userHold }}阅币</p>
-      </div>
+        <div slot="header">
+            购买本书
+        </div>
+        <div class="shop-modal">
+            <p class="title">{{ shopBook.name }}</p>
+            <p class="price">价格：<span>{{ shopBook.price }}</span>代币</p>
+            <p class="hold">您还剩余 <span>{{ userHold }}</span>阅币</p>
+        </div>
     </modal>
     <!--购买框结束-->
     <bottom-bar>
@@ -91,7 +95,8 @@
           price: '13代币'
         },
         userHold: 4000,
-        addCommentShow: false
+        addCommentShow: false,
+        top: true
       }
     },
     mounted () {
@@ -181,7 +186,10 @@
         console.log(this.isIn)
       },
       shop () {
-        this.shopModalShow = true
+        let me = this
+        setTimeout(function () {
+          me.shopModalShow = true
+        }, 0)
       },
       showMessage (text) {
         this.messageText = text
@@ -212,8 +220,8 @@
 <style lang="stylus" scoped>
   #detail{
     width: 100%;
-    background: #efeff4;
     display: flex;
+    background-color: #fff;
     flex-direction: column;
     top: 0;
     left: 0;
@@ -223,6 +231,7 @@
     overflow: hidden;
   }
   .top{
+    background: #efeff4;
     display: flex;
     flex-direction: column ;
     font-size: 12px;
@@ -260,5 +269,33 @@
           width: 100%;
       }
 
+  }
+  .divider {
+      height: 20px;
+      width: 100%;
+      background-color: #efeff4;
+  }
+  .shop-modal {
+      .title {
+          text-align: center;
+          font-size: 15px;
+          font-weight: bold;
+      }
+      .price {
+          font-size: 13px;
+          margin: 10px
+          span {
+              color: #ffa500
+              padding: 0 5px
+          }
+      }
+      .hold {
+          font-size: 13px;
+          margin: 10px
+          span{
+              color: #ffa500
+              padding: 0 5px
+          }
+      }
   }
 </style>

@@ -7,7 +7,7 @@
       <container :title="'分类'" :more="false" :divider="true">
           <div class="category">
               <div class="section-content">
-                  <div class="type" v-for="icon in categoryIcon">
+                  <div class="type" v-for="icon in categoryIcon" :key="icon.id">
                     <touch @tap="toBookCategoryList(icon.id)">
                       <div class="icon-border">
                           <icon class="icon" :name="icon.name"></icon>
@@ -25,7 +25,7 @@
           <div class="rank-list">
               <div class="section-content">
                   <ul class="book-show" >
-                      <touch v-for="book in mockData" track-by="book.id" @tap="toBookDetail(book.id)">
+                      <touch v-for="book in mockData" :key="book.id" @tap="toBookDetail(book.id)">
                       <li>
                           <img :src=" book.img " alt="">
                           <p>{{ book.name }}</p>
@@ -48,7 +48,7 @@
           <div class="per-recommand">
               <div class="section-content">
                   <ul class="book-show" >
-                      <touch  class="book-border" v-for="book in mockData" @tap="toBookDetail(book.id)">
+                      <touch  class="book-border" v-for="book in mockData" @tap="toBookDetail(book.id)" :key="book.id">
                       <li>
                           <div class="book-img">
                               <img :src=" book.img " :alt=" book.name ">
@@ -105,7 +105,8 @@ export default {
         {id: 1, name: '摆渡人', price: 23.40, img: 'http://img13.360buyimg.com/n3/jfs/t1393/113/77737149/217635/9064dd42/555408dbN8679b564.jpg'},
         {id: 2, name: '皮囊', price: 29.90, img: 'http://img13.360buyimg.com/n3/jfs/t526/8/239863987/140707/38421a9e/546d9a25N07687a60.jpg'},
         {id: 3, name: '朝花夕拾', price: 17.80, img: 'http://img13.360buyimg.com/n3/jfs/t655/238/1195078491/109034/b41afb59/54bdf6e0Nf74bdaaf.jpg'},
-        {id: 4, name: '我的心只悲伤七次', price: 22.60, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'}
+        {id: 4, name: '我的心只悲伤七次', price: 22.60, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'},
+        {id: 5, name: '追风筝的人', price: 14.5, img: 'http://img3x8.ddimg.cn/35/10/23274638-1_l.jpg'}
       ]
     }
   },
@@ -220,7 +221,6 @@ export default {
 }
 .per-recommand {
     .section-content {
-        border-top: 1px #d3d3d3 solid;
         height: 70%;
         .book-show {
             display: flex;
@@ -232,8 +232,6 @@ export default {
                 li {
                     margin: 0;
                     padding: 10px;
-                    border-bottom: 1px #d3d3d3 solid;
-                    border-right: 1px #d3d3d3 solid;
                     display: flex;
                     justify-content: space-between;
                     align-items: flex-start;

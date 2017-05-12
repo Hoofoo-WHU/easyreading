@@ -1,9 +1,9 @@
 <template lang="html">
     <div id="book-rank-list">
-        <navigation-bar @tap="" title="排行列表">
+        <navigation-bar @tap="" title="排行列表" :border="!top">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
-        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
+        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" v-model="top" can-load-more>
             <ul>
                 <li v-for="book in rank(mockData)" :key="book.rank">
                     <div class="rank-icon" v-if="book.rank === 1">
@@ -40,9 +40,9 @@
               购买本书
           </div>
           <div class="shop-modal">
-              <p>{{ shopBook.name }}</p>
-              <p class="price">价格：{{ shopBook.price }}代币</p>
-              <p>您还剩余 {{ userHold }}阅币</p>
+              <p class="title">{{ shopBook.name }}</p>
+              <p class="price">价格：<span>{{ shopBook.price }}</span>代币</p>
+              <p class="hold">您还剩余 <span>{{ userHold }}</span>阅币</p>
           </div>
         </modal>
         <!--购买框结束-->
@@ -81,7 +81,8 @@ export default {
         price: 0
       },
       userHold: 4000,
-      messageText: ''
+      messageText: '',
+      top: true
     }
   },
   watch: {
@@ -111,6 +112,9 @@ export default {
     },
     loadMore (over) {
       console.log('loadMore')
+    },
+    toBookDetail () {
+      this.$router.push({'name': 'detail'})
     },
     add (book) {
       let data = {'id': book.id, 'title': book.name, 'cover': book.img, 'isEdit': false}
@@ -149,6 +153,8 @@ export default {
     bottom: 0;
     position: absolute;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     ul {
         margin: 0;
         padding: 0;
@@ -191,6 +197,28 @@ export default {
             }
         }
     }
-
+}
+.shop-modal {
+    .title {
+        text-align: center;
+        font-size: 15px;
+        font-weight: bold;
+        margin: 10px
+    }
+    .price {
+        font-size: 13px;
+        margin: 10px
+        span {
+            color: #ffa500
+            padding: 0 5px
+        }
+    }
+    .hold {
+        font-size: 13px;
+        span{
+            color: #ffa500
+            padding: 0 5px
+        }
+    }
 }
 </style>

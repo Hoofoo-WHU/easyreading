@@ -10,7 +10,6 @@
         </div>
       </div>
     </div>
-    <div class="hr"></div>
     <touch class="change" @tap="change">
       换一换
     </touch>
@@ -53,7 +52,8 @@
     text-align: left;
     padding-left: 5%;
     padding-right: 5%;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+    padding-top: 15px;
   }
   .relate p{
     width: 50%;
@@ -79,10 +79,5 @@
     line-height: 20px;
     color: grey;
 
-  }
-  .hr{
-    background: #d3d3d3;
-    height: 1px;
-    margin-bottom: 10px;
   }
 </style>

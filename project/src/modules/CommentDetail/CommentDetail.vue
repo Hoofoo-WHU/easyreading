@@ -1,16 +1,16 @@
 <template lang="html">
     <div id="comment-detail">
-        <navigation-bar @tap="scrollTop" title="评论详情" ref="scroller" >
+        <navigation-bar @tap="scrollTop" title="评论详情" ref="scroller" :border="!top">
           <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
         </navigation-bar>
-        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
+        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more v-model="top" can-load-more>
             <div class="main-comment">
                 <div class="avatar">
                   <img src="../Detail/png/avatar.png" style="width:100%">
                 </div>
 
                 <div class="bg">
-                   <p> {{user.name}} </p>
+                   <p class="author"> {{user.name}} </p>
                    <p class="star" :style='{width:getStarWidth(user.score)}'></p>
                 </div>
                 <div class="comment-content">
@@ -21,7 +21,7 @@
 
             </div>
             <ul class="response-comment">
-                <p>共 {{ user.res.content.length }} 条回复</p>
+                <p class="comments-number">共 {{ user.res.content.length }} 条回复</p>
                 <li v-for="res in user.res.content">
                     <div class="avatar">
                       <img src="../Detail/png/avatar.png" style="width:100%">
@@ -78,7 +78,8 @@ export default {
             {name: 'xsx', text: 'msmsasw能吃苦的斯诺克传闻弗兰克', time: '2014-09-08 22:12'}
           ]
         }
-      }
+      },
+      top: true
     }
   },
   methods: {
@@ -102,13 +103,15 @@ export default {
 #comment-detail {
     font-size: 15px;
     width: 100%;
-    background: #efeff4;
+    background: #fff;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     position: absolute;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     .main-comment {
         display: flex;
         justify-content: flex-start;
@@ -117,7 +120,11 @@ export default {
         align-items: center;
         .bg{
           width: 93px;
-          margin-right: 5%;
+          margin: 3% 5%;
+          .author {
+              font-weight: bold;
+              font-size: 15px;
+          }
           .star{
             display: inline-block;
             left: 0;
@@ -135,11 +142,14 @@ export default {
     .divide {
         width: 100%;
         height: 15px;
-        background-color: #fff;
+        background-color: #efeff4;
     }
     .response-comment {
         margin: 20px;
         list-style: none;
+        .comments-number {
+            margin: 10px 0;
+        }
         li {
             display: flex;
             flex-wrap: wrap;
@@ -161,7 +171,7 @@ export default {
     }
     .avatar{
       width: 10%;
-      margin: 10px;
+      margin: 5px;
     }
     .longHr{
       background: #d3d3d3;

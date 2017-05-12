@@ -75,7 +75,7 @@ export default {
 .message {
     z-index: 1010;
     position: fixed;
-    top: 32%;
+    top: 28%;
     width: 50%;
     left: 50%;
     transform: translateX(-50%);

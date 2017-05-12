@@ -7,7 +7,7 @@
         </navigation-bar>
         <scroller style="flex-grow:1" ref="scroller">
             <div class="point">
-                <touch class="star" v-for="star in sort(stars)" @tap="mark(star.score)" >
+                <touch class="star" v-for="star in sort(stars)" @tap="mark(star.score)" :key="star.score">
                     <icon class="icon" name="light-star" v-show="star.light">
                     </icon>
                     <icon class="icon" name="dark-star" v-show="!star.light">
@@ -15,9 +15,9 @@
                 </touch>
 
             </div>
-            <div class="content">
-                <textarea name="name" rows="22" placeholder="我的评论" v-model="commentContent"></textarea>
-            </div>
+            <touch class="content">
+                <textarea name="name" rows="22" placeholder="我的评论" v-model="commentContent" @tap="showKeyboard"></textarea>
+            </touch>
         </scroller>
     </div>
     </transition>
@@ -61,6 +61,11 @@ export default {
         } else {
           this.stars[i].light = false
         }
+      }
+    },
+    showKeyboard () {
+      if (this.$Keyboard) {
+        this.$Keyboard.show()
       }
     }
   },

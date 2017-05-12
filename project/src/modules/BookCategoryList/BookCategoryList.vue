@@ -1,9 +1,9 @@
 <template lang="html">
     <div id="book-category">
-        <navigation-bar @tap="" :title="type[typeId-1].name">
+        <navigation-bar @tap="" :title="type[typeId-1].name" :border="!top">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
-        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
+        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" v-model="top" can-load-more>
         <div class="book-category-intro">
             {{ type[typeId-1].intro }}
         </div>
@@ -37,14 +37,14 @@
     </scroller>
     <!--购买框-->
     <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
-      <div slot="header">
-          购买本书
-      </div>
-      <div class="shop-modal">
-          <p>{{ shopBook.name }}</p>
-          <p class="price">价格：{{ shopBook.price }}代币</p>
-          <p>您还剩余 {{ userHold }}阅币</p>
-      </div>
+        <div slot="header">
+            购买本书
+        </div>
+        <div class="shop-modal">
+            <p class="title">{{ shopBook.name }}</p>
+            <p class="price">价格：<span>{{ shopBook.price }}</span>代币</p>
+            <p class="hold">您还剩余 <span>{{ userHold }}</span>阅币</p>
+        </div>
     </modal>
     <!--购买框结束-->
     <message v-model="messageShow" :message-text="messageText"></message>
@@ -103,7 +103,8 @@ export default {
         price: 0
       },
       userHold: 4000,
-      messageText: ''
+      messageText: '',
+      top: true
     }
   },
   watch: {
@@ -170,6 +171,8 @@ export default {
     bottom: 0;
     position: absolute;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 .book-category-intro {
     text-align: center;
@@ -222,5 +225,28 @@ export default {
         }
     }
 
+}
+.shop-modal {
+    .title {
+        text-align: center;
+        font-size: 15px;
+        font-weight: bold;
+        margin: 10px
+    }
+    .price {
+        font-size: 13px;
+        margin: 10px
+        span {
+            color: #ffa500
+            padding: 0 5px
+        }
+    }
+    .hold {
+        font-size: 13px;
+        span{
+            color: #ffa500
+            padding: 0 5px
+        }
+    }
 }
 </style>

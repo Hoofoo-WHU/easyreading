@@ -89,6 +89,7 @@ export default {
         this.books[i].isEdit = false
       }
       this.isAll = true
+      this.selectedNum = 0
     },
     check (index) {
       if (this.edit === false) {

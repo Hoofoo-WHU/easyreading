@@ -5,11 +5,9 @@
     </navigation-bar>
     <scroller class="scroller" ref="scroller">
       <aside class="aside">
-        <ul>
-          <li><p>头像</p><icon name="more" class="icon"></icon></li>
-          <li><p>手机号码/电子邮箱</p><p style="float:right;margin-right:10px;color:grey;">18163516131</p></li>
-          <li><p>修改密码</p><icon name="more" class="icon"></icon></li>
-        </ul>
+        <list-item @tap="" right text="修改头像" style="height:50px;line-height:50px"></list-item>
+        <list-item @tap="" right icon="" :text="way" style="height:50px;line-height:50px"><p style="float:right;margin-right:6px;color:grey;">{{phone}}</p></list-item>
+        <list-item @tap="passworld" right icon="" text="修改密码" style="height:50px;line-height:50px"></list-item>
         <touch @tap="out" class="out">退出当前账号</touch>
       </aside>
     </scroller>
@@ -22,6 +20,7 @@ import RouterContent from '@/components/RouterContent'
 import Icon from '@/components/Icon'
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import Switches from '@/components/Switches'
+import ListItem from '@/components/ListItem'
 
 export default {
   name: 'person',
@@ -31,11 +30,13 @@ export default {
     Icon,
     NavigationBar,
     NavigationBarItem,
-    Switches
+    Switches,
+    ListItem
   },
   data () {
     return {
-
+      phone: '12345678900',
+      way: '手机号码'
     }
   },
   methods: {
@@ -43,13 +44,25 @@ export default {
       this.$refs.scroller.scrollTop()
     },
     back () {
-      this.$router.push({name: 'my'})
+      this.$router.go(-1)
     },
     out () {
-      this.$store.state.token = ''
+      this.$store.state.token = undefined
       console.log(this.$store.state.token)
       this.$router.push({name: 'my'})
     }
+  },
+  activated () {
+    this.$http.get('/user/profile')
+    .then(response => {
+      console.log(response.data)
+      if (response.data.avatar !== '') {
+        this.img = 'http://oott.me' + response.data.avatar
+      }
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
   }
 }
 </script>

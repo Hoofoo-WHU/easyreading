@@ -1,12 +1,13 @@
 <template>
   <div id="book">
     <div class="cover">
-      <!-- <img :src="cover" alt="" width="100%" > -->
       <img src="../3310.jpg" alt="" width="100%">
-      <icon v-if="!edit" name="unchecked" class="icon" :class='{gray:!isEdit, blue:isEdit}'/>
+<!--       <icon v-if="!edit" name="unchecked" class="icon" :class='{gray:!isEdit, blue:isEdit}'/> -->
+      <transition name="trs">
+        <icon v-if="!edit" name="check" class="check" :class='{gray:!isEdit, blue:isEdit}'/>
+      </transition>
     </div> 
     <div>{{title}}</div>  
-    <!-- <icon v-else name="checked" class="icon" /> -->
   </div>
 </template>
 
@@ -60,18 +61,40 @@
     transform: 0.5em;
     color: green;
   }
-  .icon{
+/*  .icon{
     width: 20%;
     height: 20%;
     position: absolute;
     left: 78%;
     top: 78%;
     transition: all .3s;
+  }*/
+  .check{
+/*    width: 18%;
+    height: 18%;*/
+    width: 10px;
+    height: 10px;
+    padding: 3px;
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    color: white;
+    border-radius: 100%;
+    transition: all .2s;
   }
   .blue{
-    color: #33AECC;
+    background-color: rgba(21, 122, 251, 1);
   }
-  .gray{
-    color: gray;
+  .gray{ 
+    background-color: rgba(90, 90, 90, 0.6);
+  }
+  .trs-enter-active, .trs-leave-active{
+    transition: transform .3s;
+  }
+  .trs-enter-active, .trs-leave{
+    transform: scale(1);
+  }
+  .trs-enter, .trs-leave-active{
+    transform: scale(0);
   }
 </style>

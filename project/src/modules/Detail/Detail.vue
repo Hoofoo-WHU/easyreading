@@ -1,45 +1,41 @@
 <template>
   <div id="detail">
-    <navigation-bar @tap="scrollTop" title="书籍详情" ref="scroller" >
+    <navigation-bar @tap="scrollTop" title="书籍详情" ref="scroller" :border="!top">
       <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
     </navigation-bar>
-     <scroller style="flex-grow:1" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
+     <scroller style="flex-grow:1" ref="scroller" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more v-model="top">
         <div class="top">
           <Cover :info='info' />
         </div>
-        <container></container>
         <div class="centerTop">
-          <info :data="info.data" :update="update"/>
-        <container></container>
-          <relate :initialInfo='recommendInfo'/>
+            <info :data="info.data" :update="update"/>
+            <div class="divider">
+            </div>
+            <relate :initialInfo='recommendInfo'/>
+            <div class="divider">
+            </div>
         </div>
-        <container></container>
+
         <div class="bottom">
-          <comment :comment='comment' @showComment="showCommentModal"/>
+            <comment :comment='comment' @showComment="showCommentModal"/>
         </div>
     </scroller>
-    <shop v-model="shopModalShow" @paySuccess="showMessage"></shop>
     <message v-model="messageShow" :message-text="messageText"></message>
-    <modal v-model="commentModalShow">
+
+    <!--评论框-->
+    <add-comment v-model="addCommentShow"></add-comment>
+    <!--购买框-->
+    <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
         <div slot="header">
-            评论此书
+            购买本书
         </div>
         <div class="shop-modal">
-            <div class="point">
-                <p>打分：</p>
-                <div class="star" v-for="star in sort(stars)" @click="mark(star.score)" >
-                    <icon class="icon" name="light-star" v-show="star.light">
-                    </icon>
-                    <icon class="icon" name="dark-star" v-show="!star.light">
-                    </icon>
-                </div>
-
-            </div>
-            <div class="content">
-                <touch><textarea name="name" rows="8"></textarea></touch>
-            </div>
+            <p class="title">{{ shopBook.name }}</p>
+            <p class="price">价格：<span>{{ shopBook.price }}</span>代币</p>
+            <p class="hold">您还剩余 <span>{{ userHold }}</span>阅币</p>
         </div>
     </modal>
+    <!--购买框结束-->
     <bottom-bar>
       <bottom-bar-item  v-if="!isIn" text="+书架" icon="add" @tap="add"></bottom-bar-item>
       <bottom-bar-item  v-else text="-书架" icon="remove" @tap="remove"></bottom-bar-item>
@@ -57,7 +53,7 @@
   import Info from './components/Info'
   import Relate from './components/relate'
   import Comment from './components/comment'
-  import Shop from './components/shop'
+  import AddComment from './components/AddComment'
   import Message from '@/components/Message'
   import Modal from '@/components/Modal'
   import Container from '@/components/Container'
@@ -74,7 +70,7 @@
       Info,
       Relate,
       Comment,
-      Shop,
+      AddComment,
       Message,
       Container,
       Modal,
@@ -93,8 +89,14 @@
         shopModalShow: false,
         messageShow: false,
         messageText: '',
-        commentModalShow: false,
-        stars: []
+        stars: [],
+        shopBook: {
+          name: '变形计',
+          price: '13代币'
+        },
+        userHold: 4000,
+        addCommentShow: false,
+        top: true
       }
     },
     mounted () {
@@ -136,6 +138,15 @@
         return false
       }
     },
+    watch: {
+      shopModalShow (val) {
+        if (val) {
+          this.$store.commit('addmodal', () => { this.shopModalShow = true })
+        } else {
+          this.$store.commit('removemodal', () => { this.shopModalShow = false })
+        }
+      }
+    },
     methods: {
       back () {
         this.$router.go(-1)
@@ -175,14 +186,21 @@
         console.log(this.isIn)
       },
       shop () {
-        this.shopModalShow = true
+        let me = this
+        setTimeout(function () {
+          me.shopModalShow = true
+        }, 0)
       },
       showMessage (text) {
         this.messageText = text
         this.messageShow = true
       },
       showCommentModal () {
-        this.commentModalShow = true
+        this.addCommentShow = true
+      },
+      confirmShop () {
+        this.shopModalShow = false
+        this.showMessage('购买成功')
       },
       sort (arr) {
         return arr.slice().sort((item1, item2) => { return item1.score - item2.score })
@@ -202,8 +220,8 @@
 <style lang="stylus" scoped>
   #detail{
     width: 100%;
-    background: #efeff4;
     display: flex;
+    background-color: #fff;
     flex-direction: column;
     top: 0;
     left: 0;
@@ -213,6 +231,7 @@
     overflow: hidden;
   }
   .top{
+    background: #efeff4;
     display: flex;
     flex-direction: column ;
     font-size: 12px;
@@ -250,5 +269,33 @@
           width: 100%;
       }
 
+  }
+  .divider {
+      height: 20px;
+      width: 100%;
+      background-color: #efeff4;
+  }
+  .shop-modal {
+      .title {
+          text-align: center;
+          font-size: 15px;
+          font-weight: bold;
+      }
+      .price {
+          font-size: 13px;
+          margin: 10px
+          span {
+              color: #ffa500
+              padding: 0 5px
+          }
+      }
+      .hold {
+          font-size: 13px;
+          margin: 10px
+          span{
+              color: #ffa500
+              padding: 0 5px
+          }
+      }
   }
 </style>

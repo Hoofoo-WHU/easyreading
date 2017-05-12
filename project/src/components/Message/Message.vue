@@ -1,5 +1,5 @@
 <template lang="html">
-  <transition name="message-show">
+  <transition name="message-show" style="z-index:1000">
       <div class="message" v-show="show">
           <icon class="icon" :name="iconName"></icon>
           <p> {{ messageText }} </p>
@@ -75,7 +75,7 @@ export default {
 .message {
     z-index: 1010;
     position: fixed;
-    top: 32%;
+    top: 28%;
     width: 50%;
     left: 50%;
     transform: translateX(-50%);

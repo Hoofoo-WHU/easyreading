@@ -7,21 +7,21 @@
     </navigation-bar>
     <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal' }" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
       <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page - 1].chapter" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamily}">
           <div :class="{noindent: !pages[page - 1].start}">
             <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
         </div>
       </page>
       <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page + 1].chapter" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamily}">
           <div :class="{noindent: !pages[page + 1].start}">
             <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
         </div>
       </page>
       <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page] ? pages[page].chapter : ''" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;">
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamily}">
           <div style="height: 0; overflow: hidden">
             <div class="buffer" style="visibility: hidden"></div>
           </div>
@@ -35,7 +35,7 @@
       <bottom-bar-item icon="list" @tap="toc"/>
       <bottom-bar-item icon="slider"/>
       <bottom-bar-item icon="light"/>
-      <bottom-bar-item icon="font"/>
+      <bottom-bar-item icon="font" @tap="font"/>
     </bottom-bar>
     <div class="text" style="display: none">
       <p>“秋是一个歌，但是‘桂花蒸’的夜，像在厨里吹的箫调，白天像小孩子唱的歌，又热又熟又清又湿。”</p>
@@ -279,7 +279,17 @@
 
       <p class="date">（一九四四年九月）</p>
     </div>
-    <toc-modal :show="$store.state.read.showtoc" @cancel="$store.state.read.showtoc = false"></toc-modal>
+    <toc-modal :show="this.$store.state.read.showtoc" @show="tocShow" @hide="tocHide" @cancel="closeToc">
+      <navigation-bar title="霸气侧漏的书籍信息"></navigation-bar>
+      <div style="flex-grow:1; position:relative">
+        <toc v-if="tocTab === 'toc'"></toc>
+        <div v-if="tocTab === 'tags'">书签</div>
+      </div>
+      <bottom-bar>
+        <bottom-bar-item text="目录" @tap="tocTab = 'toc'" :active="tocTab === 'toc'"></bottom-bar-item>
+        <bottom-bar-item text="书签" @tap="tocTab = 'tags'" :active="tocTab === 'tags'" left-divide></bottom-bar-item>
+      </bottom-bar>
+    </toc-modal>
   </div>
 </template>
 
@@ -288,6 +298,7 @@ import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
 import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
 import ButtonItem from '@/components/ButtonItem'
+import Toc from '@/components/Toc'
 import TocModal from './TocModal'
 import Page from './Page'
 import Paging from './lib/page.js'
@@ -303,7 +314,8 @@ export default {
     ActionSheet,
     ActionSheetItem,
     ButtonItem,
-    TocModal
+    TocModal,
+    Toc
   },
   data () {
     return {
@@ -312,7 +324,9 @@ export default {
       finish: false,
       pandistance: 0,
       paning: false,
-      showToc: false
+      showToc: false,
+      tocTab: 'toc',
+      fontFamily: ''
     }
   },
   computed: {
@@ -336,8 +350,25 @@ export default {
     closeMore () {
       this.$store.state.read.showmore = false
     },
+    tocShow () {
+      this.$store.commit('addmodal', this.closeToc)
+    },
+    tocHide () {
+      this.$store.commit('removemodal', this.closeToc)
+    },
     toc () {
       this.$store.state.read.showtoc = true
+    },
+    closeToc () {
+      this.$store.state.read.showtoc = false
+    },
+    font () {
+      if (this.fontFamily !== 'SourceHanSerif') {
+        this.fontFamily = 'SourceHanSerif'
+      } else {
+        this.fontFamily = ''
+      }
+      this.paging()
     },
     tap (e) {
       var width = window.innerWidth
@@ -367,15 +398,17 @@ export default {
     prev () {
       // this.tag = true
       console.log('to prev page')
-      if (this.pandistance < 0) {
-        this.$store.state.read.page++
+      if (this.finish) {
+        if (this.pandistance < 0) {
+          this.$store.state.read.page++
+        }
+        if (this.pandistance > 0) {
+          this.$store.state.read.page--
+        }
+        this.paning = true
+        this.pandistance = 0
+        setTimeout(this.swiperight, 50)
       }
-      if (this.pandistance > 0) {
-        this.$store.state.read.page--
-      }
-      this.paning = true
-      this.pandistance = 0
-      setTimeout(this.swiperight, 50)
       // if (this.$store.state.read.page > 0) {
       //   this.$store.state.read.page--
       // }
@@ -384,73 +417,83 @@ export default {
     next () {
       // this.tag = false
       console.log('to next page')
-      if (this.pandistance < 0) {
-        this.$store.state.read.page++
-      }
-      if (this.pandistance > 0) {
-        this.$store.state.read.page--
-      }
-      this.paning = true
-      this.pandistance = 0
-      setTimeout(this.swipeleft, 50)
-      // if (this.$store.state.read.page + 1 < this.pages.length) {
-      //   this.$store.state.read.page++
-      // }
-      // console.log(this.pages[this.$store.state.read.page])
-    },
-    panstart (e) {
-      if (!this.taging) {
-        this.show = false
-        this.paning = true
-        // this.panStart =
+      if (this.finish) {
         if (this.pandistance < 0) {
           this.$store.state.read.page++
         }
         if (this.pandistance > 0) {
           this.$store.state.read.page--
         }
+        this.paning = true
         this.pandistance = 0
-        this.fixdistance = e.deltaX
+        setTimeout(this.swipeleft, 50)
+      }
+      // if (this.$store.state.read.page + 1 < this.pages.length) {
+      //   this.$store.state.read.page++
+      // }
+      // console.log(this.pages[this.$store.state.read.page])
+    },
+    panstart (e) {
+      if (this.finish) {
+        if (!this.taging) {
+          this.show = false
+          this.paning = true
+          // this.panStart =
+          if (this.pandistance < 0) {
+            this.$store.state.read.page++
+          }
+          if (this.pandistance > 0) {
+            this.$store.state.read.page--
+          }
+          this.pandistance = 0
+          this.fixdistance = e.deltaX
+        }
       }
     },
     panHorizontal (e) {
-      if (!this.taging && this.paning) {
-        if ((this.$store.state.read.page <= 0 && e.deltaX > 0) || (this.$store.state.read.page >= this.pages.length - 1 && e.deltaX < 0)) {
-          this.pandistance = bounce(e.deltaX - this.fixdistance)
-        } else {
-          this.pandistance = e.deltaX - this.fixdistance
+      if (this.finish) {
+        if (!this.taging && this.paning) {
+          if ((this.$store.state.read.page <= 0 && e.deltaX > 0) || (this.$store.state.read.page >= this.pages.length - 1 && e.deltaX < 0)) {
+            this.pandistance = bounce(e.deltaX - this.fixdistance)
+          } else {
+            this.pandistance = e.deltaX - this.fixdistance
+          }
         }
       }
     },
     panend (e) {
-      if (!this.taging && this.paning) {
-        var width = window.innerWidth
-        // console.log(e.deltaX - this.fixdistance - this.pandistance)
-        // console.log(new Date().getTime() - this.pantime)
-        if (this.pandistance < -width * 0.5 && this.$store.state.read.page + 1 < this.pages.length) {
-          this.pandistance = -width
-        } else if (this.pandistance > width * 0.5 && this.$store.state.read.page > 0) {
-          this.pandistance = width
-        } else {
-          this.pandistance = 0
+      if (this.finish) {
+        if (!this.taging && this.paning) {
+          var width = window.innerWidth
+          // console.log(e.deltaX - this.fixdistance - this.pandistance)
+          // console.log(new Date().getTime() - this.pantime)
+          if (this.pandistance < -width * 0.5 && this.$store.state.read.page + 1 < this.pages.length) {
+            this.pandistance = -width
+          } else if (this.pandistance > width * 0.5 && this.$store.state.read.page > 0) {
+            this.pandistance = width
+          } else {
+            this.pandistance = 0
+          }
+          this.paning = false
         }
-        this.paning = false
       }
     },
     swiperight () {
       // console.log('swiperight')
-      this.paning = false
-      // this.paning = true
-      // if (this.pandistance < 0) {
-      //   this.$store.state.read.page++
-      // }
-      // if (this.pandistance > 0) {
-      //   this.$store.state.read.page--
-      // }
-      // this.paning = false
-      if (this.$store.state.read.page > 0 && !this.taging) {
-        var width = window.innerWidth
-        this.pandistance = width
+      if (this.finish) {
+        this.paning = false
+        // this.paning = true
+        // if (this.pandistance < 0) {
+        //   this.$store.state.read.page++
+        // }
+        // if (this.pandistance > 0) {
+        //   this.$store.state.read.page--
+        // }
+        // this.paning = false
+        if (this.$store.state.read.page > 0 && !this.taging) {
+          var width = window.innerWidth
+          this.pandistance = width
+        }
       }
     },
     swipeleft () {
@@ -462,10 +505,12 @@ export default {
       //   this.$store.state.read.page--
       // }
       // this.paning = false
-      this.paning = false
-      if (this.$store.state.read.page + 1 < this.pages.length && !this.taging) {
-        var width = window.innerWidth
-        this.pandistance = -width
+      if (this.finish) {
+        this.paning = false
+        if (this.$store.state.read.page + 1 < this.pages.length && !this.taging) {
+          var width = window.innerWidth
+          this.pandistance = -width
+        }
       }
     },
     tagstart () {
@@ -485,28 +530,41 @@ export default {
     },
     paging: function () {
       // var buffer = this.$el.getElementByClassName()
+      this.paning = true
+      if (this.pandistance < 0) {
+        this.$store.state.read.page++
+      }
+      if (this.pandistance > 0) {
+        this.$store.state.read.page--
+      }
+      this.pandistance = 0
+      this.finish = false
       var buffer = this.$el.getElementsByClassName('buffer')[0]
-      var height = this.$el.getElementsByClassName('pageContent')[0].offsetHeight
+      var height = this.$el.getElementsByClassName('pageContentWrapper')[0].offsetHeight
       var data = this.getData()
-      var paging = new Paging()
+      if (this._paging) {
+        this._paging.distroy()
+      }
+      this._paging = new Paging()
       console.log(data.length)
       console.log(this.$el.getElementsByClassName('text')[0].textContent.length)
       this.$el.getElementsByClassName('text')[0]
-      paging.on('start', () => {
+      this._paging.on('start', () => {
         this.startTime = new Date().getTime()
       })
-      paging.on('finish', () => {
+      this._paging.on('finish', () => {
         this.finish = true
         console.log(new Date().getTime() - this.startTime)
       })
-      paging.on('page', (page) => {
+      this._paging.on('page', (page) => {
         this.pages.push(page)
         if (this.pages.length > this.$store.state.read.page + 2) {
           this.finish = true
         }
       })
       buffer.innerHTML = ''
-      paging.start(buffer, height, data, '第一章')
+      this.pages.splice(0, this.pages.length)
+      this._paging.start(buffer, height, data, '第一章')
     }
   },
   activated () {
@@ -574,7 +632,7 @@ export default {
     text-align: justify;
     line-height: 1.8em;
     font-size: 16px;
-    font-family: serif;
+    // font-family: SourceHanSerif;
   }
   .noindent>:first-child{
     text-indent: 0em;

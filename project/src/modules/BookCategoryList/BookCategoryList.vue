@@ -1,36 +1,53 @@
 <template lang="html">
     <div id="book-category">
-        <navigation-bar @tap="" :title="type[typeId-1].name">
+        <navigation-bar @tap="" :title="type[typeId-1].name" :border="!top">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
-        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more>
+        <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" v-model="top" can-load-more>
         <div class="book-category-intro">
             {{ type[typeId-1].intro }}
         </div>
         <div class="book-category-list">
             <ul>
+
                 <li v-for="book in mockData" :key="book.rank">
                     <div class="book-img">
+                        <touch @tap="toBookDetail()">
                         <img :src=" book.img " :alt=" book.name ">
+                        </touch>
                     </div>
                     <div class="book-info">
                         <p>{{ book.name }}</p>
                         <div class="operate">
-                            <div class="addShelf">
+                            <touch class="addShelf" @tap="add(book)">
                                 <icon class="icon" :name="'addShelf'"></icon>
-                            </div>
-                            <div class="addCart">
+                            </touch>
+                            <touch class="addCart" @tap="shop(book.name, book.price)">
                                 <icon :name="'addCart'"></icon>
-                            </div>
+                            </touch>
                         </div>
                     </div>
                     <div class="book-price">
                         ￥ {{ book.price }}
                     </div>
                 </li>
+
             </ul>
         </div>
     </scroller>
+    <!--购买框-->
+    <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
+        <div slot="header">
+            购买本书
+        </div>
+        <div class="shop-modal">
+            <p class="title">{{ shopBook.name }}</p>
+            <p class="price">价格：<span>{{ shopBook.price }}</span>代币</p>
+            <p class="hold">您还剩余 <span>{{ userHold }}</span>阅币</p>
+        </div>
+    </modal>
+    <!--购买框结束-->
+    <message v-model="messageShow" :message-text="messageText"></message>
     </div>
 </template>
 
@@ -38,13 +55,17 @@
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import Icon from '@/components/Icon'
 import Scroller from '@/components/Scroller'
+import Modal from '@/components/Modal'
+import Message from '@/components/Message'
 export default {
   name: 'bookCategoryList',
   components: {
     NavigationBar,
     NavigationBarItem,
     Icon,
-    Scroller
+    Scroller,
+    Message,
+    Modal
   },
   computed: {
     typeId () {
@@ -55,8 +76,6 @@ export default {
         return 9
       }
     }
-  },
-  watch: {
   },
   data () {
     return {
@@ -77,21 +96,66 @@ export default {
         {id: 3, name: '朝花夕拾', price: 17.80, rank: 4, img: 'http://img13.360buyimg.com/n3/jfs/t655/238/1195078491/109034/b41afb59/54bdf6e0Nf74bdaaf.jpg'},
         {id: 4, name: '我的心只悲伤七次', price: 22.60, rank: 3, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'}
       ],
-      favorList: [],
-      buyList: []
+      shopModalShow: false,
+      messageShow: false,
+      shopBook: {
+        name: '',
+        price: 0
+      },
+      userHold: 4000,
+      messageText: '',
+      top: true
+    }
+  },
+  watch: {
+    shopModalShow (val) {
+      if (val) {
+        this.$store.commit('addmodal', () => { this.shopModalShow = true })
+      } else {
+        this.$store.commit('removemodal', () => { this.shopModalShow = false })
+      }
     }
   },
   methods: {
-    isFavor (id) {
-      return this.favorList.some((x) => {
-        return x === id
-      })
+    isIn (id) {
+      let books = this.$store.state.books
+      for (let i = books.length - 1; i >= 0; i--) {
+        if (id === books[i].id) {
+          return true
+        }
+      }
+      return false
     },
     back () {
       this.$router.go(-1)
     },
     loadMore (over) {
       console.log('loadMore')
+    },
+    add (book) {
+      let data = {'id': book.id, 'title': book.name, 'cover': book.img, 'isEdit': false}
+      if (this.isIn(data.id)) {
+        this.showMessage('已添加')
+      } else {
+        this.$store.commit('add', data)
+        this.showMessage('添加成功')
+      }
+    },
+    shop (name, price) {
+      this.shopBook.name = name
+      this.shopBook.price = price
+      this.shopModalShow = true
+    },
+    confirmShop () {
+      this.shopModalShow = false
+      this.showMessage('购买成功')
+    },
+    showMessage (text) {
+      this.messageText = text
+      this.messageShow = true
+    },
+    toBookDetail () {
+      this.$router.push({'name': 'detail'})
     }
   }
 }
@@ -100,13 +164,15 @@ export default {
 <style lang="stylus" scoped>
 #book-category {
     width: 100%;
-    background: #efeff4;
+    background-color: #ffffff;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     position: absolute;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 .book-category-intro {
     text-align: center;
@@ -159,5 +225,28 @@ export default {
         }
     }
 
+}
+.shop-modal {
+    .title {
+        text-align: center;
+        font-size: 15px;
+        font-weight: bold;
+        margin: 10px
+    }
+    .price {
+        font-size: 13px;
+        margin: 10px
+        span {
+            color: #ffa500
+            padding: 0 5px
+        }
+    }
+    .hold {
+        font-size: 13px;
+        span{
+            color: #ffa500
+            padding: 0 5px
+        }
+    }
 }
 </style>

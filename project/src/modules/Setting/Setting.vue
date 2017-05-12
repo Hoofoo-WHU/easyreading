@@ -5,7 +5,7 @@
     </navigation-bar>
     <scroller class="scroller" ref="scroller">
       <aside class="aside">
-      <list-item @tap="" v-for="item in items" right icon="" :text="item.title" style="color:grey;height:50px;line-height:50px"><switches @tap="item.switchesState=!item.switchesState" :on="item.switchesState" ></switches></list-item>
+      <list-item @tap="" v-for="item in items" :key="" right icon="" :text="item.title" style="color:grey;height:50px;line-height:50px"><switches @tap="item.switchesState=!item.switchesState" :on="item.switchesState" ></switches></list-item>
       </aside>
     </scroller>
   </router-content>

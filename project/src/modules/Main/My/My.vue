@@ -21,7 +21,7 @@
 
 	    <aside class="aside">
         <list-item @tap="bill" right icon="form" text="账单" style="height:53px;line-height:53px"></list-item>
-        <list-item @tap="bill" v-for="item in items" right :icon="item.icon" :text="item.title" style="height:53px;line-height:53px"></list-item>
+        <list-item @tap="bill" v-for="item in items" :key="" right :icon="item.icon" :text="item.title" style="height:53px;line-height:53px"></list-item>
 	    </aside>
 
     </scroller>
@@ -31,10 +31,10 @@
     <action-sheet :show="show1" @cancel="cancel1" style="bottom:-49px">
       <span>
       <span class="getchongzhi">
-        <i v-for="money in moneys"><touch @tap="pay(money.mon)"><span class="yuan"><p>{{money.mon}}元</p><p>{{money.bi}}书币</p></span></touch></i>
+        <i v-for="money in moneys" :key=""><touch @tap="pay(money.mon)"><span class="yuan"><p>{{money.mon}}元</p><p>{{money.bi}}书币</p></span></touch></i>
       </span>
       <span class="getchongzhi">
-        <i v-for="money1 in moneys1"><touch @tap="pay(money1.mon)"><span class="yuan"><p>{{money1.mon}}元</p><p>{{money1.bi}}书币</p></span></touch></i>
+        <i v-for="money1 in moneys1" :key=""><touch @tap="pay(money1.mon)"><span class="yuan"><p>{{money1.mon}}元</p><p>{{money1.bi}}书币</p></span></touch></i>
       </span>
       </span>
     </action-sheet>
@@ -191,6 +191,18 @@ export default {
         console.log(response.data)
         if (response.data.avatar !== '') {
           this.img = 'http://oott.me' + response.data.avatar
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+    this.$http.get('/check')
+      .then(response => {
+        console.log(response.data)
+        if (response.data.is_check_today === true) {
+          this.text = '签到'
+        } else {
+          this.text = '已签到'
         }
       })
       .catch(function (error) {

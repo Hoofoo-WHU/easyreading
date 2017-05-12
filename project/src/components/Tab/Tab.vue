@@ -1,9 +1,9 @@
 <template>
   <div class="app">
     <ul class="x-title">
-      <li v-on:click="tab(index)" v-for="(item, index) in items" :class="{active: activeIndex === index}">{{item.title}}</li>
+      <li v-on:click="tab(index)" v-for="(item, index) in items" :key="" :class="{active: activeIndex === index}">{{item.title}}</li>
     </ul>
-    <div><list-item @tap="" v-for="content in items[activeIndex].contents" icon="" :text="content.con" style="color:grey;height:50px;line-height:50px"></list-item>
+    <div><list-item @tap="" v-for="content in items[activeIndex].contents" :key="" icon="" :text="content.con" style="color:grey;height:50px;line-height:50px"></list-item>
     </div>
   </div>
 </template>

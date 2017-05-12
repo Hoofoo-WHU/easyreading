@@ -17,10 +17,10 @@ Vue.prototype.$http = axios.create({
   baseURL: 'http://oott.me',
   timeout: 1000
 })
-axios.interceptors.request.use(
+Vue.prototype.$http.interceptors.request.use(
   config => {
     if (store.state.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-      config.headers.Authorization = `token ${store.state.token}`
+      config.headers.Authorization = `JWT ${store.state.token}`
     }
     return config
   },

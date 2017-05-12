@@ -15,10 +15,10 @@ Vue.prototype.$http = axios.create({
   baseURL: 'http://oott.me',
   timeout: 1000
 })
-axios.interceptors.request.use(
+Vue.prototype.$http.interceptors.request.use(
   config => {
     if (store.state.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-      config.headers.Authorization = `token ${store.state.token}`
+      config.headers.Authorization = `JWT ${store.state.token}`
     }
     return config
   },
@@ -27,6 +27,21 @@ axios.interceptors.request.use(
   }
 )
 
+Vue.prototype.$http.interceptors.response.use(
+  response => {
+  // Do something with response data
+    return response
+  },
+  err => {
+    if (err.response) {
+      switch (err.response.status) {
+        case 401:
+          router.push({name: 'login'})
+      }
+    }
+    return Promise.reject(err)
+  }
+)
 Vue.config.productionTip = false
 // Vue.use(Tap)
 Vue.prototype.$platform = 'dev'

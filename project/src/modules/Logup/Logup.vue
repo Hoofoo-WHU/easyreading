@@ -2,7 +2,7 @@
 <router-content style="flex-direction:column">
   <navigation-bar title="">
     <navigation-bar-item @tap="back" slot="left" text="取消" icon=""/>
-    <navigation-bar-item @tap="relogin" slot="right" text="登录" icon=""/>
+    <navigation-bar-item @tap="" slot="right" text="" icon=""/>
   </navigation-bar>
   <div class="di">
     <div class="con">

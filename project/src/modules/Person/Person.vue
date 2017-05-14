@@ -46,7 +46,9 @@ export default {
       this.$router.push({name: 'my'})
     },
     out () {
-      this.$router.push({name: 'login'})
+      this.$store.state.token = ''
+      console.log(this.$store.state.token)
+      this.$router.push({name: 'my'})
     }
   }
 }

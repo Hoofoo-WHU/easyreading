@@ -1,9 +1,9 @@
 <template lang="html">
   <touch class="slider" @swipeleft="turnleft" @swiperight="turnright">
       <transition :name="transitionName">
-          <div class="slider-item" v-for="img in sort(imgUrl)" :key="img.id" v-if="img.show">
+          <touch class="slider-item" v-for="img in sort(imgUrl)" :key="img.id" v-if="img.show" @tap="tapAction(img.id)">
               <img :src="img.url" alt="">
-          </div>
+          </touch>
       </transition>
       <div class="dots">
           <div v-for="img in sort(imgUrl)" :class="[img.show?'active':'']">
@@ -98,6 +98,9 @@ export default {
       this.imgUrl[index].show = false
       this.imgUrl[index].last.show = true
       this.auto()
+    },
+    tapAction (id) {
+      this.$emit('tap', id)
     }
   },
   mounted () {

@@ -3,7 +3,7 @@
     <navigation-bar @tap="scrollTop" title="书城" ref="scroller" >
     </navigation-bar>
     <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more >
-      <slider></slider>
+      <slider @tap="sliderAction"></slider>
       <container :title="'分类'" :more="false" :divider="true">
           <div class="category">
               <div class="section-content">
@@ -55,10 +55,11 @@
                           </div>
                           <div class="book-info">
                               <p>{{ book.name }}</p>
+                              <div class="book-price">
+                                  ￥ {{ book.price }}
+                              </div>
                           </div>
-                          <div class="book-price">
-                              ￥ {{ book.price }}
-                          </div>
+
                       </li>
                       </touch>
 
@@ -142,6 +143,9 @@ export default {
     },
     toBookDetail () {
       this.replace('detail')
+    },
+    sliderAction (id) {
+      console.log(id)
     }
   }
 }

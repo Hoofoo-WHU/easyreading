@@ -1,0 +1,96 @@
+<template>
+  <router-content style="flex-direction:column;background:#fff">
+    <navigation-bar title="个人资料">
+      <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
+    </navigation-bar>
+    <scroller class="scroller" ref="scroller">
+      <aside class="aside">
+        <ul>
+          <li><p>头像</p><icon name="more" class="icon"></icon></li>
+          <li><p>手机号码/电子邮箱</p><p style="float:right;margin-right:10px;color:grey;">18163516131</p></li>
+          <li><p>修改密码</p><icon name="more" class="icon"></icon></li>
+        </ul>
+        <touch @tap="out" class="out">退出当前账号</touch>
+      </aside>
+    </scroller>
+  </router-content>
+</template>
+
+<script>
+import Scroller from '@/components/Scroller'
+import RouterContent from '@/components/RouterContent'
+import Icon from '@/components/Icon'
+import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
+import Switches from '@/components/Switches'
+
+export default {
+  name: 'person',
+  components: {
+    Scroller,
+    RouterContent,
+    Icon,
+    NavigationBar,
+    NavigationBarItem,
+    Switches
+  },
+  data () {
+    return {
+
+    }
+  },
+  methods: {
+    scrollTop () {
+      this.$refs.scroller.scrollTop()
+    },
+    back () {
+      this.$router.push({name: 'my'})
+    },
+    out () {
+      this.$router.push({name: 'login'})
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.scroller{
+  flex-grow: 1;
+}
+
+<style scoped>
+.scroller{
+  flex-grow: 1;
+}
+.icon{
+  float: right;
+  margin-top: 10px;
+  width: 20px;
+  height: 20px;
+  color: grey;
+}
+aside ul li {
+  height:40px;
+  background: #fff;
+  padding: 0 4%;
+  border-bottom:1px solid #efeff4;
+  display:block;
+}
+aside ul li p{
+  font-size: 12px;
+  line-height: 40px;
+  text-align: center;
+  color: #000;
+  display: inline-block;
+}
+.out{
+  width:90%;
+  height:42px;
+  margin:30px 5%;
+  background-color: #cc0000;
+  line-height: 38px;
+  text-align: center;
+  color:#fff;
+  border-radius:12px;
+}
+</style>

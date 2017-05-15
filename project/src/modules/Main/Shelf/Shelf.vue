@@ -1,6 +1,6 @@
 <template>
   <router-content style="flex-direction:column">
-    <navigation-bar @tap="scrollTop" title="书架" :sub-title="select" :border="!top" class="top">
+    <navigation-bar @tap="scrollTop" title="书架" :sub-title="select" :border="!top">
       <navigation-bar-item @tap="modify" slot="right" text="编辑" v-if="edit" :disable="empty"/>
       <navigation-bar-item @tap="finish" slot="right" text="完成" v-else/>
     </navigation-bar>
@@ -8,15 +8,13 @@
       <icon name="myShelf" class="icon"/>
       <p class="none">您的书架空空如也，去书城看看吧</p>
     </div>
-    <touch class="center" @press="press">
-      <scroller class="scroller" ref="scroller" style="flex-grow:1" v-model="top">
-        <div class="shelf">
-          <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id">
-            <book :cover="item.cover" :title="item.title" :isEdit="item.isEdit" :edit="edit"/>
-          </touch>
-        </div>
-      </scroller>
-    </touch>
+    <scroller class="scroller" ref="scroller" style="flex-grow:1" v-model="top">
+      <div class="shelf">
+        <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id" @press="press(index)">
+          <book :cover="item.cover" :title="item.title" :isEdit="item.isEdit" :edit="edit"/>
+        </touch>
+      </div>
+    </scroller>
     <transition name="trans">
       <bottom-bar class="bottom" v-if="!edit">
         <bottom-bar-item text="全选" @tap="all" v-if="isAll"></bottom-bar-item>
@@ -54,7 +52,8 @@ export default {
       checked: [],
       isAll: true,
       top: true,
-      selectedNum: 0
+      selectedNum: 0,
+      pressed: false
     }
   },
   computed: {
@@ -84,6 +83,7 @@ export default {
     },
     modify () {
       this.edit = !this.edit
+      this.pressed = true
     },
     finish () {
       this.edit = !this.edit
@@ -92,6 +92,7 @@ export default {
       }
       this.isAll = true
       this.selectedNum = 0
+      this.pressed = false
     },
     check (index) {
       if (this.edit === false) {
@@ -130,8 +131,13 @@ export default {
     add () {
       this.$router.push({name: 'detail'})
     },
-    press () {
-      this.edit = false
+    press (index) {
+      if (!this.pressed) {
+        this.edit = false
+        this.books[index].isEdit = true
+        this.selectedNum++
+        this.pressed = true
+      }
     }
   }
 }
@@ -157,20 +163,6 @@ export default {
     padding-right: 10%;
     position: relative;
     margin-top: 10px;
-  }
-  .top{
-    position: absolute;
-    top: 0;
-    z-index: 101;
-  }
-  .center{
-    position: absolute;
-    top: 49px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    display: flex;
-    flex-direction: column;
   }
   .bottom{
     position: absolute;

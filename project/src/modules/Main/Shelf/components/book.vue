@@ -7,7 +7,7 @@
         <icon v-if="!edit" name="check" class="check" :class='{gray:!isEdit, blue:isEdit}'/>
       </transition>
     </div> 
-    <div>{{title}}</div>  
+    <div class="title">{{title}}</div>  
   </div>
 </template>
 
@@ -51,27 +51,15 @@
     margin-bottom: 4%;
     box-shadow: 0 0 30px #d9d9d9;
   }
-  .status{
-    text-align: right;
-    transform: 0.5em;
-    color: orange;
+  .title{
+    height: 32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
-  .update{
-    text-align: right;
-    transform: 0.5em;
-    color: green;
-  }
-/*  .icon{
-    width: 20%;
-    height: 20%;
-    position: absolute;
-    left: 78%;
-    top: 78%;
-    transition: all .3s;
-  }*/
   .check{
-/*    width: 18%;
-    height: 18%;*/
     width: 10px;
     height: 10px;
     padding: 3px;

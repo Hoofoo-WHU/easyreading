@@ -22,25 +22,30 @@
             </div>
             <ul class="response-comment">
                 <p class="comments-number">共 {{ user.res.content.length }} 条回复</p>
-                <li v-for="res in user.res.content">
-                    <div class="avatar">
-                      <img src="../Detail/png/avatar.png" style="width:100%">
-                    </div>
-                    <p>{{res.name}}</p>
-                    <div class="time">
-                        {{res.time}}
-                    </div>
-                    <div class="texts">
-                      <div>
-                        {{res.text}}
-                      </div>
-                      <div class="longHr"></div>
-                    </div>
-                </li>
-
+                <touch v-for="res in user.res.content" :key="res.name"  @tap="response(res.name)" >
+                    <li>
+                        <div class="avatar">
+                          <img src="../Detail/png/avatar.png" style="width:100%">
+                        </div>
+                        <p>{{res.name}}</p>
+                        <div class="time">
+                            {{res.time}}
+                        </div>
+                        <div class="texts">
+                          <div>
+                            {{res.text}}
+                          </div>
+                          <div class="longHr"></div>
+                        </div>
+                    </li>
+                </touch>
             </ul>
 
         </scroller>
+        <bottom-bar>
+          <textarea :placeholder="placeHolder"></textarea>
+          <touch class="confirm" tap="confirm">回复</touch>
+        </bottom-bar>
     </div>
 
 </template>
@@ -48,12 +53,15 @@
 <script>
 import Scroller from '@/components/Scroller'
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
+import { BottomBar, BottomBarItem } from '@/components/BottomBar'
 export default {
   name: 'commentDetail',
   components: {
     Scroller,
     NavigationBar,
-    NavigationBarItem
+    NavigationBarItem,
+    BottomBar,
+    BottomBarItem
   },
   data () {
     return {
@@ -79,7 +87,8 @@ export default {
           ]
         }
       },
-      top: true
+      top: true,
+      placeHolder: '回复 评论'
     }
   },
   methods: {
@@ -94,6 +103,9 @@ export default {
     },
     getStarWidth: function (score) {
       return score * 10 + '%'
+    },
+    response (name) {
+      this.placeHolder = '回复' + ' ' + name
     }
   }
 }
@@ -196,6 +208,29 @@ export default {
         .icon {
             width: 15px;
             padding: 2px;
+        }
+    }
+    .bottom-bar {
+        display: flex
+        justify-content: space-between
+        height: 40px!important;
+        textarea {
+            box-sizing: border-box;
+            width: 85%;
+            border: none;
+            outline: none;
+            resize: none;
+            background-color: #efeff4;
+            font-size: 13px
+            padding: 10px;
+            min-height: 49px
+            max-height: 60px
+        }
+        .confirm {
+            text-align: center
+            box-sizing: border-box;
+            width: 15%;
+            line-height: 49px;
         }
     }
 }

@@ -7,7 +7,7 @@
       <aside class="aside">
         <list-item @tap="" right text="修改头像" style="height:50px;line-height:50px"></list-item>
         <list-item @tap="" right icon="" :text="way" style="height:50px;line-height:50px"><p style="float:right;margin-right:6px;color:grey;">{{phone}}</p></list-item>
-        <list-item @tap="passworld" right icon="" text="修改密码" style="height:50px;line-height:50px"></list-item>
+        <list-item @tap="" right icon="" text="修改密码" style="height:50px;line-height:50px"></list-item>
         <touch @tap="out" class="out">退出当前账号</touch>
       </aside>
     </scroller>
@@ -53,11 +53,16 @@ export default {
     }
   },
   activated () {
+    console.log('my1')
     this.$http.get('/user/profile')
     .then(response => {
-      console.log(response.data)
-      if (response.data.avatar !== '') {
-        this.img = 'http://oott.me' + response.data.avatar
+      console.log('my')
+      if (response.data.phone === '') {
+        this.way = '电子邮箱'
+        this.phone = response.data.email
+      } else {
+        this.way = '手机号码'
+        this.phone = response.data.phone
       }
     })
     .catch(function (error) {

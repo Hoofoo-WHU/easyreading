@@ -46,7 +46,7 @@ export default {
       this.$router.push({name: 'login'})
     },
     back () {
-      this.$router.push({name: 'person'})
+      this.$router.push({name: 'my'})
     },
     logup () {
       console.log('Tap logup')

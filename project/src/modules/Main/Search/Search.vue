@@ -98,7 +98,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .scroller{
   flex-grow: 1;
   margin-bottom:49px;

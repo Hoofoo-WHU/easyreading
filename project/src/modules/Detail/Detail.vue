@@ -39,7 +39,7 @@
     <bottom-bar>
       <bottom-bar-item  v-if="!isIn" text="+书架" icon="add" @tap="add"></bottom-bar-item>
       <bottom-bar-item  v-else text="-书架" icon="remove" @tap="remove"></bottom-bar-item>
-      <bottom-bar-item  text="立即阅读" icon="read" class="center" ></bottom-bar-item>
+      <bottom-bar-item  text="立即阅读" class="center" @tap="read(info.id)"></bottom-bar-item>
       <bottom-bar-item  text="购买" icon="shop" @tap="shop"></bottom-bar-item>
     </bottom-bar>
   </div>
@@ -185,6 +185,9 @@
         this.$store.commit('remove', this.info.id)
         console.log(this.isIn)
       },
+      read (id) {
+        this.$router.push({'name': 'read', 'query': {id}})
+      },
       shop () {
         let me = this
         setTimeout(function () {
@@ -251,7 +254,8 @@
   }
   .center{
     flex-grow: 1.5;
-    background: #6bc4f5;
+    background: #157afb;
+    color: #fff;
   }
   .container {
       height: 10px

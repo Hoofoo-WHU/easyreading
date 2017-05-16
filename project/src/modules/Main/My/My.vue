@@ -188,6 +188,7 @@ export default {
     }
   },
   activated () {
+    console.log(this.$store.state.token)
     if (this.$store.state.token !== undefined) {
       this.editinfo = '修改个人信息'
       this.$http.get('/user/profile')
@@ -212,6 +213,10 @@ export default {
       .catch(function (error) {
         console.log(error)
       })
+    } else {
+      this.editinfo = '点此登录'
+      this.img = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=573726630,578403616&fm=21&gp=0.jpg'
+      this.text = '签到'
     }
   }
 }

@@ -43,7 +43,7 @@ export default {
       this.$refs.scroller.scrollTop()
     },
     back () {
-      this.$router.push({name: 'my'})
+      this.$router.go(-1)
     },
     out () {
       this.$router.push({name: 'login'})

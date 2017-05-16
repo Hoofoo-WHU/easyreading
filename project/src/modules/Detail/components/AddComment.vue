@@ -1,11 +1,11 @@
 <template lang="html">
     <transition name="add-comment-show">
     <div id="add-comment" v-show="show">
-        <navigation-bar @tap="scrollTop" title="发表书评">
+        <navigation-bar title="发表书评">
           <navigation-bar-item slot="left" text="取消" @tap="back"/>
           <navigation-bar-item @tap="confirm" slot="right" text="确定"/>
         </navigation-bar>
-        <scroller style="flex-grow:1" ref="scroller">
+        <div class="wrapper">
             <div class="point">
                 <touch class="star" v-for="star in sort(stars)" @tap="mark(star.score)" :key="star.score">
                     <icon class="icon" name="light-star" v-show="star.light">
@@ -13,26 +13,24 @@
                     <icon class="icon" name="dark-star" v-show="!star.light">
                     </icon>
                 </touch>
-
             </div>
             <touch class="content">
-                <textarea name="name" rows="22" placeholder="我的评论" v-model="commentContent" @tap="showKeyboard"></textarea>
+                <textarea name="name" rows="10" placeholder="我的评论" v-model="commentContent"></textarea>
             </touch>
-        </scroller>
+        </div>
+
     </div>
     </transition>
 </template>
 
 <script>
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
-import Scroller from '@/components/Scroller'
 import Icon from '@/components/Icon'
 export default {
   name: 'addComment',
   components: {
     NavigationBar,
     NavigationBarItem,
-    Scroller,
     Icon
   },
   props: {
@@ -42,9 +40,6 @@ export default {
     }
   },
   methods: {
-    scrollTop () {
-      this.$refs.scroller.scrollTop()
-    },
     back () {
       this.show = false
     },
@@ -64,9 +59,22 @@ export default {
       }
     },
     showKeyboard () {
+      console.log(window.Keyboard)
+      console.log(this.$Keyboard)
       if (this.$Keyboard) {
         this.$Keyboard.show()
       }
+    },
+    hideKeyboard () {
+      if (this.$Keyboard) {
+        this.$Keyboard.hide()
+      }
+    },
+    clean () {
+      for (let i = 0; i < this.stars.length; i++) {
+        this.stars[i].light = false
+      }
+      this.commentContent = ''
     }
   },
   watch: {
@@ -76,6 +84,7 @@ export default {
         document.body.style.overflow = 'hidden'
       } else {
         document.body.style.overflow = 'auto'
+        this.clean()
       }
     },
     show (val) {
@@ -84,19 +93,18 @@ export default {
   },
   data () {
     return {
-      stars: [],
+      stars: [
+        {score: 1, name: 'star', light: false},
+        {score: 2, name: 'star', light: false},
+        {score: 3, name: 'star', light: false},
+        {score: 4, name: 'star', light: false},
+        {score: 5, name: 'star', light: false}
+      ],
       show: false,
       commentContent: ''
     }
   },
   mounted () {
-    this.stars = [
-      {score: 1, name: 'star', light: false},
-      {score: 2, name: 'star', light: false},
-      {score: 3, name: 'star', light: false},
-      {score: 4, name: 'star', light: false},
-      {score: 5, name: 'star', light: false}
-    ]
   }
 
 }
@@ -116,28 +124,38 @@ export default {
     overflow: hidden;
     z-index: 100000000;
 }
+.wrapper {
+    position: relative
+    flex-grow: 1
+}
 .point {
-    margin: 10px 0;
-    padding: 10px 0;
     display: flex;
     justify-content: center;
+    align-items: center
     border-bottom: 1px #d3d3d3 solid;
+    height: 70px;
     .star {
-        width: 10%;
+        width: 40px;
         margin: 0 10px;
     }
 }
 .content {
-    width: 90%
-    margin: 0 auto;
+    position: absolute
+    top: 71px
+    bottom: 0
+    left: 0
+    right: 0
+    overflow: hidden
     textarea {
+        padding: 20px;
+        box-sizing: border-box
         width: 100%;
         font-size: 14px;
         border: none;
         outline: none;
-        overflow:visible;
+        overflow: scroll;
         resize: none;
-        height: 400px;
+        height: 92%
     }
 }
 .add-comment-show-enter-active, .add-comment-show-leave-active {

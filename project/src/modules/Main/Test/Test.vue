@@ -2,7 +2,7 @@
   <router-content style="flex-direction: column;background: #fff" :style="'filter: brightness('+ value +')'">
     <navigation-bar title="测试" :border="!istop">
       <navigation-bar-item @tap="read" slot="left" text="读书" icon="back"/>
-      <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
+      <navigation-bar-item @tap="task" slot="right" text="题库" right-icon/>
     </navigation-bar>
     <scroller style="flex-grow:1;" ref="scroller" v-model="istop" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
       <container title="Range">
@@ -108,6 +108,9 @@
       },
       login () {
         this.to('login')
+      },
+      task () {
+        this.$router.push({'name': 'task'})
       },
       to: function (name) {
         // console.log(params.name)

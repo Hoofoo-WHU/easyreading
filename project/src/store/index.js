@@ -4,11 +4,10 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const myPlugin = store => {
-  // for (let i = localStorage.length - 1; i >= 0; i--) {
-  //   let book = localStorage.getItem(localStorage.key(i))
-  //   book = JSON.parse(book)
-  //   store.state.books.push(book)
-  // }
+  var books = JSON.parse(localStorage.getItem(1))
+  for (var i = books.length - 1; i >= 0; i--) {
+    store.state.books.push(books[i])
+  }
 }
 export default new Vuex.Store({
   state: {
@@ -35,7 +34,17 @@ export default new Vuex.Store({
     // }
     add (state, payload) {
       state.books.push(payload)
-      localStorage.setItem(payload.id, JSON.stringify(payload))
+      var json = JSON.stringify(state.books)
+      localStorage.setItem(1, json)
+      // console.log(Date.parse('2017-05-10T02:50:38.907056Z') > Date.now())
+      // console.log(Date.parse('2017-05-10T02:50:38.907056Z'))
+      // console.log(Date.now())
+      // localStorage.setItem(localStorage.key(0), Date.now())
+      // console.log(Vue.prototype.$http.baseURI)
+      // Vue.prototype.$http.post('/user/identifier/check', {'identifier': 13287678951, 'function': 0})
+      // .then(response => {
+      //   alert(response.data.available)
+      // })
     },
     remove (state, payload) {
       state.books = state.books.filter(function (obj) {
@@ -44,7 +53,9 @@ export default new Vuex.Store({
         }
         return false
       })
-      localStorage.removeItem(payload)
+      var json = JSON.stringify(state.books)
+      localStorage.removeItem(1)
+      localStorage.setItem(1, json)
     },
     routing: (state, payload) => {
       state.routing = payload

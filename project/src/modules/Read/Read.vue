@@ -371,7 +371,6 @@ export default {
         '思源宋体': 'SourceHanSerif',
         '思源黑体': 'SourceHanSans'
       },
-      fontFamily: '系统字体',
       brightness: 1,
       modalShow: '',
       background: '#fff',
@@ -384,6 +383,9 @@ export default {
   computed: {
     page () {
       return this.$store.state.read.page
+    },
+    fontFamily () {
+      return this.$store.getters.fontFamily
     }
   },
   watch: {
@@ -434,9 +436,11 @@ export default {
     },
     setFontFamily (fontFamily) {
       this.fontFamily = fontFamily
+      this.$store.commit('setFontFamily', fontFamily)
       this.fontSelector = false
     },
     setFontSize (size) {
+      this.$store.commit('setFontSize', size)
       this.fontSize = 14 + size * 2
       this.paging()
     },
@@ -647,6 +651,8 @@ export default {
   activated () {
     this.show = false
     this.refreshStatusBar()
+    this.cfontSize = this.$store.getters.fontSize
+    this.fontSize = 14 + this.cfontSize * 2
   },
   deactivated () {
     this.showmore = false

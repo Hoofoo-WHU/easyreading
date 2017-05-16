@@ -4,11 +4,11 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const myPlugin = store => {
-  for (let i = localStorage.length - 1; i >= 0; i--) {
-    let book = localStorage.getItem(localStorage.key(i))
-    book = JSON.parse(book)
-    store.state.books.push(book)
-  }
+  // for (let i = localStorage.length - 1; i >= 0; i--) {
+  //   let book = localStorage.getItem(localStorage.key(i))
+  //   book = JSON.parse(book)
+  //   store.state.books.push(book)
+  // }
 }
 export default new Vuex.Store({
   state: {
@@ -20,7 +20,9 @@ export default new Vuex.Store({
       pages: [],
       page: 0,
       showmore: false,
-      showtoc: false
+      showtoc: false,
+      fontSize: undefined,
+      fontFamily: undefined
     },
     modal: {
       close: undefined,
@@ -75,12 +77,34 @@ export default new Vuex.Store({
         state.modal.close.clear()
         state.modal.size = 0
       }
+    },
+    setFontSize: (state, payload) => {
+      state.read.fontSize = payload
+      localStorage.setItem('readFontSize', payload)
+    },
+    setFontFamily: (state, payload) => {
+      state.read.fontFamily = payload
+      localStorage.setItem('readFontFamily', payload)
     }
   },
   getters: {
     // xx: state => state.needScrollTops
     routing: state => state.routing,
-    hasModal: state => state.modal.size > 0
+    hasModal: state => state.modal.size > 0,
+    fontSize: state => {
+      if (!state.read.fontSize) {
+        var value = ~~localStorage.getItem('readFontSize')
+        state.read.fontSize = value || 1
+      }
+      return state.read.fontSize
+    },
+    fontFamily: state => {
+      if (!state.read.fontFamily) {
+        var value = localStorage.getItem('readFontFamily')
+        state.read.fontFamily = value || '思源宋体'
+      }
+      return state.read.fontFamily
+    }
   },
   plugins: [myPlugin]
 })

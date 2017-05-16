@@ -248,7 +248,7 @@ export default {
 	border-radius:50px;
 	line-height:100px;
 	text-align:center;
-  background-image:url("");
+  /*background-image:url("");*/
   background-repeat:no-repeat;
   background-size: 100px 100px;
   display:block;

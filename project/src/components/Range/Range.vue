@@ -95,7 +95,6 @@ export default {
     }
   },
   mounted () {
-    console.log('mounted')
     if (this.min >= this.max) {
       console.error('Range组件需要min小于max')
     }

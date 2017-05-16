@@ -1,17 +1,15 @@
 <template>
   <router-content style="flex-direction:column">
-    <navigation-bar title="购物车">
+    <navigation-bar title="福利券">
       <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
     </navigation-bar>
     <scroller class="scroller" ref="scroller">
-      <aside class="aside">
-        <ul>
-          <li><p>头像</p><icon name="more" class="icon"></icon></li>
-          <li><p>手机号码/电子邮箱</p><p style="float:right;margin-right:10px;color:grey;">18163516131</p></li>
-          <li><p>修改密码</p><icon name="more" class="icon"></icon></li>
-        </ul>
-        <touch @tap="out" class="out">退出当前账号</touch>
-      </aside>
+      <list-item @tap="notice" right icon="sign" text="新手礼包" style="height:50px;line-height:50px;margin: 10px 0;">
+      <span class="lb">领取</span>
+      </list-item>
+      <list-item @tap="" right icon="sign1" text="其他福利" style="height:50px;;line-height:50px;margin: 10px 0;">
+      <span class="lb" style="color:#e59b1a">领取</span>
+      </list-item>
     </scroller>
   </router-content>
 </template>
@@ -22,6 +20,7 @@ import RouterContent from '@/components/RouterContent'
 import Icon from '@/components/Icon'
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import Switches from '@/components/Switches'
+import ListItem from '@/components/ListItem'
 
 export default {
   name: 'cart',
@@ -31,7 +30,8 @@ export default {
     Icon,
     NavigationBar,
     NavigationBarItem,
-    Switches
+    Switches,
+    ListItem
   },
   data () {
     return {

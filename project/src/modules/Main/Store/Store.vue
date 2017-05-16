@@ -3,7 +3,7 @@
     <navigation-bar @tap="scrollTop" title="书城" ref="scroller" >
     </navigation-bar>
     <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more >
-      <slider></slider>
+      <slider @tap="sliderAction"></slider>
       <container :title="'分类'" :more="false" :divider="true">
           <div class="category">
               <div class="section-content">
@@ -27,7 +27,9 @@
                   <ul class="book-show" >
                       <touch v-for="book in mockData" :key="book.id" @tap="toBookDetail(book.id)">
                       <li>
-                          <img :src=" book.img " alt="">
+                          <div class="book-img">
+                              <img :src=" book.img " alt="">
+                          </div>
                           <p>{{ book.name }}</p>
                       </li>
                     </touch>
@@ -55,10 +57,11 @@
                           </div>
                           <div class="book-info">
                               <p>{{ book.name }}</p>
+                              <div class="book-price">
+                                  ￥ {{ book.price }}
+                              </div>
                           </div>
-                          <div class="book-price">
-                              ￥ {{ book.price }}
-                          </div>
+
                       </li>
                       </touch>
 
@@ -105,8 +108,7 @@ export default {
         {id: 1, name: '摆渡人', price: 23.40, img: 'http://img13.360buyimg.com/n3/jfs/t1393/113/77737149/217635/9064dd42/555408dbN8679b564.jpg'},
         {id: 2, name: '皮囊', price: 29.90, img: 'http://img13.360buyimg.com/n3/jfs/t526/8/239863987/140707/38421a9e/546d9a25N07687a60.jpg'},
         {id: 3, name: '朝花夕拾', price: 17.80, img: 'http://img13.360buyimg.com/n3/jfs/t655/238/1195078491/109034/b41afb59/54bdf6e0Nf74bdaaf.jpg'},
-        {id: 4, name: '我的心只悲伤七次', price: 22.60, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'},
-        {id: 5, name: '追风筝的人', price: 14.5, img: 'http://img3x8.ddimg.cn/35/10/23274638-1_l.jpg'}
+        {id: 4, name: '我的心只悲伤七次', price: 22.60, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'}
       ]
     }
   },
@@ -142,6 +144,9 @@ export default {
     },
     toBookDetail () {
       this.replace('detail')
+    },
+    sliderAction (id) {
+      console.log(id)
     }
   }
 }
@@ -196,10 +201,16 @@ export default {
                 box-sizing: border-box;
                 padding: 10px;
                 li {
-                    img {
-                        display: block;
-                        width: 100%;
+                    .book-img {
+                        width: 100%
+                        height: 100%
+                        img {
+                            display: block;
+                            width: 100%;
+                            height: 100%;
+                        }
                     }
+
                     p {
                         font-size: 10px;
                         text-align: center;
@@ -237,8 +248,10 @@ export default {
                     align-items: flex-start;
                     .book-img {
                         width: 40%;
+                        height: 100%
                         img {
                             width: 100%;
+                            height: 100%;
                         }
                     }
                     .book-info {

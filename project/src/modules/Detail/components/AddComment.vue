@@ -42,9 +42,15 @@ export default {
   methods: {
     back () {
       this.show = false
+      if (this.$Keyboard) {
+        this.$Keyboard.hide()
+      }
     },
     confirm () {
       this.show = false
+      if (this.$Keyboard) {
+        this.$Keyboard.hide()
+      }
     },
     sort (arr) {
       return arr.slice().sort((item1, item2) => { return item1.score - item2.score })
@@ -56,18 +62,6 @@ export default {
         } else {
           this.stars[i].light = false
         }
-      }
-    },
-    showKeyboard () {
-      console.log(window.Keyboard)
-      console.log(this.$Keyboard)
-      if (this.$Keyboard) {
-        this.$Keyboard.show()
-      }
-    },
-    hideKeyboard () {
-      if (this.$Keyboard) {
-        this.$Keyboard.hide()
       }
     },
     clean () {

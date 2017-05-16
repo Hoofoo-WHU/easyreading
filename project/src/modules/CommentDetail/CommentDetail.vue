@@ -44,7 +44,7 @@
         </scroller>
         <bottom-bar>
           <textarea :placeholder="placeHolder"></textarea>
-          <touch class="confirm" tap="confirm">回复</touch>
+          <touch class="confirm" @tap="confirm">回复</touch>
         </bottom-bar>
     </div>
 
@@ -106,6 +106,11 @@ export default {
     },
     response (name) {
       this.placeHolder = '回复' + ' ' + name
+    },
+    confirm () {
+      if (this.$Keyboard) {
+        this.$Keyboard.hide()
+      }
     }
   }
 }

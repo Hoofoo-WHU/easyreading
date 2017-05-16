@@ -5,7 +5,7 @@
         <div v-if="paning" class="pull-tag" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}">{{tagMessage}}</div>
       </transition>
       <span  class="pull-tag-icon" :tag="tag" :active="activePull && !tag" :noactive="activePull && tag" :class="{trans: removing}" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}"><icon name="tag"></icon></span>
-      <div class="content-wrapper" :class="{trans: !paning}" :style="{transform: 'translateY(' + pullDistance + 'px) translateZ(0)'}">
+      <div class="content-wrapper" :class="{trans: !paning}" :style="{transform: 'translateY(' + pullDistance + 'px) translateZ(0)', background: pageColor, color: fontColor}">
         <transition name="fade" appear>
           <span v-if="chapter" class="chapter">{{chapter}}</span>
         </transition>
@@ -44,6 +44,14 @@ export default {
     page: {
       type: [Number, String],
       default: ''
+    },
+    pageColor: {
+      type: String,
+      default: '#fff'
+    },
+    fontColor: {
+      type: String,
+      default: '#000'
     }
   },
   data () {
@@ -118,11 +126,9 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    background: #fff;
     z-index: -1;
     // transform: translateZ(0);
     display: flex;
-    background: #f8f8f8;
     .chapter{
       position: absolute;
       font-size: 12px;
@@ -184,7 +190,7 @@ export default {
   }
 }
 .trans{   
-  transition: transform .4s cubic-bezier(.3,.5,.29,.99),color .4s;
+  transition: transform .4s cubic-bezier(.3,.5,.29,.99),color .2s,background .2s;
 }
 .remove-leave-active {
   transform: translateY(0) !important;

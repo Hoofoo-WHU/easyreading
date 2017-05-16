@@ -91,6 +91,11 @@ export default {
   font-family: SourceHanSerif;
   src: url(./fonts/SourceHanSerif.otf)
 }
+@font-face{
+  font-family: SourceHanSans;
+  src: url(./fonts/SourceHanSans.otf)
+}
+
 body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

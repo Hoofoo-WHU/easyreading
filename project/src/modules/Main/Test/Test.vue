@@ -1,18 +1,12 @@
 <template>
-  <router-content style="flex-direction: column;">
+  <router-content style="flex-direction: column;background: #fff" :style="'filter: brightness('+ value +')'">
     <navigation-bar title="测试" :border="!istop">
       <navigation-bar-item @tap="read" slot="left" text="读书" icon="back"/>
       <navigation-bar-item @tap="login" slot="right" text="登录" right-icon/>
     </navigation-bar>
     <scroller style="flex-grow:1;" ref="scroller" v-model="istop" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
-      <container title="标题党">
-        <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
-      </container>
-      <container>
-        <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
-      </container>
-      <container>
-        <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
+      <container title="Range">
+        <range v-model="value" :min="0.3" :max="1" @start="start" @end="end"></range>
       </container>
       <touch v-for="(item, index) in items" :key="item.index"
           class="row" :class="{'grey-bg': index % 2 == 0}" @tap="onItemClick({index:index})">
@@ -33,6 +27,7 @@
   import RouterContent from '@/components/RouterContent'
   import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
   import Container from '@/components/Container'
+  import Range from '@/components/Range'
   export default {
     name: 'test',
     components: {
@@ -40,12 +35,19 @@
       RouterContent,
       NavigationBarItem,
       NavigationBar,
-      Container
+      Container,
+      Range
     },
     data () {
       return {
         items: [],
-        istop: true
+        istop: true,
+        value: 1
+      }
+    },
+    watch: {
+      value (value) {
+        // console.log(value)
       }
     },
     mounted () {
@@ -54,6 +56,12 @@
       }
     },
     methods: {
+      start (value) {
+        console.log('start' + value)
+      },
+      end (value) {
+        console.log('end' + value)
+      },
       onItemClick (params) {
         console.log(params.index)
       },

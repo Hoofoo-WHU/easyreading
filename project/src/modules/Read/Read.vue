@@ -1,27 +1,27 @@
 <template>
-  <div class="read">
+  <div class="read" :style="'filter: brightness('+ brightness +')'">
     <navigation-bar title="读书" class="navigation" :show="show">
       <navigation-bar-item slot="left" icon="back" text="返回" @tap="back" :disable="$store.state.read.showmore"/>
       <navigation-bar-item slot="right" icon="shop" :disable="$store.state.read.showmore"/>
       <navigation-bar-item slot="right" icon="more" @tap="more" :disable="$store.state.read.showmore"/>
     </navigation-bar>
-    <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal' }" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
-      <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page - 1].chapter" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamily}">
+    <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal', threshold: 4}" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
+      <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page - 1].chapter" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'" :page-color="background" :font-color="fontColor">
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamilys[fontFamily],'font-size':fontSize+'px'}">
           <div :class="{noindent: !pages[page - 1].start}">
             <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
         </div>
       </page>
-      <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page + 1].chapter" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamily}">
+      <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page + 1].chapter" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'" :page-color="background" :font-color="fontColor">
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamilys[fontFamily],'font-size':fontSize+'px'}">
           <div :class="{noindent: !pages[page + 1].start}">
             <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
           </div>
         </div>
       </page>
-      <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page] ? pages[page].chapter : ''" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'">
-        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamily}">
+      <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page] ? pages[page].chapter : ''" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'" :page-color="background" :font-color="fontColor">
+        <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamilys[fontFamily],'font-size':fontSize+'px'}">
           <div style="height: 0; overflow: hidden">
             <div class="buffer" style="visibility: hidden"></div>
           </div>
@@ -33,9 +33,9 @@
     </touch>
     <bottom-bar class="bottomBar" :show="show">
       <bottom-bar-item icon="list" @tap="toc"/>
-      <bottom-bar-item icon="slider"/>
-      <bottom-bar-item icon="light"/>
-      <bottom-bar-item icon="font" @tap="font"/>
+      <!-- <bottom-bar-item icon="slider"/> -->
+      <bottom-bar-item icon="light" @tap="modalShow='light'" :active="modalShow==='light'"/>
+      <bottom-bar-item icon="font" @tap="modalShow='font'" :active="modalShow==='font'"/>
     </bottom-bar>
     <div class="text" style="display: none">
       <p>“秋是一个歌，但是‘桂花蒸’的夜，像在厨里吹的箫调，白天像小孩子唱的歌，又热又熟又清又湿。”</p>
@@ -279,6 +279,33 @@
 
       <p class="date">（一九四四年九月）</p>
     </div>
+    <bottom-modal :show="modalShow !== '' && show">
+      <div v-if="modalShow==='light'" style="padding: 0 1em">
+        <range :min="0.3" :max="1" v-model="brightness" style="height: 53px;">
+          <icon slot="left" name="light" style="width: 20px;height:100%;margin-right: 15px;color:#5a6773"></icon>
+          <icon slot="right" name="light" style="width: 25px;height:100%;margin-left: 15px;color: #5a6773"></icon>
+        </range>
+        <div style="height: 53px; display: flex;justify-content: space-between;align-items: center;">
+          <color-block style="height: 26px; width: 20%;" color="#f8f8f8" border :active="background==='#f8f8f8'" @tap="setColor('#f8f8f8', '#000')"></color-block>
+          <color-block style="height: 26px; width: 20%;" color="#f1e5ca" border :active="background==='#f1e5ca'" @tap="setColor('#f1e5ca', '#000')"></color-block>
+          <color-block style="height: 26px; width: 20%;" color="#C7EDCC" border :active="background==='#C7EDCC'" @tap="setColor('#C7EDCC', '#000')"></color-block>
+          <color-block style="height: 26px; width: 20%;" color="#2d3035" border :active="background==='#191d25'" @tap="setColor('#191d25', '#78797d')"></color-block>
+        </div>
+      </div>
+      <div v-if="modalShow==='font'">
+        <range :min="0" :max="6" :step="1" v-model="cfontSize" @end="setFontSize" style="height: 53px;padding: 0 1em">
+          <icon slot="left" name="a" style="width: 15px;height:100%;margin-right: 15px;color:#5a6773"></icon>
+          <icon slot="right" name="a" style="width: 20px;height:100%;margin-left: 15px;color: #5a6773"></icon>
+        </range>
+        <container divider ></container>
+        <touch style="height: 53px;width: 100%; padding: 0 2em; line-height: 53px; text-align: center; box-sizing: border-box" :style="{'font-family': fontFamilys[fontFamily]}" @tap="showFontselector">{{fontFamily}}</touch>
+      </div>
+    </bottom-modal>
+    <action-sheet :show="fontSelector" @cancel="cancelFontSelector">
+      <scroller style="height: 159px">
+        <action-sheet-button v-for="(fontFamily, index) in fontFamilys" :key="index" @tap="setFontFamily(index)" :text="index" :style="{'font-family': fontFamily}"></action-sheet-button>
+      </scroller>
+    </action-sheet>
     <toc-modal :show="this.$store.state.read.showtoc" @show="tocShow" @hide="tocHide" @cancel="closeToc">
       <navigation-bar title="霸气侧漏的书籍信息"></navigation-bar>
       <div style="flex-grow:1; position:relative">
@@ -296,10 +323,16 @@
 <script>
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
-import {ActionSheet, ActionSheetItem} from '@/components/ActionSheet'
+import {ActionSheet, ActionSheetItem, ActionSheetButton} from '@/components/ActionSheet'
 import ButtonItem from '@/components/ButtonItem'
+import Range from '@/components/Range'
+import Icon from '@/components/Icon'
 import Toc from '@/components/Toc'
+import ColorBlock from '@/components/ColorBlock'
+import Container from '@/components/Container'
+import Scroller from '@/components/Scroller'
 import TocModal from './TocModal'
+import BottomModal from './BottomModal'
 import Page from './Page'
 import Paging from './lib/page.js'
 import bounce from './lib/bounce.js'
@@ -313,9 +346,16 @@ export default {
     Page,
     ActionSheet,
     ActionSheetItem,
+    ActionSheetButton,
     ButtonItem,
     TocModal,
-    Toc
+    Toc,
+    Range,
+    Icon,
+    ColorBlock,
+    BottomModal,
+    Container,
+    Scroller
   },
   data () {
     return {
@@ -326,7 +366,19 @@ export default {
       paning: false,
       showToc: false,
       tocTab: 'toc',
-      fontFamily: ''
+      fontFamilys: {
+        '系统字体': 'initial',
+        '思源宋体': 'SourceHanSerif',
+        '思源黑体': 'SourceHanSans'
+      },
+      fontFamily: '系统字体',
+      brightness: 1,
+      modalShow: '',
+      background: '#fff',
+      fontColor: '#000',
+      fontSelector: false,
+      cfontSize: 1,
+      fontSize: 16
     }
   },
   computed: {
@@ -337,6 +389,9 @@ export default {
   watch: {
     show: function (val) {
       this.refreshStatusBar()
+    },
+    fontFamily: function (val) {
+      this.paging()
     }
   },
   methods: {
@@ -362,6 +417,10 @@ export default {
     closeToc () {
       this.$store.state.read.showtoc = false
     },
+    setColor (color, fontColor) {
+      this.background = color
+      this.fontColor = fontColor
+    },
     font () {
       if (this.fontFamily !== 'SourceHanSerif') {
         this.fontFamily = 'SourceHanSerif'
@@ -369,6 +428,20 @@ export default {
         this.fontFamily = ''
       }
       this.paging()
+    },
+    showFontselector () {
+      this.fontSelector = true
+    },
+    setFontFamily (fontFamily) {
+      this.fontFamily = fontFamily
+      this.fontSelector = false
+    },
+    setFontSize (size) {
+      this.fontSize = 14 + size * 2
+      this.paging()
+    },
+    cancelFontSelector () {
+      this.fontSelector = false
     },
     tap (e) {
       var width = window.innerWidth
@@ -382,6 +455,7 @@ export default {
           this.next()
         } else {
           this.show = true
+          this.modalShow = ''
         }
       }
     },
@@ -554,6 +628,9 @@ export default {
       })
       this._paging.on('finish', () => {
         this.finish = true
+        if (this.page >= this.pages.length) {
+          this.$store.state.read.page = this.pages.length - 1
+        }
         console.log(new Date().getTime() - this.startTime)
       })
       this._paging.on('page', (page) => {

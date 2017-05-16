@@ -46,6 +46,9 @@ document.addEventListener('deviceready', () => {
         window.LightStatusBar.setStatusBarColor('#ffffffff')
       }
     })
+  } else if (window.cordova.platformId === 'ios') {
+    window.Keyboard.hideFormAccessoryBar(true)
+    window.Keyboard.shrinkView(true)
   }
   // window.alert(window.StatusBar)
   Vue.prototype.$app = window.navigator.app

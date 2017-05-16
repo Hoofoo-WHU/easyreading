@@ -202,20 +202,20 @@ export default {
             .book-info{
                 font-size: 12px;
                 flex-grow: 2;
+                p {
+                    margin-left: 10px;
+                }
                 .operate {
                     display: flex;
-                    justify-content: space-between;
-                    margin: 15px 0;
-                    width: 35%;
+                    justify-content: flex-start;
                     .addShelf {
                         margin-right: 5px
                         width: 18px
+                        padding: 10px
                     }
                     .addCart {
                         width: 18px
-                        input {
-                            display: none;
-                        }
+                        padding: 10px
                     }
                 }
             }
@@ -231,7 +231,6 @@ export default {
         text-align: center;
         font-size: 15px;
         font-weight: bold;
-        margin: 10px
     }
     .price {
         font-size: 13px;
@@ -242,6 +241,7 @@ export default {
         }
     }
     .hold {
+        margin: 10px
         font-size: 13px;
         span{
             color: #ffa500

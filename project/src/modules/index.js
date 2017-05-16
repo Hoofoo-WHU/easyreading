@@ -11,6 +11,7 @@ import Star from './Star'
 import Person from './Person'
 import Bill from './Bill'
 import Cart from './Cart'
+import CommentDetail from './CommentDetail'
 
 export default {
   Main,
@@ -25,5 +26,6 @@ export default {
   Star,
   Person,
   Bill,
-  Cart
+  Cart,
+  CommentDetail
 }

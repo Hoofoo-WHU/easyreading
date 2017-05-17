@@ -10,7 +10,7 @@
     </div>
     <scroller class="scroller" ref="scroller" style="flex-grow:1" v-model="top">
       <div class="shelf">
-        <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id">
+        <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id" @press="press(index)">
           <book :cover="item.cover" :title="item.title" :isEdit="item.isEdit" :edit="edit"/>
         </touch>
       </div>
@@ -52,8 +52,12 @@ export default {
       checked: [],
       isAll: true,
       top: true,
-      selectedNum: 0
+      selectedNum: 0,
+      pressed: false
     }
+  },
+  mounted () {
+    this.$store.commit('synchronize')
   },
   computed: {
     books () {
@@ -82,6 +86,7 @@ export default {
     },
     modify () {
       this.edit = !this.edit
+      this.pressed = true
     },
     finish () {
       this.edit = !this.edit
@@ -89,6 +94,8 @@ export default {
         this.books[i].isEdit = false
       }
       this.isAll = true
+      this.selectedNum = 0
+      this.pressed = false
     },
     check (index) {
       if (this.edit === false) {
@@ -126,6 +133,14 @@ export default {
     },
     add () {
       this.$router.push({name: 'detail'})
+    },
+    press (index) {
+      if (!this.pressed) {
+        this.edit = false
+        this.books[index].isEdit = true
+        this.selectedNum++
+        this.pressed = true
+      }
     }
   }
 }
@@ -167,7 +182,6 @@ export default {
     transform: translateY(100%);
   }
   .default{
-    /*padding-top: 200px;*/
     position: absolute;
     top: 50%;
     width: 100%;

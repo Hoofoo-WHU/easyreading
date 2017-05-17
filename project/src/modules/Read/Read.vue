@@ -477,14 +477,7 @@ export default {
       // this.tag = true
       console.log('to prev page')
       if (this.finish) {
-        if (this.pandistance < 0) {
-          this.$store.state.read.page++
-        }
-        if (this.pandistance > 0) {
-          this.$store.state.read.page--
-        }
-        this.paning = true
-        this.pandistance = 0
+        this.pageReset()
         setTimeout(this.swiperight, 50)
       }
       // if (this.$store.state.read.page > 0) {
@@ -496,14 +489,7 @@ export default {
       // this.tag = false
       console.log('to next page')
       if (this.finish) {
-        if (this.pandistance < 0) {
-          this.$store.state.read.page++
-        }
-        if (this.pandistance > 0) {
-          this.$store.state.read.page--
-        }
-        this.paning = true
-        this.pandistance = 0
+        this.pageReset()
         setTimeout(this.swipeleft, 50)
       }
       // if (this.$store.state.read.page + 1 < this.pages.length) {
@@ -515,15 +501,7 @@ export default {
       if (this.finish) {
         if (!this.taging) {
           this.show = false
-          this.paning = true
-          // this.panStart =
-          if (this.pandistance < 0) {
-            this.$store.state.read.page++
-          }
-          if (this.pandistance > 0) {
-            this.$store.state.read.page--
-          }
-          this.pandistance = 0
+          this.pageReset()
           this.fixdistance = e.deltaX
         }
       }
@@ -591,6 +569,16 @@ export default {
         }
       }
     },
+    pageReset () {
+      this.paning = true
+      if (this.pandistance < 0) {
+        this.$store.state.read.page++
+      }
+      if (this.pandistance > 0) {
+        this.$store.state.read.page--
+      }
+      this.pandistance = 0
+    },
     tagstart () {
       this.show = false
       this.taging = true
@@ -607,26 +595,22 @@ export default {
       return data
     },
     paging: function () {
-      // var buffer = this.$el.getElementByClassName()
-      this.paning = true
-      if (this.pandistance < 0) {
-        this.$store.state.read.page++
-      }
-      if (this.pandistance > 0) {
-        this.$store.state.read.page--
-      }
-      this.pandistance = 0
+      this.pageReset()
       this.finish = false
       var buffer = this.$el.getElementsByClassName('buffer')[0]
-      var height = this.$el.getElementsByClassName('pageContentWrapper')[0].offsetHeight
-      var data = this.getData()
+      // var height = this.$el.getElementsByClassName('pageContentWrapper')[0].offsetHeight
+      // var data = this.getData()
+      this.$http.get('/reading/book/' + this.$route.query.bookid)
+      .then(response => {
+        console.log(response)
+      })
       if (this._paging) {
         this._paging.distroy()
       }
       this._paging = new Paging()
-      console.log(data.length)
-      console.log(this.$el.getElementsByClassName('text')[0].textContent.length)
-      this.$el.getElementsByClassName('text')[0]
+      // console.log(data.length)
+      // console.log(this.$el.getElementsByClassName('text')[0].textContent.length)
+      // this.$el.getElementsByClassName('text')[0]
       this._paging.on('start', () => {
         this.startTime = new Date().getTime()
       })
@@ -645,7 +629,7 @@ export default {
       })
       buffer.innerHTML = ''
       this.pages.splice(0, this.pages.length)
-      this._paging.start(buffer, height, data, '第一章')
+      // this._paging.start(buffer, height, data, '第一章')
     }
   },
   activated () {

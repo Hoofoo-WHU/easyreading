@@ -4,9 +4,11 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const myPlugin = store => {
-  var books = JSON.parse(localStorage.getItem(1))
-  for (var i = books.length - 1; i >= 0; i--) {
-    store.state.books.push(books[i])
+  if (localStorage.getItem('book')) {
+    var books = JSON.parse(localStorage.getItem('book'))
+    for (var i = books.length - 1; i >= 0; i--) {
+      store.state.books.push(books[i])
+    }
   }
 }
 export default new Vuex.Store({
@@ -35,12 +37,12 @@ export default new Vuex.Store({
     add (state, payload) {
       state.books.push(payload)
       var json = JSON.stringify(state.books)
-      localStorage.setItem(1, json)
+      localStorage.setItem('book', json)
       // console.log(Date.parse('2017-05-10T02:50:38.907056Z') > Date.now())
       // console.log(Date.parse('2017-05-10T02:50:38.907056Z'))
       // console.log(Date.now())
       // localStorage.setItem(localStorage.key(0), Date.now())
-      // console.log(Vue.prototype.$http.baseURI)
+      // console.log(Vue.prototype.$http)
       // Vue.prototype.$http.post('/user/identifier/check', {'identifier': 13287678951, 'function': 0})
       // .then(response => {
       //   alert(response.data.available)
@@ -54,8 +56,8 @@ export default new Vuex.Store({
         return false
       })
       var json = JSON.stringify(state.books)
-      localStorage.removeItem(1)
-      localStorage.setItem(1, json)
+      localStorage.removeItem('book')
+      localStorage.setItem('book', json)
     },
     routing: (state, payload) => {
       state.routing = payload
@@ -96,6 +98,41 @@ export default new Vuex.Store({
     setFontFamily: (state, payload) => {
       state.read.fontFamily = payload
       localStorage.setItem('readFontFamily', payload)
+    },
+    synchronize: (state) => {
+      Vue.prototype.$http.get('/bookshelf/status')
+      .then(response => {
+        var localTime = localStorage.getItem('time')
+        if (localTime > Date.parse(response.data.update_timestamp)) {
+          if (localStorage.getItem('book')) {
+            var books = JSON.parse(localStorage.getItem('book'))
+            var bookId = ''
+            for (var i = books.length - 1; i >= 0; i--) {
+              state.books.push(books[i])
+              bookId += books[i].id + ','
+            }
+            Vue.prototype.$http.put('/bookshelf', {'book_id': bookId.substring(0, bookId.length - 1)})
+            .then(response => {
+              localTime.removeItem('time')
+              localTime.setItem('time', Date.parse(response.data.update_timestamp))
+            })
+          }
+        } else {
+          Vue.prototype.$http.get('/bookshelf')
+          .then(response => {
+            var books = response.result
+            for (var i = books.length - 1; i >= 0; i--) {
+              state.books.push(books[i])
+            }
+            var json = JSON.stringify(state.books)
+            localStorage.removeItem('book')
+            localStorage.setItem('book', json)
+          })
+        }
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
     }
   },
   getters: {

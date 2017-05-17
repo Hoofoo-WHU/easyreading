@@ -56,6 +56,9 @@ export default {
       pressed: false
     }
   },
+  mounted () {
+    this.$store.commit('synchronize')
+  },
   computed: {
     books () {
       return this.$store.state.books

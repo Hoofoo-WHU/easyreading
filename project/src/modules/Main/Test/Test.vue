@@ -96,7 +96,7 @@
       },
       read () {
         console.log('Tap read')
-        this.$router.push({'name': 'read', query: {bookid: 'bookid123'}})
+        this.$router.push({'name': 'read', query: {bookid: '1'}})
         // alert(this.$statusBar.isVisible)
         // if (this.$statusBar.isVisible) {
         //   // alert('111111')

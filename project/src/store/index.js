@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const myPlugin = store => {
-  var books = JSON.parse(localStorage.getItem(1))
+  var books = JSON.parse(localStorage.getItem('book'))
   for (var i = books.length - 1; i >= 0; i--) {
     store.state.books.push(books[i])
   }
@@ -33,7 +33,7 @@ export default new Vuex.Store({
     add (state, payload) {
       state.books.push(payload)
       var json = JSON.stringify(state.books)
-      localStorage.setItem(1, json)
+      localStorage.setItem('book', json)
       // console.log(Date.parse('2017-05-10T02:50:38.907056Z') > Date.now())
       // console.log(Date.parse('2017-05-10T02:50:38.907056Z'))
       // console.log(Date.now())
@@ -52,8 +52,8 @@ export default new Vuex.Store({
         return false
       })
       var json = JSON.stringify(state.books)
-      localStorage.removeItem(1)
-      localStorage.setItem(1, json)
+      localStorage.removeItem('book')
+      localStorage.setItem('book', json)
     },
     routing: (state, payload) => {
       state.routing = payload

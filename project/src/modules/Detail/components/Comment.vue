@@ -7,22 +7,22 @@
             我也来评
         </touch>
     </p>
-    <touch v-for="(item,index) in comment" :key="index" @tap="toCommentDetail">
+    <touch v-for="item in comment" :key="item.id" @tap="toCommentDetail(item.id)">
         <div class="list" >
           <div class="avatar">
-            <img src="../png/avatar.png" style="width:100%">
+            <img :src="item.user_avatar" style="width:100%">
           </div>
           <div class="texts">
             <div class="textTop">
-              <p class="left"><b>{{item.author}}</b></p>
-              <p class="right"> {{item.time}}</p>
+              <p class="left"><b>{{item.user_id}}</b></p>
+              <p class="right"> {{item.timestamp}}</p>
             </div>
             <div>
-              {{item.data}}
+              {{item.content}}
             </div>
             <div class="res">
               <icon class="icon" name="res"></icon>
-              <span>{{ item.resNum }} 条回复</span>
+              <span>{{ item.sub_comment_count }} 条回复</span>
             </div>
             <div class="longHr"></div>
           </div>
@@ -58,8 +58,8 @@
       addComment () {
         this.$emit('showComment')
       },
-      toCommentDetail () {
-        this.$router.push({'name': 'commentDetail'})
+      toCommentDetail (id) {
+        this.$router.push({'name': 'commentDetail', params: {'commentId': id}})
       },
       wakeupKeyboard () {
         // if (this.$Keyboard) {

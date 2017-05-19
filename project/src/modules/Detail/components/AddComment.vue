@@ -18,7 +18,6 @@
                 <textarea name="name" rows="10" placeholder="我的评论" v-model="commentContent"></textarea>
             </touch>
         </div>
-
     </div>
     </transition>
 </template>
@@ -37,6 +36,19 @@ export default {
     value: {
       type: Boolean,
       default: false
+    },
+    id: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    score () {
+      for (let i = 0; i < this.stars.length; i++) {
+        if (this.stars[i].light === true) {
+          return this.stars[i].score
+        }
+      }
     }
   },
   methods: {
@@ -47,10 +59,15 @@ export default {
       }
     },
     confirm () {
-      this.show = false
+      let me = this
       if (this.$Keyboard) {
         this.$Keyboard.hide()
       }
+      me.$http.post('/bookshopping/book/' + this.id + '/comment')
+      .then(response => {
+        this.show = false
+        this.$emit('showMessage', '评论成功')
+      })
     },
     sort (arr) {
       return arr.slice().sort((item1, item2) => { return item1.score - item2.score })

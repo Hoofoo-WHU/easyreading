@@ -30,10 +30,10 @@ function Paging () {
   var page
   // 生命周期
   this.start = (buffer, height, data, chapter) => {
-    buffer ? para.buffer = buffer : console.error('缺少buffer')
-    height ? para.height = height : console.error('缺少height')
-    data ? para.data = data : console.error('缺少data')
-    chapter ? para.chapter = chapter : console.error('缺少chapter')
+    buffer !== undefined ? para.buffer = buffer : console.error('缺少buffer')
+    height !== undefined ? para.height = height : console.error('缺少height')
+    data !== undefined ? para.data = data : console.error('缺少data')
+    chapter !== undefined ? para.chapter = chapter : console.error('缺少chapter')
     emit('start')
     _start()
   }

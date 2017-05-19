@@ -6,15 +6,11 @@
       </transition>
       <span  class="pull-tag-icon" :tag="tag" :active="activePull && !tag" :noactive="activePull && tag" :class="{trans: removing}" :style="{transform: 'translateY(' + (pullDistance<30?pullDistance:30) + 'px) translateZ(0)'}"><icon name="tag"></icon></span>
       <div class="content-wrapper" :class="{trans: !paning}" :style="{transform: 'translateY(' + pullDistance + 'px) translateZ(0)', background: pageColor, color: fontColor}">
-        <transition name="fade" appear>
-          <span v-if="chapter" class="chapter">{{chapter}}</span>
-        </transition>
+        <span v-if="chapter" class="chapter">{{chapter}}</span>
         <div class="pageContent">
           <slot></slot>
         </div>
-        <transition name="fade" appear>
-          <span v-if="page" class="pageIndex">{{page}}</span>
-        </transition>
+        <span v-if="page" class="pageIndex">{{page}}</span>
       </div>
     </div>
   </touch>

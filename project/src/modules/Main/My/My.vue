@@ -20,8 +20,10 @@
 	    </section>
 
 	    <aside class="aside">
-        <list-item @tap="bill" right icon="form" text="账单" style="height:53px;line-height:53px"></list-item>
-        <list-item @tap="bill" v-for="item in items" :key="" right :icon="item.icon" :text="item.title" style="height:53px;line-height:53px"></list-item>
+        <list-item @tap="note" right icon="edit" text="我的笔记" style="height:53px;line-height:53px"></list-item>
+        <list-item @tap="bill" right icon="form" text="充值账单" style="height:53px;line-height:53px"></list-item>
+        <list-item @tap="list" right icon="trade" text="已购书籍" style="height:53px;line-height:53px"></list-item>
+        <list-item @tap="list" right icon="office" text="阅读历史" style="height:53px;line-height:53px"></list-item>
 	    </aside>
 
     </scroller>
@@ -73,14 +75,6 @@ export default {
       top: true,
       show0: false,
       show1: false,
-      items: [
-        {title: '收藏', icon: 'favorite', tap: 'star'},
-        {title: '推荐', icon: 'good', tap: 'star'},
-        {title: '笔记', icon: 'edit', tap: 'star'},
-        {title: '购买', icon: 'trade', tap: 'star'},
-        {title: '下载', icon: 'download', tap: 'star'},
-        {title: '已读', icon: 'office', tap: 'star'}
-      ],
       iconName: 'ok',
       messageText: '已签到',
       value: false,
@@ -113,11 +107,14 @@ export default {
     postnew () {
       this.$router.push({name: 'new'})
     },
-    person () {
-      this.$router.push({name: 'person'})
+    note () {
+
     },
     bill () {
       this.$router.push({name: 'bill'})
+    },
+    list () {
+
     },
     star () {
       this.$router.push({name: 'star'})
@@ -129,7 +126,7 @@ export default {
       this.show0 = false
     },
     display () {
-      this.$http.get('/deposit/balance')
+      this.$http.get('/personal/balance')
       .then(response => {
         this.show0 = true
         console.log(response.data)
@@ -166,7 +163,7 @@ export default {
     },
     pay (val) {
       console.log(val)
-      this.$http.post('/deposit/record', {'amount': val})
+      this.$http.post('/personal/deposit', {'amount': val})
       .then(response => {
         this.messageShow = true
         this.messageText = '充值成功' + val + '元'

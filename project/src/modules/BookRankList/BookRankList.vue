@@ -5,31 +5,26 @@
         </navigation-bar>
         <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" v-model="top" can-load-more>
             <ul>
-                <li v-for="book in rank(mockData)" :key="book.rank">
-                    <div class="rank-icon" v-if="book.rank === 1">
-                        <icon class="icon" name="first"></icon>
-                    </div>
-                    <div class="rank-icon" v-else>
-                        {{ book.rank }}
-                    </div>
+                <li v-for="book in bookList" :key="book.id">
                     <div class="book-img">
-                        <touch @tap="toBookDetail()">
-                        <img :src=" book.img " :alt=" book.name ">
+                        <touch @tap="toBookDetail(book.id)">
+                        <img :src=" book.cover " :alt=" book.title ">
                         </touch>
                     </div>
                     <div class="book-info">
-                        <p>{{ book.name }}</p>
+                        <p class="book-title">{{ book.title }}</p>
+                        <p class="book-author">{{ book.author }}</p>
                         <div class="operate">
                             <touch class="addShelf" @tap="add(book)">
                                 <icon class="icon" :name="'addShelf'"></icon>
                             </touch>
-                            <touch class="addCart" @tap="shop(book.name, book.price)">
+                            <touch class="addCart" @tap="shop(book.title, book.price, book.id)">
                                 <icon :name="'addCart'"></icon>
                             </touch>
                         </div>
                     </div>
                     <div class="book-price">
-                        ￥ {{ book.price }}
+                      {{ book.price }} 书币
                     </div>
                 </li>
             </ul>
@@ -46,7 +41,7 @@
           </div>
         </modal>
         <!--购买框结束-->
-        <message v-model="messageShow" :message-text="messageText"></message>
+        <message v-model="messageShow" :message-text="messageText" :icon-name="messageIcon"></message>
     </div>
 </template>
 
@@ -68,20 +63,17 @@ export default {
   },
   data () {
     return {
-      mockData: [
-        {id: 1, name: '摆渡人', price: 23.40, rank: 2, img: 'http://img13.360buyimg.com/n3/jfs/t1393/113/77737149/217635/9064dd42/555408dbN8679b564.jpg'},
-        {id: 2, name: '皮囊', price: 29.90, rank: 1, img: 'http://img13.360buyimg.com/n3/jfs/t526/8/239863987/140707/38421a9e/546d9a25N07687a60.jpg'},
-        {id: 3, name: '朝花夕拾', price: 17.80, rank: 4, img: 'http://img13.360buyimg.com/n3/jfs/t655/238/1195078491/109034/b41afb59/54bdf6e0Nf74bdaaf.jpg'},
-        {id: 4, name: '我的心只悲伤七次', price: 22.60, rank: 3, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'}
-      ],
+      bookList: [],
       shopModalShow: false,
       messageShow: false,
       shopBook: {
         name: '',
-        price: 0
+        price: 0,
+        id: 0
       },
-      userHold: 4000,
+      userHold: 0,
       messageText: '',
+      messageIcon: 'ok',
       top: true
     }
   },
@@ -95,6 +87,22 @@ export default {
     }
   },
   methods: {
+    load () {
+      this.$http.get('/recommendation/rank', {
+        params: {
+          amount: 10
+        }
+      })
+      .then(response => {
+        this.bookList = this.formatImg(response.data.results)
+      })
+    },
+    formatImg (arr) {
+      for (let i = 0; i < arr.length; i++) {
+        arr[i].cover = 'http://oott.me' + arr[i].cover
+      }
+      return arr
+    },
     isIn (id) {
       let books = this.$store.state.books
       for (let i = books.length - 1; i >= 0; i--) {
@@ -104,40 +112,65 @@ export default {
       }
       return false
     },
-    rank (arr) {
-      return arr.slice().sort((item1, item2) => { return item1.rank - item2.rank })
-    },
     back () {
       this.$router.go(-1)
     },
     loadMore (over) {
       console.log('loadMore')
     },
-    toBookDetail () {
-      this.$router.push({'name': 'detail'})
+    toBookDetail (id) {
+      this.$router.push({'name': 'detail', params: {'id': id}})
     },
     add (book) {
+      let me = this
       let data = {'id': book.id, 'title': book.name, 'cover': book.img, 'isEdit': false}
       if (this.isIn(data.id)) {
-        this.showMessage('已添加')
+        this.showMessage('已添加', 'ok')
       } else {
-        this.$store.commit('add', data)
-        this.showMessage('添加成功')
+        me.$store.commit('add', data)
+        me.$http.post('/bookshelf', {
+          'book_id': book.id
+        })
+        .then(response => {
+          this.showMessage('添加成功', 'ok')
+        })
       }
     },
-    shop (name, price) {
+    shop (name, price, id) {
       this.shopBook.name = name
       this.shopBook.price = price
-      this.shopModalShow = true
+      this.shopBook.id = id
+      let me = this
+      me.$http.get('/personal/balance')
+      .then(response => {
+        me.userHold = response.data.balance_book
+        setTimeout(function () {
+          me.shopModalShow = true
+        }, 0)
+      })
     },
     confirmShop () {
       this.shopModalShow = false
-      this.showMessage('购买成功')
+      let me = this
+      me.$http.post('/bookshopping/book/' + this.shopBook.id + '/buy')
+      .then(response => {
+        alert('response')
+        this.showMessage('购买成功', 'ok')
+      })
+      .catch(error => {
+        this.showMessage(error.response.data.reason, 'close')
+      })
     },
-    showMessage (text) {
+    showMessage (text, icon) {
+      if (icon) {
+        this.messageIcon = icon
+      }
       this.messageText = text
       this.messageShow = true
     }
+  },
+  mounted () {
+    this.load()
   }
 }
 </script>
@@ -171,15 +204,20 @@ export default {
                 margin: 12px;
             }
             .book-img {
+                width: 30%
                 img {
                     width: 58%;
                 }
             }
             .book-info{
                 font-size: 12px;
-                flex-grow: 2;
+                width: 50%;
                 p {
                     margin-left: 10px;
+                }
+                .book-title {
+                    font-weight: bold;
+                    font-size: 14px;
                 }
                 .operate {
                     display: flex;
@@ -197,6 +235,7 @@ export default {
             }
             .book-price {
                 font-size: 12px;
+                color: #ffa500
             }
         }
     }

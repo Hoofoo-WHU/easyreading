@@ -3,11 +3,11 @@
     <div class="relates">
       <p class="left"><b>相关推荐</b></p>
       <div class="recommend">
-        <div v-for="item in info" style="width:30%">
+        <touch v-for="item in initialInfo" style="width:30%" @tap="toBookDetail(item.id)">
           <!-- <img :src="item.cover" alt="" width="100%"> -->
-          <img src="../../Main/Shelf/3310.jpg" alt="" width="100%">
+          <img :src="item.cover" alt="" width="100%">
           {{item.title}}
-        </div>
+        </touch>
       </div>
     </div>
     <touch class="change" @tap="change">
@@ -23,7 +23,7 @@
       initialInfo: {
         type: Array,
         default: function () {
-          return {}
+          return []
         }
       }
     },
@@ -37,11 +37,21 @@
     },
     methods: {
       change () {
-        this.info.splice(0, this.info.length)
-        for (let i = 1; i <= 3; i++) {
-          this.info.push({cover: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2619242940,2733301503&fm=58',
-            title: '我变了我变了'})
-        }
+        /* let me = this
+        me.$http.get('/recommendation/individuation', {
+          params: {
+            amount: 10
+          }
+        })
+        .then(response => {
+          me.recommendInfo = me.formatImg(response.data.results)
+        })
+        .catch(error => {
+          console.log(error.response)
+      }) */
+      },
+      toBookDetail (id) {
+        this.$emit('changePage', id)
       }
     }
   }

@@ -18,7 +18,6 @@
                 <textarea name="name" rows="10" placeholder="我的评论" v-model="commentContent"></textarea>
             </touch>
         </div>
-
     </div>
     </transition>
 </template>
@@ -37,14 +36,47 @@ export default {
     value: {
       type: Boolean,
       default: false
+    },
+    id: {
+      type: Number,
+      default: 0
+    }
+  },
+  computed: {
+    score () {
+      for (let i = 0; i < this.stars.length; i++) {
+        if (this.stars[i].light === true) {
+          return this.stars[i].score
+        }
+      }
     }
   },
   methods: {
     back () {
       this.show = false
+      if (this.$Keyboard) {
+        this.$Keyboard.hide()
+      }
     },
     confirm () {
-      this.show = false
+      let me = this
+      if (this.$Keyboard) {
+        this.$Keyboard.hide()
+      }
+      me.$http.post('/bookshopping/book/' + this.id + '/comment', {
+        'score': this.score,
+        'content': this.commentContent.trim(),
+        'parent_id': 0
+      })
+      .then(response => {
+        this.show = false
+        this.$emit('reloadComment')
+        this.$emit('showMessage', '评论成功', 'ok')
+      })
+      .catch(error => {
+        console.log(error.response)
+        this.$emit('showMessage', error.response.data.message, 'close')
+      })
     },
     sort (arr) {
       return arr.slice().sort((item1, item2) => { return item1.score - item2.score })
@@ -56,18 +88,6 @@ export default {
         } else {
           this.stars[i].light = false
         }
-      }
-    },
-    showKeyboard () {
-      console.log(window.Keyboard)
-      console.log(this.$Keyboard)
-      if (this.$Keyboard) {
-        this.$Keyboard.show()
-      }
-    },
-    hideKeyboard () {
-      if (this.$Keyboard) {
-        this.$Keyboard.hide()
       }
     },
     clean () {
@@ -122,7 +142,7 @@ export default {
     bottom: 0;
     position: absolute;
     overflow: hidden;
-    z-index: 100000000;
+    z-index: 10000;
 }
 .wrapper {
     position: relative

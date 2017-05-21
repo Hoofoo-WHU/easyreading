@@ -23,7 +23,7 @@
       initialInfo: {
         type: Array,
         default: function () {
-          return {}
+          return []
         }
       }
     },
@@ -51,7 +51,7 @@
       }) */
       },
       toBookDetail (id) {
-        this.$router.push({'id': 'detail', params: {'id': id}})
+        this.$emit('changePage', id)
       }
     }
   }

@@ -1,5 +1,6 @@
 <template lang="html">
-    <div id="comment-detail">
+    <transition name="comment-detail-show">
+    <div id="comment-detail" v-show="show">
         <navigation-bar @tap="scrollTop" title="评论详情" ref="scroller" :border="!top">
           <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
         </navigation-bar>
@@ -48,6 +49,7 @@
           <touch class="confirm" @tap="confirm">回复</touch>
         </bottom-bar>
     </div>
+   </transition>
 
 </template>
 
@@ -66,22 +68,44 @@ export default {
     BottomBarItem,
     Message
   },
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
+    commentId: {
+      type: Number,
+      default: 1
+    },
+    bookId: {
+      type: Number,
+      default: 1
+    }
+  },
+  watch: {
+    value (val) {
+      this.show = val
+      if (val) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = 'auto'
+        this.clean()
+      }
+    },
+    show (val) {
+      this.$emit('input', val)
+    }
+  },
   data () {
     return {
       mainComment: {},
+      show: false,
       subComment: [],
       top: true,
       messageShow: false,
       messageText: '',
-      icon: ''
-    }
-  },
-  computed: {
-    commentId () {
-      if (this.$route.params.commentId) {
-        console.log(this.$route.params.commentId)
-        return this.$route.params.commentId
-      }
+      icon: 'ok',
+      responseContent: ''
     }
   },
   methods: {
@@ -92,6 +116,9 @@ export default {
         console.log('/bookshopping/comment/: ' + response)
         me.mainComment = response.data
       })
+    },
+    loadChilrenComment () {
+      let me = this
       me.$http.get('/bookshopping/comment/' + me.commentId + '/children', {
         params: {
           page: 1,
@@ -101,11 +128,13 @@ export default {
       .then(response => {
         console.log('/bookshopping/comment/children: ' + response)
         me.subComment = response.data.results
+        me.$refs.scroller.refresh()
       })
     },
     back () {
       this.clean()
-      this.$router.go(-1)
+      this.show = false
+      this.$emit('reloadComment')
     },
     scrollTop: function () {
       this.$refs.scroller.scrollTop()
@@ -121,23 +150,28 @@ export default {
       this.icon = icon
       this.messageText = text
     },
+    clean () {
+      this.responseContent = ''
+    },
     confirm () {
       let me = this
       if (this.$Keyboard) {
         this.$Keyboard.hide()
       }
-      me.$http.post('/bookshopping/' + me.commentId + '/comment', {
+      me.$http.post('/bookshopping/book/' + me.bookId + '/comment', {
         'content': this.responseContent,
-        'parent_id': 0
+        'parent_id': me.commentId
       }).then(response => {
         console.log('/bookshopping/' + response)
         this.clean()
         this.showMessage('ok', '回复成功！')
+        this.loadChilrenComment()
       })
     }
   },
   mounted () {
     this.load()
+    this.$refs.scroller.refresh()
   }
 }
 </script>
@@ -155,6 +189,7 @@ export default {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    z-index: 1000;
     .main-comment {
         display: flex;
         justify-content: flex-start;
@@ -172,7 +207,7 @@ export default {
             display: inline-block;
             left: 0;
             top: 0;
-            background: url(../Detail/png/star.png);
+            background: url(../png/star.png);
             height: 16px;
           }
         }
@@ -263,5 +298,14 @@ export default {
             line-height: 49px;
         }
     }
+}
+.comment-detail-show-enter-active, .comment-detail-show-leave-active {
+    transition: transform .3s
+}
+.comment-detail-show-enter {
+    transform: translateY(100%);
+}
+.comment-detail-show-leave-to {
+    transform: translateY(100%);
 }
 </style>

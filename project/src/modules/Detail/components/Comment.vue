@@ -7,7 +7,11 @@
             我也来评
         </touch>
     </p>
-    <touch v-for="item in comment" :key="item.id" @tap="toCommentDetail(item.id)">
+    <div v-if="comment.length === 0" class="no-comment">
+        来做第一个评论的人吧！
+    </div>
+
+    <touch v-else v-for="item in comment" :key="item.id" @tap="toCommentDetail(item.id)">
         <div class="list" >
           <div class="avatar">
             <img :src="item.user_avatar" style="width:100%">
@@ -59,7 +63,7 @@
         this.$emit('showComment')
       },
       toCommentDetail (id) {
-        this.$router.push({'name': 'commentDetail', params: {'commentId': id}})
+        this.$emit('showCommentDetail', id)
       },
       wakeupKeyboard () {
         // if (this.$Keyboard) {
@@ -77,6 +81,11 @@
     padding-left: 5%;
     padding-right: 5%;
     margin: 20px 0;
+  }
+  .no-comment {
+    text-align: center;
+    font-size: 15px;
+    margin: 40px;
   }
   .add-comment {
     display: inline-block;

@@ -63,10 +63,19 @@ export default {
       if (this.$Keyboard) {
         this.$Keyboard.hide()
       }
-      me.$http.post('/bookshopping/book/' + this.id + '/comment')
+      me.$http.post('/bookshopping/book/' + this.id + '/comment', {
+        'score': this.score,
+        'content': this.commentContent.trim(),
+        'parent_id': 0
+      })
       .then(response => {
         this.show = false
-        this.$emit('showMessage', '评论成功')
+        this.$emit('reloadComment')
+        this.$emit('showMessage', '评论成功', 'ok')
+      })
+      .catch(error => {
+        console.log(error.response)
+        this.$emit('showMessage', error.response.data.message, 'close')
       })
     },
     sort (arr) {
@@ -133,7 +142,7 @@ export default {
     bottom: 0;
     position: absolute;
     overflow: hidden;
-    z-index: 100000000;
+    z-index: 10000;
 }
 .wrapper {
     position: relative

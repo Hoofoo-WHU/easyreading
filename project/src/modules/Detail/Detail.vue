@@ -11,19 +11,20 @@
             <info :data="info.introduction" :update="update"/>
             <div class="divider">
             </div>
-            <relate :initialInfo='recommendInfo'/>
+            <relate :initialInfo='recommendInfo' @changePage="toBookDetail"/>
             <div class="divider">
             </div>
         </div>
 
         <div class="bottom">
-            <comment :comment='comment' @showComment="showCommentModal"/>
+            <comment :comment='comment' @showComment="showCommentModal" @showCommentDetail="toCommentDetail"/>
         </div>
     </scroller>
     <message v-model="messageShow" :message-text="messageText" :icon-name="messageIcon"></message>
-
+    <!--评论详情-->
+    <comment-detail v-model="commentDetailShow" :comment-id="commentId" :book-id="curId" @reloadComment="loadComment"></comment-detail>
     <!--评论框-->
-    <add-comment v-model="addCommentShow" :id="info.id" @showMessage="showMessage"></add-comment>
+    <add-comment v-model="addCommentShow" :id="info.id" @showMessage="showMessage" @reloadComment="loadComment"></add-comment>
     <!--购买框-->
     <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
         <div slot="header">
@@ -54,6 +55,7 @@
   import Relate from './components/relate'
   import Comment from './components/comment'
   import AddComment from './components/AddComment'
+  import CommentDetail from './components/CommentDetail'
   import Message from '@/components/Message'
   import Modal from '@/components/Modal'
   import Container from '@/components/Container'
@@ -71,6 +73,7 @@
       Relate,
       Comment,
       AddComment,
+      CommentDetail,
       Message,
       Container,
       Modal,
@@ -92,7 +95,10 @@
         messageIcon: 'ok',
         userHold: 0,
         addCommentShow: false,
-        top: true
+        top: true,
+        commentDetailShow: false,
+        commentId: 1,
+        curId: 1
       }
     },
     computed: {
@@ -122,27 +128,16 @@
       }
     },
     methods: {
-      load () {
+      load (id) {
         let me = this
-        me.$http.get('/bookshopping/book/' + me.bookId)
+        me.$http.get('/bookshopping/book/' + id)
         .then(response => {
           console.log('/bookshopping/book/: ' + response)
           me.info = response.data
           me.info.cover = 'http://oott.me' + me.info.cover
           me.update.time = me.info.update_timestamp
           me.update.chapter = me.info.latest_chapter_text
-        })
-        me.$http.get('/bookshopping/book/' + me.bookId + '/comment', {
-          params: {
-            page: 1,
-            page_size: 20
-          }
-        })
-        .then(response => {
-          console.log('/bookshopping/book/comment: ' + response)
-          me.comment = this.formatImg(response.data.results)
-          me.update.time = me.info.update_timestamp
-          me.update.chapter = me.info.latest_chapter_text
+          this.$refs.scroller.refresh()
         })
         me.$http.get('/recommendation/individuation', {
           params: {
@@ -151,9 +146,24 @@
         })
         .then(response => {
           me.recommendInfo = me.formatImg(response.data.results)
+          this.$refs.scroller.refresh()
         })
         .catch(error => {
           console.log(error.response)
+        })
+        this.loadComment()
+      },
+      loadComment () {
+        let me = this
+        me.$http.get('/bookshopping/book/' + this.curId + '/comment', {
+          params: {
+            page: 1,
+            page_size: 20
+          }
+        })
+        .then(response => {
+          me.comment = this.formatImg(response.data.results)
+          this.$refs.scroller.refresh()
         })
       },
       formatImg (arr) {
@@ -177,18 +187,11 @@
         setTimeout(over, 3000)
       },
       loadMore (over) {
+        let me = this
         console.log('loadMore')
         setTimeout(() => {
-          var noMore = false
-          var i = this.comment.length
-          var end = i + 10
-          console.log(this.comment.length)
-          for (; i < end; i++) {
-            this.comment.push({author: 'sx', time: '2017-03-18 08:08', data: '评论评论我是评论', resNum: 122})
-          }
-          if (i > 100) {
-            noMore = true
-          }
+          let noMore = false
+          me.loadComment()
           over(noMore)
         }, 2000)
       },
@@ -247,13 +250,24 @@
         .catch(error => {
           this.showMessage(error.response.data.reason, 'close')
         })
+      },
+      toBookDetail (id) {
+        console.log(id)
+        this.curId = id
+        this.load(id)
+      },
+      toCommentDetail (id) {
+        this.commentDetailShow = true
+        this.commentId = id
       }
     },
     mounted () {
-      console.log('mounted')
-      this.load()
+      this.curId = this.bookId
+      this.load(this.bookId)
+      console.log('refresh')
     },
     activated () {
+      console.log('acti')
       console.log('activated')
     }
   }

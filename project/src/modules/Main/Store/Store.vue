@@ -104,7 +104,8 @@ export default {
         {id: 8, name: 'newspaper', text: '人文社科'}
       ],
       recommendList: [],
-      rankList: []
+      rankList: [],
+      nextRecommand: ''
     }
   },
   components: {
@@ -126,7 +127,26 @@ export default {
       this.$refs.scroller.scrollTop()
     },
     loadMore (over) {
-      setTimeout(over, 3000)
+      let me = this
+      console.log('loadMore')
+      setTimeout(() => {
+        let noMore = false
+        me.$http.get('/recommendation/individuation', {
+          params: {
+            amount: 10
+          }
+        })
+        .then(response => {
+          me.recommendList = me.formatImg(response.data.results)
+          over(noMore)
+          this.$refs.scroller.refresh()
+        })
+        .catch(error => {
+          console.log(error.response.data.message)
+          over(noMore)
+          this.$refs.scroller.refresh()
+        })
+      }, 2000)
     },
     replace (name, id) {
       this.$router.push({'name': name, params: {'id': id}})
@@ -157,6 +177,8 @@ export default {
       })
       .then(response => {
         this.recommendList = this.formatImg(response.data.results)
+        this.nextRecommand = response.data.next
+        this.$refs.scroller.refresh()
       })
       .catch(error => {
         console.log(error.response.data.message)

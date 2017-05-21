@@ -25,16 +25,15 @@
           <div class="rank-list">
               <div class="section-content">
                   <ul class="book-show" >
-                      <touch v-for="book in mockData" :key="book.id" @tap="toBookDetail(book.id)">
+                      <touch v-for="book in rankList" :key="book.id" @tap="toBookDetail(book.id)">
                       <li>
                           <div class="book-img">
-                              <img :src=" book.img " alt="">
+                              <img :src="book.cover" :alt="book.title">
                           </div>
-                          <p>{{ book.name }}</p>
+                          <p>{{ book.title }}</p>
                       </li>
                     </touch>
                   </ul>
-
                   <div class="see-more">
                   <touch @tap="toBookRankList">
                    更多>>>
@@ -50,15 +49,15 @@
           <div class="per-recommand">
               <div class="section-content">
                   <ul class="book-show" >
-                      <touch  class="book-border" v-for="book in mockData" @tap="toBookDetail(book.id)" :key="book.id">
+                      <touch  class="book-border" v-for="book in recommendList" @tap="toBookDetail(book.id)" :key="book.id">
                       <li>
                           <div class="book-img">
-                              <img :src=" book.img " :alt=" book.name ">
+                              <img :src=" book.cover " :alt=" book.title ">
                           </div>
                           <div class="book-info">
-                              <p>{{ book.name }}</p>
+                              <p>{{ book.title }}</p>
                               <div class="book-price">
-                                  ￥ {{ book.price }}
+                                 {{ book.price }} 书币
                               </div>
                           </div>
 
@@ -104,12 +103,9 @@ export default {
         {id: 7, name: 'rose', text: '情感家庭'},
         {id: 8, name: 'newspaper', text: '人文社科'}
       ],
-      mockData: [
-        {id: 1, name: '摆渡人', price: 23.40, img: 'http://img13.360buyimg.com/n3/jfs/t1393/113/77737149/217635/9064dd42/555408dbN8679b564.jpg'},
-        {id: 2, name: '皮囊', price: 29.90, img: 'http://img13.360buyimg.com/n3/jfs/t526/8/239863987/140707/38421a9e/546d9a25N07687a60.jpg'},
-        {id: 3, name: '朝花夕拾', price: 17.80, img: 'http://img13.360buyimg.com/n3/jfs/t655/238/1195078491/109034/b41afb59/54bdf6e0Nf74bdaaf.jpg'},
-        {id: 4, name: '我的心只悲伤七次', price: 22.60, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'}
-      ]
+      recommendList: [],
+      rankList: [],
+      nextRecommand: ''
     }
   },
   components: {
@@ -131,10 +127,29 @@ export default {
       this.$refs.scroller.scrollTop()
     },
     loadMore (over) {
-      setTimeout(over, 3000)
+      let me = this
+      console.log('loadMore')
+      setTimeout(() => {
+        let noMore = false
+        me.$http.get('/recommendation/individuation', {
+          params: {
+            amount: 10
+          }
+        })
+        .then(response => {
+          me.recommendList = me.formatImg(response.data.results)
+          over(noMore)
+          this.$refs.scroller.refresh()
+        })
+        .catch(error => {
+          console.log(error.response.data.message)
+          over(noMore)
+          this.$refs.scroller.refresh()
+        })
+      }, 2000)
     },
     replace (name, id) {
-      this.$router.push({'name': name, params: {'typeId': id}})
+      this.$router.push({'name': name, params: {'id': id}})
     },
     toBookCategoryList (id) {
       this.replace('bookCategoryList', id)
@@ -142,12 +157,47 @@ export default {
     toBookRankList () {
       this.replace('bookRankList')
     },
-    toBookDetail () {
-      this.replace('detail')
+    toBookDetail (id) {
+      this.replace('detail', id)
     },
     sliderAction (id) {
       console.log(id)
+    },
+    formatImg (arr) {
+      for (let i = 0; i < arr.length; i++) {
+        arr[i].cover = 'http://oott.me' + arr[i].cover
+      }
+      return arr
+    },
+    load () {
+      this.$http.get('/recommendation/individuation', {
+        params: {
+          amount: 10
+        }
+      })
+      .then(response => {
+        this.recommendList = this.formatImg(response.data.results)
+        this.nextRecommand = response.data.next
+        this.$refs.scroller.refresh()
+      })
+      .catch(error => {
+        console.log(error.response.data.message)
+      })
+      this.$http.get('/recommendation/rank', {
+        params: {
+          amount: 4
+        }
+      })
+      .then(response => {
+        this.rankList = this.formatImg(response.data.results)
+      })
+      .catch(error => {
+        console.log(error.response)
+      })
     }
+  },
+  activated () {
+    this.load()
   }
 }
 </script>
@@ -256,12 +306,13 @@ export default {
                     }
                     .book-info {
                         width: 35%;
-                        padding: 0 4px;
+                        padding: 0 4px 0 8px;
                         font-size: 12px;
                         flex-grow: 2;
                     }
                     .book-price {
                         font-size: 9px;
+                        color: #ffa500
                     }
                 }
             }

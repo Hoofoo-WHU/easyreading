@@ -2,10 +2,10 @@
   <div class="cover">
     <div style="width:30%">
       <!-- <img :src="info.cover" alt="" width="100%"> -->
-      <img src="../../Main/Shelf/3310.jpg" alt="" width="100%">
+      <img :src="info.cover" alt="" width="100%">
     </div>
     <div class="intro">
-      <p style="font-size:17px">{{info.title}}</p>
+      <p style="font-size:15px">{{info.title}}</p>
       <div class="score">
         <div class="bg">
            <span class="star" :style='{width:getStarWidth}'></span>
@@ -37,7 +37,7 @@
     },
     computed: {
       getStarWidth: function () {
-        return this.info.score * 10 + '%'
+        return this.info.score * 20 + '%'
       }
     }
   }

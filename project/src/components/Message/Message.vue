@@ -73,7 +73,7 @@ export default {
     opacity: 0;
 }
 .message {
-    z-index: 1010;
+    z-index: 10101;
     position: fixed;
     top: 28%;
     width: 50%;

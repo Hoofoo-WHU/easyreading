@@ -10,25 +10,26 @@
         <div class="book-category-list">
             <ul>
 
-                <li v-for="book in mockData" :key="book.rank">
+                <li v-for="book in bookList" :key="book.id">
                     <div class="book-img">
-                        <touch @tap="toBookDetail()">
-                        <img :src=" book.img " :alt=" book.name ">
+                        <touch @tap="toBookDetail(book.id)">
+                        <img :src=" book.cover " :alt=" book.title ">
                         </touch>
                     </div>
                     <div class="book-info">
-                        <p>{{ book.name }}</p>
+                        <p class="book-title">{{ book.title }}</p>
+                        <p class="book-author">{{ book.author }}</p>
                         <div class="operate">
                             <touch class="addShelf" @tap="add(book)">
                                 <icon class="icon" :name="'addShelf'"></icon>
                             </touch>
-                            <touch class="addCart" @tap="shop(book.name, book.price)">
+                            <touch class="addCart" @tap="shop(book.title, book.price, book.id)">
                                 <icon :name="'addCart'"></icon>
                             </touch>
                         </div>
                     </div>
                     <div class="book-price">
-                        ￥ {{ book.price }}
+                     {{ book.price }} 书币
                     </div>
                 </li>
 
@@ -42,12 +43,12 @@
         </div>
         <div class="shop-modal">
             <p class="title">{{ shopBook.name }}</p>
-            <p class="price">价格：<span>{{ shopBook.price }}</span>代币</p>
-            <p class="hold">您还剩余 <span>{{ userHold }}</span>阅币</p>
+            <p class="price">价格：<span>{{ shopBook.price }}</span>书币</p>
+            <p class="hold">您还剩余 <span>{{ userHold }}</span>书币</p>
         </div>
     </modal>
     <!--购买框结束-->
-    <message v-model="messageShow" :message-text="messageText"></message>
+    <message v-model="messageShow" :message-text="messageText" :icon-name="messageIcon"></message>
     </div>
 </template>
 
@@ -70,8 +71,8 @@ export default {
   computed: {
     typeId () {
       // 点击返回键后，$router.params.typeId获取不到，页面会报错，使用这样的方法处理
-      if (this.$route.params.typeId) {
-        return this.$route.params.typeId
+      if (this.$route.params.id) {
+        return this.$route.params.id
       } else {
         return 9
       }
@@ -79,6 +80,8 @@ export default {
   },
   data () {
     return {
+      bookList: [],
+      page: 1,
       type: [
         {name: '少儿幼教', intro: '给童心插上翅膀'},
         {name: '教育科技', intro: '处处是创造之地，天天是创造之时，人人是创造之人。——陶行知'},
@@ -90,20 +93,16 @@ export default {
         {name: '人文社科', intro: '鸟类会飞就是因为它们有翅膀，可不是因为有什么“飞的权利”。——尤瓦尔·赫拉利'},
         {name: '书籍列表', intro: '书籍是人类进步的阶梯。——高尔基'}
       ],
-      mockData: [
-        {id: 1, name: '摆渡人', price: 23.40, rank: 2, img: 'http://img13.360buyimg.com/n3/jfs/t1393/113/77737149/217635/9064dd42/555408dbN8679b564.jpg'},
-        {id: 2, name: '皮囊', price: 29.90, rank: 1, img: 'http://img13.360buyimg.com/n3/jfs/t526/8/239863987/140707/38421a9e/546d9a25N07687a60.jpg'},
-        {id: 3, name: '朝花夕拾', price: 17.80, rank: 4, img: 'http://img13.360buyimg.com/n3/jfs/t655/238/1195078491/109034/b41afb59/54bdf6e0Nf74bdaaf.jpg'},
-        {id: 4, name: '我的心只悲伤七次', price: 22.60, rank: 3, img: 'http://img13.360buyimg.com/n3/g5/M02/14/11/rBEIC1ADeo4IAAAAAAGBNTPspiAAAEAzgGbRD8AAYFN108.jpg'}
-      ],
       shopModalShow: false,
       messageShow: false,
       shopBook: {
         name: '',
-        price: 0
+        price: 0,
+        id: 0
       },
-      userHold: 4000,
+      userHold: 0,
       messageText: '',
+      messageIcon: 'ok',
       top: true
     }
   },
@@ -117,6 +116,23 @@ export default {
     }
   },
   methods: {
+    load () {
+      this.$http.get('/bookshopping/book', {
+        params: {
+          category: this.type[this.typeId - 1].name,
+          page: this.page
+        }
+      })
+      .then(response => {
+        this.bookList = this.formatImg(response.data.results)
+      })
+    },
+    formatImg (arr) {
+      for (let i = 0; i < arr.length; i++) {
+        arr[i].cover = 'http://oott.me' + arr[i].cover
+      }
+      return arr
+    },
     isIn (id) {
       let books = this.$store.state.books
       for (let i = books.length - 1; i >= 0; i--) {
@@ -133,30 +149,60 @@ export default {
       console.log('loadMore')
     },
     add (book) {
+      let me = this
       let data = {'id': book.id, 'title': book.name, 'cover': book.img, 'isEdit': false}
       if (this.isIn(data.id)) {
-        this.showMessage('已添加')
+        this.showMessage('已添加', 'ok')
       } else {
-        this.$store.commit('add', data)
-        this.showMessage('添加成功')
+        me.$http.post('/bookshelf', {
+          'book_id': book.id
+        })
+        .then(response => {
+          this.showMessage('添加成功', 'ok')
+        })
       }
     },
-    shop (name, price) {
+    shop (name, price, id) {
       this.shopBook.name = name
       this.shopBook.price = price
-      this.shopModalShow = true
+      this.shopBook.id = id
+      let me = this
+      me.$http.get('/personal/balance')
+      .then(response => {
+        me.userHold = response.data.balance_book
+        setTimeout(function () {
+          me.shopModalShow = true
+        }, 0)
+      })
     },
     confirmShop () {
       this.shopModalShow = false
-      this.showMessage('购买成功')
+      let me = this
+      me.$http.post('/bookshopping/book/' + this.shopBook.id + '/buy')
+      .then(response => {
+        this.showMessage('购买成功', 'ok')
+      })
+      .catch(error => {
+        this.showMessage(error.response.reason, 'close')
+      })
     },
-    showMessage (text) {
+    showMessage (text, icon) {
+      if (icon) {
+        this.messageIcon = icon
+      }
       this.messageText = text
       this.messageShow = true
     },
-    toBookDetail () {
-      this.$router.push({'name': 'detail'})
+    toBookDetail (id) {
+      this.$router.push({'name': 'detail', params: {'id': id}})
     }
+  },
+  mounted () {
+    console.log('mounted')
+    this.load()
+  },
+  activated () {
+    console.log('activated')
   }
 }
 </script>
@@ -195,15 +241,20 @@ export default {
             justify-content: space-around;
             align-items: flex-start;
             .book-img {
+                width: 30%
                 img {
                     width: 55%;
                 }
             }
             .book-info{
                 font-size: 12px;
-                flex-grow: 2;
+                width: 50%;
                 p {
                     margin-left: 10px;
+                }
+                .book-title {
+                    font-weight: bold;
+                    font-size: 14px;
                 }
                 .operate {
                     display: flex;
@@ -221,6 +272,7 @@ export default {
             }
             .book-price {
                 font-size: 12px;
+                color: #ffa500
             }
         }
     }

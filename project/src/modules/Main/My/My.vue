@@ -5,10 +5,10 @@
       <navigation-bar-item @tap="postnew" slot="right" icon="email" style="width:20px;height:20px;" right-icon/>
     </navigation-bar>
     <scroller class="scroller" v-model="top" ref="scroller">
-      <touch @tap="choose" style="width:100px;height:130px;display:block;margin:0 auto">
+      <touch @tap="person" style="width:100px;height:130px;display:block;margin:0 auto">
       <div class="person">
       	<span class="headImg"><img id="headImg" :src="img" style="height:100px;width:100px;border-radius:50px;"></span>
-        <span class="editifo">{{editinfo}}</span>
+        <span class="editifo">修改个人信息</span>
       </div>
       </touch>
 
@@ -38,6 +38,18 @@
       </span>
       </span>
     </action-sheet>
+    <!--
+    <action-sheet :show="show2" @cancel="cancel2" style="bottom:-49px">
+      <span>
+      <list-item @tap="notice" right icon="sign" text="每日签到" style="height:50px;line-height:50px;margin: 10px 0;">
+      <span class="lb">签到</span>
+      </list-item>
+      <list-item @tap="" right icon="sign1" text="其他福利" style="height:50px;;line-height:50px;margin: 10px 0;">
+      <span class="lb" style="color:#e59b1a">领取</span>
+      </list-item>
+      </span>
+    </action-sheet>
+    -->
     <message v-model="messageShow" :message-text="messageText"></message>
   </router-content>
 </template>
@@ -99,8 +111,7 @@ export default {
         {mon: '50', bi: '5000'},
         {mon: '100', bi: '10000'}
       ],
-      img: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=573726630,578403616&fm=21&gp=0.jpg',
-      editinfo: '点此登录'
+      img: 'http://dynamic-image.yesky.com/600x-/uploadImages/upload/20141120/ieoqokgazxxjpg.jpg'
     }
   },
   methods: {
@@ -150,16 +161,9 @@ export default {
     },
     notice () {
       if (this.text === '签到') {
-        this.$http.post('/check')
-        .then(response => {
-          this.messageShow = true
-          this.messageText = '签到成功'
-          this.text = '已签到'
-          console.log(response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+        this.messageShow = true
+        this.messageText = '签到成功'
+        this.text = '已签到'
       } else if (this.text === '已签到') {
         this.messageShow = false
       }
@@ -178,16 +182,11 @@ export default {
       .catch(function (error) {
         console.log(error)
       })
-    },
-    choose (val) {
-      if (this.editinfo === '修改个人信息') {
-        this.$router.push({name: 'person'})
-      } else if (this.editinfo === '点此登录') {
-        this.$router.push({name: 'login'})
-      }
     }
   },
   activated () {
+    console.log('1234')
+    this.$http.get('/user/profile')
     console.log(this.$store.state.token)
     if (this.$store.state.token !== undefined) {
       this.editinfo = '修改个人信息'

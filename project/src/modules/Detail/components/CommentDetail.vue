@@ -1,39 +1,40 @@
 <template lang="html">
-    <div id="comment-detail">
+    <transition name="comment-detail-show">
+    <div id="comment-detail" v-show="show">
         <navigation-bar @tap="scrollTop" title="评论详情" ref="scroller" :border="!top">
           <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
         </navigation-bar>
         <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" can-load-more v-model="top" can-load-more>
             <div class="main-comment">
                 <div class="avatar">
-                  <img src="../Detail/png/avatar.png" style="width:100%">
+                  <img :src="mainComment.user_avatar" style="width:100%">
                 </div>
 
                 <div class="bg">
-                   <p class="author"> {{user.name}} </p>
-                   <p class="star" :style='{width:getStarWidth(user.score)}'></p>
+                   <p class="author"> {{mainComment.user_nickname}} </p>
+                   <p class="star" :style='{width:getStarWidth(mainComment.score)}'></p>
                 </div>
                 <div class="comment-content">
-                    {{ user.comment }}
+                    {{ mainComment.content }}
                 </div>
             </div>
             <div class="divide">
 
             </div>
             <ul class="response-comment">
-                <p class="comments-number">共 {{ user.res.content.length }} 条回复</p>
-                <touch v-for="res in user.res.content" :key="res.name"  @tap="response(res.name)" >
+                <p class="comments-number">共 {{ mainComment.sub_comment_count }} 条回复</p>
+                <touch v-for="res in subComment" :key="res.id">
                     <li>
                         <div class="avatar">
-                          <img src="../Detail/png/avatar.png" style="width:100%">
+                          <img :src="res.user_avatar" style="width:100%">
                         </div>
-                        <p>{{res.name}}</p>
+                        <p>{{res.user_nickname}}</p>
                         <div class="time">
-                            {{res.time}}
+                            {{res.timestamp}}
                         </div>
                         <div class="texts">
                           <div>
-                            {{res.text}}
+                            {{res.content}}
                           </div>
                           <div class="longHr"></div>
                         </div>
@@ -42,11 +43,13 @@
             </ul>
 
         </scroller>
+        <message v-model="messageShow" :message-text="messageText" :iconName="icon"></message>
         <bottom-bar>
-          <textarea :placeholder="placeHolder"></textarea>
-          <touch class="confirm" tap="confirm">回复</touch>
+          <textarea placeholder="回复" v-model="responseContent"></textarea>
+          <touch class="confirm" @tap="confirm">回复</touch>
         </bottom-bar>
     </div>
+   </transition>
 
 </template>
 
@@ -54,6 +57,7 @@
 import Scroller from '@/components/Scroller'
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import { BottomBar, BottomBarItem } from '@/components/BottomBar'
+import Message from '@/components/Message'
 export default {
   name: 'commentDetail',
   components: {
@@ -61,39 +65,76 @@ export default {
     NavigationBar,
     NavigationBarItem,
     BottomBar,
-    BottomBarItem
+    BottomBarItem,
+    Message
+  },
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
+    commentId: {
+      type: Number,
+      default: 1
+    },
+    bookId: {
+      type: Number,
+      default: 1
+    }
+  },
+  watch: {
+    value (val) {
+      this.show = val
+      if (val) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = 'auto'
+        this.clean()
+      }
+    },
+    show (val) {
+      this.$emit('input', val)
+    }
   },
   data () {
     return {
-      user: {
-        name: 'sads',
-        score: 7,
-        comment: 'sjsjsjsjsjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj',
-        time: '2014-09-08 22:12',
-        res: {
-          content: [
-            {name: '南街', text: '吃大亏尽可能地卡包的会计师', time: '2014-09-08 22:12'},
-            {name: '呆呆兽', text: 'sasacdadccdcasxamknkjfyvnbfytdggf', time: '2014-09-08 22:12'},
-            {name: 'CDK未', text: '代码卡拉拉逗你玩就问你检测技术看完了我城南街道', time: '2014-09-08 22:12'},
-            {name: 'xsx', text: 'msmsasw能吃苦的斯诺克传闻弗兰克', time: '2014-09-08 22:12'},
-            {name: '南街', text: '吃大亏尽可能地卡包的会计师', time: '2014-09-08 22:12'},
-            {name: '呆呆兽', text: 'sasacdadccdcasxamknkjfyvnbfytdggf', time: '2014-09-08 22:12'},
-            {name: 'CDK未', text: '代码卡拉拉逗你玩就问你检测技术看完了我城南街道', time: '2014-09-08 22:12'},
-            {name: 'xsx', text: 'msmsasw能吃苦的斯诺克传闻弗兰克', time: '2014-09-08 22:12'},
-            {name: '南街', text: '吃大亏尽可能地卡包的会计师', time: '2014-09-08 22:12'},
-            {name: '呆呆兽', text: 'sasacdadccdcasxamknkjfyvnbfytdggf', time: '2014-09-08 22:12'},
-            {name: 'CDK未', text: '代码卡拉拉逗你玩就问你检测技术看完了我城南街道', time: '2014-09-08 22:12'},
-            {name: 'xsx', text: 'msmsasw能吃苦的斯诺克传闻弗兰克', time: '2014-09-08 22:12'}
-          ]
-        }
-      },
+      mainComment: {},
+      show: false,
+      subComment: [],
       top: true,
-      placeHolder: '回复 评论'
+      messageShow: false,
+      messageText: '',
+      icon: 'ok',
+      responseContent: ''
     }
   },
   methods: {
+    load () {
+      let me = this
+      me.$http.get('/bookshopping/comment/' + me.commentId)
+      .then(response => {
+        console.log('/bookshopping/comment/: ' + response)
+        me.mainComment = response.data
+      })
+    },
+    loadChilrenComment () {
+      let me = this
+      me.$http.get('/bookshopping/comment/' + me.commentId + '/children', {
+        params: {
+          page: 1,
+          page_size: 10
+        }
+      })
+      .then(response => {
+        console.log('/bookshopping/comment/children: ' + response)
+        me.subComment = response.data.results
+        me.$refs.scroller.refresh()
+      })
+    },
     back () {
-      this.$router.go(-1)
+      this.clean()
+      this.show = false
+      this.$emit('reloadComment')
     },
     scrollTop: function () {
       this.$refs.scroller.scrollTop()
@@ -102,11 +143,35 @@ export default {
       console.log('loadMore')
     },
     getStarWidth: function (score) {
-      return score * 10 + '%'
+      return score * 20 + '%'
     },
-    response (name) {
-      this.placeHolder = '回复' + ' ' + name
+    showMessage (icon, text) {
+      this.messageShow = true
+      this.icon = icon
+      this.messageText = text
+    },
+    clean () {
+      this.responseContent = ''
+    },
+    confirm () {
+      let me = this
+      if (this.$Keyboard) {
+        this.$Keyboard.hide()
+      }
+      me.$http.post('/bookshopping/book/' + me.bookId + '/comment', {
+        'content': this.responseContent,
+        'parent_id': me.commentId
+      }).then(response => {
+        console.log('/bookshopping/' + response)
+        this.clean()
+        this.showMessage('ok', '回复成功！')
+        this.loadChilrenComment()
+      })
     }
+  },
+  mounted () {
+    this.load()
+    this.$refs.scroller.refresh()
   }
 }
 </script>
@@ -124,6 +189,7 @@ export default {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    z-index: 1000;
     .main-comment {
         display: flex;
         justify-content: flex-start;
@@ -141,7 +207,7 @@ export default {
             display: inline-block;
             left: 0;
             top: 0;
-            background: url(../Detail/png/star.png);
+            background: url(../png/star.png);
             height: 16px;
           }
         }
@@ -213,7 +279,6 @@ export default {
     .bottom-bar {
         display: flex
         justify-content: space-between
-        height: 40px!important;
         textarea {
             box-sizing: border-box;
             width: 85%;
@@ -221,9 +286,9 @@ export default {
             outline: none;
             resize: none;
             background-color: #efeff4;
-            font-size: 13px
+            font-size: 15px
             padding: 10px;
-            min-height: 49px
+            min-height: 33px
             max-height: 60px
         }
         .confirm {
@@ -233,5 +298,14 @@ export default {
             line-height: 49px;
         }
     }
+}
+.comment-detail-show-enter-active, .comment-detail-show-leave-active {
+    transition: transform .3s
+}
+.comment-detail-show-enter {
+    transform: translateY(100%);
+}
+.comment-detail-show-leave-to {
+    transform: translateY(100%);
 }
 </style>

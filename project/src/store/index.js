@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import read from './read.js'
 
 Vue.use(Vuex)
 
@@ -16,19 +17,13 @@ export default new Vuex.Store({
     // xx: {}
     books: [],
     routing: false,
-    read: {
-      bookid: undefined,
-      pages: [],
-      page: 0,
-      showmore: false,
-      showtoc: false,
-      fontSize: undefined,
-      fontFamily: undefined
-    },
     modal: {
       close: undefined,
       size: 0
     }
+  },
+  modules: {
+    read
   },
   mutations: {
     // mutation: (state, payload) => {
@@ -91,14 +86,6 @@ export default new Vuex.Store({
         state.modal.size = 0
       }
     },
-    setFontSize: (state, payload) => {
-      state.read.fontSize = payload
-      localStorage.setItem('readFontSize', payload)
-    },
-    setFontFamily: (state, payload) => {
-      state.read.fontFamily = payload
-      localStorage.setItem('readFontFamily', payload)
-    },
     synchronize: (state) => {
       Vue.prototype.$http.get('/bookshelf/status')
       .then(response => {
@@ -138,21 +125,7 @@ export default new Vuex.Store({
   getters: {
     // xx: state => state.needScrollTops
     routing: state => state.routing,
-    hasModal: state => state.modal.size > 0,
-    fontSize: state => {
-      if (!state.read.fontSize) {
-        var value = ~~localStorage.getItem('readFontSize')
-        state.read.fontSize = value || 1
-      }
-      return state.read.fontSize
-    },
-    fontFamily: state => {
-      if (!state.read.fontFamily) {
-        var value = localStorage.getItem('readFontFamily')
-        state.read.fontFamily = value || '思源宋体'
-      }
-      return state.read.fontFamily
-    }
+    hasModal: state => state.modal.size > 0
   },
   plugins: [myPlugin]
 })

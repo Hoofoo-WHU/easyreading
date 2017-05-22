@@ -8,7 +8,7 @@
       <icon name="myShelf" class="icon"/>
       <p class="none">您的书架空空如也，去书城看看吧</p>
     </div>
-    <scroller class="scroller" ref="scroller" style="flex-grow:1" v-model="top">
+    <scroller class="scroller" ref="scroller" style="flex-grow:1" v-model="top" can-pull-refresh @pullRefresh="pullRefresh">
       <div class="shelf">
         <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id" @press="press(index)">
           <book :cover="item.cover" :title="item.title" :isEdit="item.isEdit" :edit="edit"/>
@@ -83,6 +83,10 @@ export default {
   methods: {
     scrollTop () {
       this.$refs.scroller.scrollTop()
+    },
+    pullRefresh (over) {
+      this.$store.commit('synchronize')
+      setTimeout(over, 3000)
     },
     modify () {
       this.edit = !this.edit

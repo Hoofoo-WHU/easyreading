@@ -324,7 +324,6 @@
       textarea {
           width: 100%;
       }
-
   }
   .divider {
       height: 20px;

@@ -1,7 +1,7 @@
 <template>
   <div id="book">
     <div class="cover">
-      <img src="../3310.jpg" alt="" width="100%">
+      <img :src="relCover" alt="" width="100%">
 <!--       <icon v-if="!edit" name="unchecked" class="icon" :class='{gray:!isEdit, blue:isEdit}'/> -->
       <transition name="trs">
         <icon v-if="!edit" name="check" class="check" :class='{gray:!isEdit, blue:isEdit}'/>
@@ -35,6 +35,11 @@
       edit: {
         type: Boolean,
         default: true
+      }
+    },
+    computed: {
+      relCover () {
+        return 'http://oott.me' + this.cover
       }
     }
   }

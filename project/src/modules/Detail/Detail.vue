@@ -8,32 +8,31 @@
           <Cover :info='info' />
         </div>
         <div class="centerTop">
-            <info :data="info.introduction" :update="update"/>
+            <info :data="info.data" :update="update"/>
             <div class="divider">
             </div>
-            <relate :initialInfo='recommendInfo' @changePage="toBookDetail"/>
+            <relate :initialInfo='recommendInfo'/>
             <div class="divider">
             </div>
         </div>
 
         <div class="bottom">
-            <comment :comment='comment' @showComment="showCommentModal" @showCommentDetail="toCommentDetail"/>
+            <comment :comment='comment' @showComment="showCommentModal"/>
         </div>
     </scroller>
-    <message v-model="messageShow" :message-text="messageText" :icon-name="messageIcon"></message>
-    <!--评论详情-->
-    <comment-detail v-model="commentDetailShow" :comment-id="commentId" :book-id="curId" @reloadComment="loadComment"></comment-detail>
+    <message v-model="messageShow" :message-text="messageText"></message>
+
     <!--评论框-->
-    <add-comment v-model="addCommentShow" :id="info.id" @showMessage="showMessage" @reloadComment="loadComment"></add-comment>
+    <add-comment v-model="addCommentShow"></add-comment>
     <!--购买框-->
     <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
         <div slot="header">
             购买本书
         </div>
         <div class="shop-modal">
-            <p class="title">{{ info.title }}</p>
-            <p class="price">价格：<span>{{ info.price }}</span>书币</p>
-            <p class="hold">您还剩余 <span>{{ userHold }}</span>书币</p>
+            <p class="title">{{ shopBook.name }}</p>
+            <p class="price">价格：<span>{{ shopBook.price }}</span>代币</p>
+            <p class="hold">您还剩余 <span>{{ userHold }}</span>阅币</p>
         </div>
     </modal>
     <!--购买框结束-->
@@ -55,7 +54,6 @@
   import Relate from './components/relate'
   import Comment from './components/comment'
   import AddComment from './components/AddComment'
-  import CommentDetail from './components/CommentDetail'
   import Message from '@/components/Message'
   import Modal from '@/components/Modal'
   import Container from '@/components/Container'
@@ -73,7 +71,6 @@
       Relate,
       Comment,
       AddComment,
-      CommentDetail,
       Message,
       Container,
       Modal,
@@ -92,30 +89,53 @@
         shopModalShow: false,
         messageShow: false,
         messageText: '',
-        messageIcon: 'ok',
-        userHold: 0,
+        stars: [],
+        shopBook: {
+          name: '变形计',
+          price: '13代币'
+        },
+        userHold: 4000,
         addCommentShow: false,
-        top: true,
-        commentDetailShow: false,
-        commentId: 1,
-        curId: 1
+        top: true
       }
+    },
+    mounted () {
+      this.info = {
+        title: '三生三世十里桃花',
+        id: '2',
+        author: '唐七',
+        data: '那一世，大荒之中一处荒山，成就她与他的初见。桃花灼灼，枝叶蓁蓁，妖娆伤眼。记忆可以封存，可心有时也会背叛，忘得了前世情缘，忘不了桃林十里，亦忘不了十里桃林中玄衣的少年。这一世，东海水晶宫，他们不期而遇。不是每个人都能看透这三生三世的爱恨交织，只要你还在，只要我还爱，那么，这世间，刀山火海，毫不畏惧。有些爱，藏在嘴边，挂在心尖。浮生若梦，情如流水，爱似桃花……',
+        cover: '/media/cover/2017/05/19/cover_SrH2bfv.jpg',
+        price: 600,
+        score: 10}
+      this.update = {
+        time: '2017-03-18 08:08',
+        chapter: 'xxxx章  xxxx'
+      }
+      for (let i = 1; i <= 3; i++) {
+        this.recommendInfo.push({cover: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2619242940,2733301503&fm=58',
+          title: '三生三世十里桃花'})
+      }
+      for (let i = 1; i <= 10; i++) {
+        this.comment.push({author: 'sx', time: '2017-03-18 08:08', data: '评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论评论评论我是评论', resNum: 122})
+      }
+      this.stars = [
+        {score: 1, name: 'star', light: false},
+        {score: 2, name: 'star', light: false},
+        {score: 3, name: 'star', light: false},
+        {score: 4, name: 'star', light: false},
+        {score: 5, name: 'star', light: false}
+      ]
     },
     computed: {
       isIn () {
         var books = this.$store.state.books
         for (let i = books.length - 1; i >= 0; i--) {
-          if (this.info.id === books[i].id) {
+          if (parseInt(this.info.id) === books[i].book_id) {
             return true
           }
         }
         return false
-      },
-      bookId () {
-        if (this.$route.params.id) {
-          console.log(this.$route.params.id)
-          return this.$route.params.id
-        }
       }
     },
     watch: {
@@ -128,54 +148,6 @@
       }
     },
     methods: {
-      load (id) {
-        let me = this
-        me.$http.get('/bookshopping/book/' + id)
-        .then(response => {
-          console.log('/bookshopping/book/: ' + response)
-          me.info = response.data
-          me.info.cover = 'http://oott.me' + me.info.cover
-          me.update.time = me.info.update_timestamp
-          me.update.chapter = me.info.latest_chapter_text
-          this.$refs.scroller.refresh()
-        })
-        me.$http.get('/recommendation/individuation', {
-          params: {
-            amount: 10
-          }
-        })
-        .then(response => {
-          me.recommendInfo = me.formatImg(response.data.results)
-          this.$refs.scroller.refresh()
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
-        this.loadComment()
-      },
-      loadComment () {
-        let me = this
-        me.$http.get('/bookshopping/book/' + this.curId + '/comment', {
-          params: {
-            page: 1,
-            page_size: 20
-          }
-        })
-        .then(response => {
-          me.comment = this.formatImg(response.data.results)
-          this.$refs.scroller.refresh()
-        })
-      },
-      formatImg (arr) {
-        for (let i = 0; i < arr.length; i++) {
-          if (arr[i].user_avatar) {
-            arr[i].user_avatar = 'http://oott.me' + arr[i].user_avatar
-          } else if (arr[i].cover) {
-            arr[i].cover = 'http://oott.me' + arr[i].cover
-          }
-        }
-        return arr
-      },
       back () {
         this.$router.go(-1)
       },
@@ -187,11 +159,18 @@
         setTimeout(over, 3000)
       },
       loadMore (over) {
-        let me = this
         console.log('loadMore')
         setTimeout(() => {
-          let noMore = false
-          me.loadComment()
+          var noMore = false
+          var i = this.comment.length
+          var end = i + 10
+          console.log(this.comment.length)
+          for (; i < end; i++) {
+            this.comment.push({author: 'sx', time: '2017-03-18 08:08', data: '评论评论我是评论', resNum: 122})
+          }
+          if (i > 100) {
+            noMore = true
+          }
           over(noMore)
         }, 2000)
       },
@@ -199,22 +178,11 @@
         alert('可以')
       },
       add () {
-        let me = this
-        let data = {'id': this.info.id, 'title': this.info.title, 'cover': this.info.cover, 'isEdit': false}
-        if (this.isIn) {
-          this.showMessage('已添加', 'ok')
-        } else {
-          me.$store.commit('add', data)
-          me.$http.post('/bookshelf', {
-            'book_id': this.info.id
-          })
-          .then(response => {
-            this.showMessage('添加成功', 'ok')
-          })
-        }
+        var book = {'book_id': parseInt(this.info.id), 'title': this.info.title, 'cover': this.info.cover, 'isEdit': false}
+        this.$store.commit('add', book)
       },
       remove () {
-        this.$store.commit('remove', this.info.id)
+        this.$store.commit('remove', parseInt(this.info.id))
         console.log(this.isIn)
       },
       read (id) {
@@ -222,18 +190,11 @@
       },
       shop () {
         let me = this
-        me.$http.get('/personal/balance')
-        .then(response => {
-          me.userHold = response.data.balance_book
-          setTimeout(function () {
-            me.shopModalShow = true
-          }, 0)
-        })
+        setTimeout(function () {
+          me.shopModalShow = true
+        }, 0)
       },
-      showMessage (text, icon) {
-        if (icon) {
-          this.messageIcon = icon
-        }
+      showMessage (text) {
         this.messageText = text
         this.messageShow = true
       },
@@ -242,33 +203,20 @@
       },
       confirmShop () {
         this.shopModalShow = false
-        let me = this
-        me.$http.post('/bookshopping/book/' + this.info.id + '/buy')
-        .then(response => {
-          this.showMessage('购买成功', 'ok')
-        })
-        .catch(error => {
-          this.showMessage(error.response.data.reason, 'close')
-        })
+        this.showMessage('购买成功')
       },
-      toBookDetail (id) {
-        console.log(id)
-        this.curId = id
-        this.load(id)
+      sort (arr) {
+        return arr.slice().sort((item1, item2) => { return item1.score - item2.score })
       },
-      toCommentDetail (id) {
-        this.commentDetailShow = true
-        this.commentId = id
+      mark (score) {
+        for (let i = 0; i < this.stars.length; i++) {
+          if (this.stars[i].score <= score) {
+            this.stars[i].light = true
+          } else {
+            this.stars[i].light = false
+          }
+        }
       }
-    },
-    mounted () {
-      this.curId = this.bookId
-      this.load(this.bookId)
-      console.log('refresh')
-    },
-    activated () {
-      console.log('acti')
-      console.log('activated')
     }
   }
 </script>

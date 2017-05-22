@@ -130,7 +130,7 @@ export default {
     remove () {
       for (var i = this.books.length - 1; i >= 0; i--) {
         if (this.books[i].isEdit) {
-          this.$store.commit('remove', this.books[i].book_id)
+          this.$store.commit('remove', this.books[i].id)
           this.selectedNum--
         }
       }

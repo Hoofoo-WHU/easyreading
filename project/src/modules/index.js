@@ -7,11 +7,12 @@ import BookRankList from './BookRankList'
 import Detail from './Detail'
 import Setting from './Setting'
 import New from './New'
-import Star from './Star'
+import List from './List'
 import Person from './Person'
 import Task from './Task'
 import Bill from './Bill'
-import Cart from './Cart'
+import Ticket from './Ticket'
+import History from './History'
 
 export default {
   Main,
@@ -23,9 +24,10 @@ export default {
   Detail,
   Setting,
   New,
-  Star,
+  List,
   Person,
   Bill,
-  Cart,
-  Task
+  Ticket,
+  Task,
+  History
 }

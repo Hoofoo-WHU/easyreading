@@ -10,6 +10,10 @@ const myPlugin = store => {
       store.state.books.push(books[i])
     }
   }
+  // localStorage.clear()
+  if (!localStorage.getItem('time')) {
+    localStorage.setItem('time', Date.now())
+  }
 }
 export default new Vuex.Store({
   state: {
@@ -36,6 +40,13 @@ export default new Vuex.Store({
       state.books.push(payload)
       var json = JSON.stringify(state.books)
       localStorage.setItem('book', json)
+      localStorage.removeItem('time')
+      localStorage.setItem('time', Date.now())
+      if (state.token) {
+        Vue.prototype.$http.post('/bookshelf', {'book_id': parseInt(payload.book_id)})
+        .then(response => {
+        })
+      }
       // console.log(Date.parse('2017-05-10T02:50:38.907056Z') > Date.now())
       // console.log(Date.parse('2017-05-10T02:50:38.907056Z'))
       // console.log(Date.now())
@@ -48,7 +59,7 @@ export default new Vuex.Store({
     },
     remove (state, payload) {
       state.books = state.books.filter(function (obj) {
-        if (obj.id !== payload) {
+        if (obj.book_id !== payload) {
           return true
         }
         return false
@@ -56,6 +67,11 @@ export default new Vuex.Store({
       var json = JSON.stringify(state.books)
       localStorage.removeItem('book')
       localStorage.setItem('book', json)
+      if (state.token) {
+        Vue.prototype.$http.delete('/bookshelf/book/' + payload)
+      }
+      localStorage.removeItem('time')
+      localStorage.setItem('time', Date.now())
     },
     routing: (state, payload) => {
       state.routing = payload
@@ -90,39 +106,48 @@ export default new Vuex.Store({
       }
     },
     synchronize: (state) => {
-      Vue.prototype.$http.get('/bookshelf/status')
-      .then(response => {
-        var localTime = localStorage.getItem('time')
-        if (localTime > Date.parse(response.data.update_timestamp)) {
-          if (localStorage.getItem('book')) {
-            var books = JSON.parse(localStorage.getItem('book'))
-            var bookId = ''
-            for (var i = books.length - 1; i >= 0; i--) {
-              state.books.push(books[i])
-              bookId += books[i].id + ','
+      if (state.token) {
+        Vue.prototype.$http.get('/bookshelf/status')
+        .then(response => {
+          var localTime = localStorage.getItem('time')
+          var severTime = Date.parse(response.data.update_timestamp)
+          console.log(localTime)
+          console.log(severTime)
+          if (localTime > severTime) {
+            if (localStorage.getItem('book')) {
+              var books = JSON.parse(localStorage.getItem('book'))
+              var bookId = ''
+              for (var i = books.length - 1; i >= 0; i--) {
+                bookId += books[i].book_id + ','
+              }
+              Vue.prototype.$http.put('/bookshelf', {'book_id': bookId.substring(0, bookId.length - 1)})
+              .then(response => {
+                localStorage.removeItem('time')
+                localStorage.setItem('time', Date.parse(response.data.update_timestamp))
+              })
             }
-            Vue.prototype.$http.put('/bookshelf', {'book_id': bookId.substring(0, bookId.length - 1)})
+          } else {
+            Vue.prototype.$http.get('/bookshelf')
             .then(response => {
-              localTime.removeItem('time')
-              localTime.setItem('time', Date.parse(response.data.update_timestamp))
+              var books = response.data.results
+              console.log(books)
+              state.books = []
+              for (var i = books.length - 1; i >= 0; i--) {
+                state.books.push(books[i])
+              }
+              console.log(state.books)
+              var json = JSON.stringify(state.books)
+              localStorage.removeItem('book')
+              localStorage.setItem('book', json)
+              localStorage.removeItem('time')
+              localStorage.setItem('time', severTime)
             })
           }
-        } else {
-          Vue.prototype.$http.get('/bookshelf')
-          .then(response => {
-            var books = response.result
-            for (var i = books.length - 1; i >= 0; i--) {
-              state.books.push(books[i])
-            }
-            var json = JSON.stringify(state.books)
-            localStorage.removeItem('book')
-            localStorage.setItem('book', json)
-          })
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+      }
     }
   },
   getters: {

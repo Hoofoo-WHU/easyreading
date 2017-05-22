@@ -47,16 +47,13 @@ export default {
       this.$router.go(-1)
     },
     out () {
-      this.$store.state.token = undefined
-      console.log(this.$store.state.token)
+      this.$store.commit('logout')
       this.$router.push({name: 'my'})
     }
   },
-  activated () {
-    console.log('my1')
+  mounted () {
     this.$http.get('/user/profile')
     .then(response => {
-      console.log('my')
       if (response.data.phone === '') {
         this.way = '电子邮箱'
         this.phone = response.data.email
@@ -64,9 +61,6 @@ export default {
         this.way = '手机号码'
         this.phone = response.data.phone
       }
-    })
-    .catch(function (error) {
-      console.log(error)
     })
   }
 }

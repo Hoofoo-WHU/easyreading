@@ -4,14 +4,7 @@
       <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
     </navigation-bar>
     <scroller class="scroller" ref="scroller">
-      <aside class="aside">
-        <ul>
-          <li><p>头像</p><icon name="more" class="icon"></icon></li>
-          <li><p>手机号码/电子邮箱</p><p style="float:right;margin-right:10px;color:grey;">18163516131</p></li>
-          <li><p>修改密码</p><icon name="more" class="icon"></icon></li>
-        </ul>
-        <touch @tap="out" class="out">退出当前账号</touch>
-      </aside>
+      <list-item v-for="(item,index) in items" :key="index" :text="item" style="height:53px;line-height:53px"></list-item>
     </scroller>
   </router-content>
 </template>
@@ -21,7 +14,7 @@ import Scroller from '@/components/Scroller'
 import RouterContent from '@/components/RouterContent'
 import Icon from '@/components/Icon'
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
-import Switches from '@/components/Switches'
+import ListItem from '@/components/ListItem'
 
 export default {
   name: 'bill',
@@ -31,11 +24,11 @@ export default {
     Icon,
     NavigationBar,
     NavigationBarItem,
-    Switches
+    ListItem
   },
   data () {
     return {
-
+      items: []
     }
   },
   methods: {
@@ -43,10 +36,27 @@ export default {
       this.$refs.scroller.scrollTop()
     },
     back () {
-      this.$router.push({name: 'my'})
-    },
-    out () {
-      this.$router.push({name: 'login'})
+      this.$router.go(-1)
+    }
+  },
+  mounted () {
+    this.$http.get('/personal/deposit')
+    .then(response => {
+      for (var i = 0; i < response.data.results.length; i++) {
+        var amount = response.data.results[i].amount
+        var time = response.data.results[i].modify_timestamp
+        var timedate = changeTime(time)
+        this.items.push(timedate + ' 花费' + amount + '元 充值' + amount * 100 + '书币')
+      }
+    })
+    var changeTime = function (time) {
+      var d = new Date(time)
+      var year = d.getFullYear()
+      var month = d.getMonth() + 1 >= 10 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)
+      var date = d.getDate() >= 10 ? d.getDate() : '0' + d.getDate()
+      var hours = d.getHours() >= 10 ? d.getHours() : '0' + d.getHours()
+      var minute = d.getMinutes() >= 10 ? d.getMinutes() : '0' + d.getMinutes()
+      return year + '-' + month + '-' + date + ' ' + hours + ':' + minute
     }
   }
 }
@@ -56,41 +66,5 @@ export default {
 <style scoped>
 .scroller{
   flex-grow: 1;
-}
-
-<style scoped>
-.scroller{
-  flex-grow: 1;
-}
-.icon{
-  float: right;
-  margin-top: 10px;
-  width: 20px;
-  height: 20px;
-  color: grey;
-}
-aside ul li {
-  height:40px;
-  background: #fff;
-  padding: 0 4%;
-  border-bottom:1px solid #efeff4;
-  display:block;
-}
-aside ul li p{
-  font-size: 12px;
-  line-height: 40px;
-  text-align: center;
-  color: #000;
-  display: inline-block;
-}
-.out{
-  width:90%;
-  height:42px;
-  margin:30px 5%;
-  background-color: #cc0000;
-  line-height: 38px;
-  text-align: center;
-  color:#fff;
-  border-radius:12px;
 }
 </style>

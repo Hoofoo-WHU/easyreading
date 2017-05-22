@@ -43,7 +43,7 @@ export default new Vuex.Store({
       localStorage.removeItem('time')
       localStorage.setItem('time', Date.now())
       if (state.token) {
-        Vue.prototype.$http.post('/bookshelf', {'book_id': parseInt(payload.id)})
+        Vue.prototype.$http.post('/bookshelf', {'book_id': parseInt(payload.book_id)})
         .then(response => {
         })
       }

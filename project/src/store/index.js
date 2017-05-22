@@ -43,7 +43,7 @@ export default new Vuex.Store({
       localStorage.removeItem('time')
       localStorage.setItem('time', Date.now())
       if (state.token) {
-        Vue.prototype.$http.post('/bookshelf', {'book_id': parseInt(payload.id)})
+        Vue.prototype.$http.post('/bookshelf', {'book_id': parseInt(payload.book_id)})
         .then(response => {
         })
       }
@@ -134,8 +134,6 @@ export default new Vuex.Store({
               state.books = []
               for (var i = books.length - 1; i >= 0; i--) {
                 state.books.push(books[i])
-                state.books[i].id = state.books[i].book_id
-                state.books[i].cover = 'http://oott.me' + state.books[i].cover
               }
               console.log(state.books)
               var json = JSON.stringify(state.books)

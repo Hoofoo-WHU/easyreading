@@ -132,7 +132,7 @@ export default new Vuex.Store({
               var books = response.data.results
               console.log(books)
               state.books = []
-              for (var i = books.length - 1; i >= 0; i--) {
+              for (var i = 0; i < books.length; i++) {
                 state.books.push(books[i])
                 state.books[i].id = state.books[i].book_id
                 state.books[i].cover = 'http://oott.me' + state.books[i].cover

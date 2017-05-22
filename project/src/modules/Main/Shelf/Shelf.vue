@@ -110,7 +110,7 @@ export default {
           this.selectedNum--
         }
       } else {
-        this.$router.push({name: 'detail', params: {id: this.books[index].id}})
+        this.$router.push({name: 'detail', params: {id: this.books[index].book_id}})
       }
     },
     all () {

@@ -8,7 +8,7 @@
       <icon name="myShelf" class="icon"/>
       <p class="none">您的书架空空如也，去书城看看吧</p>
     </div>
-    <scroller class="scroller" ref="scroller" style="flex-grow:1" v-model="top" can-pull-refresh @pullRefresh="pullRefresh">
+    <scroller class="scroller" ref="scroller" style="flex-grow:1" v-model="top">
       <div class="shelf">
         <touch v-for="(item,index) in books" class="book" @tap="check(index)" :key="item.id" @press="press(index)">
           <book :cover="item.cover" :title="item.title" :isEdit="item.isEdit" :edit="edit"/>
@@ -84,10 +84,6 @@ export default {
     scrollTop () {
       this.$refs.scroller.scrollTop()
     },
-    pullRefresh (over) {
-      this.$store.commit('synchronize')
-      setTimeout(over, 3000)
-    },
     modify () {
       this.edit = !this.edit
       this.pressed = true
@@ -110,7 +106,7 @@ export default {
           this.selectedNum--
         }
       } else {
-        this.$router.push({name: 'detail', params: {id: this.books[index].book_id}})
+        this.$router.push({name: 'detail', params: {id: this.books[index].id}})
       }
     },
     all () {
@@ -130,7 +126,7 @@ export default {
     remove () {
       for (var i = this.books.length - 1; i >= 0; i--) {
         if (this.books[i].isEdit) {
-          this.$store.commit('remove', this.books[i].book_id)
+          this.$store.commit('remove', this.books[i].id)
           this.selectedNum--
         }
       }

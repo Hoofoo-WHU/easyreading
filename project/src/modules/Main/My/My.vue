@@ -94,7 +94,7 @@ export default {
         {mon: '100', bi: '10000'}
       ],
       editinfo: '点此登录',
-      img: 'http://dynamic-image.yesky.com/600x-/uploadImages/upload/20141120/ieoqokgazxxjpg.jpg'
+      img: 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=573726630,578403616&fm=21&gp=0.jpg'
     }
   },
   methods: {
@@ -150,9 +150,12 @@ export default {
     },
     notice () {
       if (this.text === '签到') {
-        this.messageShow = true
-        this.messageText = '签到成功'
-        this.text = '已签到'
+        this.$http.post('/check')
+        .then(response => {
+          this.messageShow = true
+          this.messageText = '签到成功'
+          this.text = '已签到'
+        })
       } else if (this.text === '已签到') {
         this.messageShow = false
       }

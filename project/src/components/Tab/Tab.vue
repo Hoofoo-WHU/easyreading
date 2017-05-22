@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <ul class="x-title">
-      <li v-on:click="tab(index)" v-for="(item, index) in items" :key="" :class="{active: activeIndex === index}">{{item.title}}</li>
+      <li v-on:click="tab(index)" v-for="(item, index) in items" :key="index" :class="{active: activeIndex === index}">{{item.title}}</li>
     </ul>
     <div><list-item v-for="(content, ind) in items[activeIndex].contents" :key="ind" icon="" :text="content.con" style="color:grey;height:50px;line-height:50px"></list-item>
     </div>

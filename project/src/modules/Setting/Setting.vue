@@ -2,7 +2,7 @@
   <router-content style="flex-direction:column;background:#fff">
     <navigation-bar title="设置">
       <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
-      <navigation-bar-item @tap="change" slot="right" icon="synchronization" style="width:40px;height:40px;color:#157afb"/>
+      <navigation-bar-item @tap="change" slot="right" icon="synchronization"/>
     </navigation-bar>
     <scroller class="scroller" ref="scroller">
       <aside class="aside">
@@ -43,7 +43,11 @@ export default {
       this.$router.go(-1)
     },
     change () {
+      console.log(this.items)
+      this.$http.put('/user/profile', {'options_sync_progress': this.items[0].switchesState, 'options_clean_cache': this.items[1].switchesState, 'options_display_progress': this.items[2].switchesState, 'options_wifi_download_only': this.items[3].switchesState, 'options_accept_push': this.items[4].switchesState, 'options_auto_buy_chapter': this.items[5].switchesState})
+      .then(response => {
 
+      })
     }
   },
   mounted () {
@@ -61,7 +65,6 @@ export default {
       this.items[3].switchesState = response.data.options_wifi_download_only
       this.items[4].switchesState = response.data.options_accept_push
       this.items[5].switchesState = response.data.options_auto_buy_chapter
-      console.log(this.items)
     })
   }
 }

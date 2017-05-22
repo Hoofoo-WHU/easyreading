@@ -8,7 +8,6 @@
         </div>
         <div>
           <p class="left">{{update.chapter}}</p>
-          <p class="right">>>></p>
         </div>
       </div>
     </touch>

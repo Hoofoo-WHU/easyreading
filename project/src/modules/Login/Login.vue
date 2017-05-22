@@ -45,10 +45,8 @@ export default {
     login () {
       this.$http.post('/user/login', {'identifier': this.phonenum, 'password': this.password})
       .then(response => {
-        this.$store.state.token = response.data.token
-        this.$store.state.expires_at = response.data.expires_at
-        this.message = this.$store.state.token
-        this.$router.push({name: 'my'})
+        this.$store.commit('token', {token: response.data.token, expires_at: response.data.expires_at})
+        this.$router.back()
       })
       .catch(function (error) {
         alert('您输入的账号密码有误')

@@ -95,7 +95,6 @@ export default {
       this.$router.go(-1)
     },
     ceshi () {
-      this.$router.push({name: 'star'})
     },
     submit (choose, right) {
       console.log(choose)

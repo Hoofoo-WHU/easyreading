@@ -23,7 +23,7 @@ import Switches from '@/components/Switches'
 import ListItem from '@/components/ListItem'
 
 export default {
-  name: 'cart',
+  name: 'ticket',
   components: {
     Scroller,
     RouterContent,

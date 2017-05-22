@@ -4,7 +4,7 @@
       <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
     </navigation-bar>
     <scroller class="scroller" ref="scroller">
-      <list-item v-for="item in items" :key="" :text="item" style="height:53px;line-height:53px"></list-item>
+      <list-item v-for="(item,index) in items" :key="index" :text="item" style="height:53px;line-height:53px"></list-item>
     </scroller>
   </router-content>
 </template>
@@ -40,18 +40,14 @@ export default {
     }
   },
   mounted () {
-    /*
     this.$http.get('/personal/deposit')
     .then(response => {
-      for (var i = 0; i < response.data.results.length; i++){
+      for (var i = 0; i < response.data.results.length; i++) {
         var amount = response.data.results[i].amount
         var time = response.data.results[i].modify_timestamp
         var timedate = changeTime(time)
         this.items.push(timedate + ' 花费' + amount + '元 充值' + amount * 100 + '书币')
       }
-    })
-    .catch(function (error) {
-      console.log(error)
     })
     var changeTime = function (time) {
       var d = new Date(time)
@@ -62,7 +58,6 @@ export default {
       var minute = d.getMinutes() >= 10 ? d.getMinutes() : '0' + d.getMinutes()
       return year + '-' + month + '-' + date + ' ' + hours + ':' + minute
     }
-    */
   }
 }
 </script>
@@ -71,14 +66,5 @@ export default {
 <style scoped>
 .scroller{
   flex-grow: 1;
-}
-
-<style scoped>
-.scroller{
-  flex-grow: 1;
-}
-.tab {
-  /*宽高必须设置，否则是0*/
-  width: 100%;
 }
 </style>

@@ -19,8 +19,24 @@ Vue.prototype.$http = axios.create({
 })
 Vue.prototype.$http.interceptors.request.use(
   config => {
-    if (store.state.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-      config.headers.Authorization = `JWT ${store.state.token}`
+    if (store.getters.token && store.getters.expires_at) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+      /*
+      if (store.getters.expires_at < parseInt(new Date().getTime() / 1000)) {
+        await (axios.create({
+          baseURL: config.baseURL,
+          timeout: 1000
+        })
+        .post('/user/permission/update', {token: store.getters.token})
+        .then(response => {
+          Vue.prototype.$store.commit('token', {token: response.data.token, expires_at: response.data.expires_at})
+          return new Promise(resolve => {
+            resolve()
+          })
+        }))
+      }
+      console.log(config)
+      */
+      config.headers.Authorization = `JWT ${store.getters.token}`
     }
     return config
   },

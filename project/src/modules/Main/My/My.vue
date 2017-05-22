@@ -8,7 +8,7 @@
       <touch @tap="person" style="width:100px;height:130px;display:block;margin:0 auto">
       <div class="person">
       	<span class="headImg"><img id="headImg" :src="img" style="height:100px;width:100px;border-radius:50px;"></span>
-        <span class="editifo">修改个人信息</span>
+        <span class="editifo">{{editinfo}}</span>
       </div>
       </touch>
 
@@ -16,14 +16,14 @@
 	    <i><touch @tap="display" :show="show"><span class="shubi" style="background-color:rgb(249,204,157)" >书币</span></touch></i>
 	    <i><touch @tap="display1" :show="show1"><span class="chongzhi" style="background-color:rgb(195,208,136)" >充值</span></touch></i>
 	    <i><touch @tap="notice(text)"><span class="cart" style="background-color:rgb(253,221,155)" >{{text}}</span></touch></i>
-	    <i><touch @tap="cart"><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></touch></i>
+	    <i><touch @tap="ticket"><span class="fuli" style="background-color:rgb(140,182,192)" >福利券</span></touch></i>
 	    </section>
 
 	    <aside class="aside">
         <list-item @tap="note" right icon="edit" text="我的笔记" style="height:53px;line-height:53px"></list-item>
         <list-item @tap="bill" right icon="form" text="充值账单" style="height:53px;line-height:53px"></list-item>
         <list-item @tap="list" right icon="trade" text="已购书籍" style="height:53px;line-height:53px"></list-item>
-        <list-item @tap="list" right icon="office" text="阅读历史" style="height:53px;line-height:53px"></list-item>
+        <list-item @tap="history" right icon="office" text="阅读历史" style="height:53px;line-height:53px"></list-item>
 	    </aside>
 
     </scroller>
@@ -40,18 +40,6 @@
       </span>
       </span>
     </action-sheet>
-    <!--
-    <action-sheet :show="show2" @cancel="cancel2" style="bottom:-49px">
-      <span>
-      <list-item @tap="notice" right icon="sign" text="每日签到" style="height:50px;line-height:50px;margin: 10px 0;">
-      <span class="lb">签到</span>
-      </list-item>
-      <list-item @tap="" right icon="sign1" text="其他福利" style="height:50px;;line-height:50px;margin: 10px 0;">
-      <span class="lb" style="color:#e59b1a">领取</span>
-      </list-item>
-      </span>
-    </action-sheet>
-    -->
     <message v-model="messageShow" :message-text="messageText"></message>
   </router-content>
 </template>
@@ -105,6 +93,7 @@ export default {
         {mon: '50', bi: '5000'},
         {mon: '100', bi: '10000'}
       ],
+      editinfo: '点此登录',
       img: 'http://dynamic-image.yesky.com/600x-/uploadImages/upload/20141120/ieoqokgazxxjpg.jpg'
     }
   },
@@ -118,6 +107,13 @@ export default {
     postnew () {
       this.$router.push({name: 'new'})
     },
+    person () {
+      if (this.editinfo === '点此登录') {
+        this.$router.push({name: 'login'})
+      } else {
+        this.$router.push({name: 'person'})
+      }
+    },
     note () {
 
     },
@@ -125,13 +121,13 @@ export default {
       this.$router.push({name: 'bill'})
     },
     list () {
-
+      this.$router.push({name: 'list'})
     },
-    star () {
-      this.$router.push({name: 'star'})
+    history () {
+      this.$router.push({name: 'history'})
     },
-    cart () {
-      this.$router.push({name: 'cart'})
+    ticket () {
+      this.$router.push({name: 'ticket'})
     },
     cancel () {
       this.show0 = false
@@ -140,11 +136,7 @@ export default {
       this.$http.get('/personal/balance')
       .then(response => {
         this.show0 = true
-        console.log(response.data)
         this.currency = response.data.balance_book
-      })
-      .catch(function (error) {
-        console.log(error)
       })
     },
     cancel1 () {
@@ -166,7 +158,6 @@ export default {
       }
     },
     pay (val) {
-      console.log(val)
       this.$http.post('/personal/deposit', {'amount': val})
       .then(response => {
         this.messageShow = true
@@ -174,40 +165,25 @@ export default {
         setTimeout(() => {
           this.show1 = false
         }, 2000)
-        console.log(response.data)
-      })
-      .catch(function (error) {
-        console.log(error)
       })
     }
   },
   activated () {
-    console.log('1234')
-    this.$http.get('/user/profile')
-    console.log(this.$store.state.token)
-    if (this.$store.state.token !== undefined) {
+    if (this.$store.getters.token !== undefined) {
       this.editinfo = '修改个人信息'
       this.$http.get('/user/profile')
       .then(response => {
-        console.log(response.data)
         if (response.data.avatar !== '') {
           this.img = 'http://oott.me' + response.data.avatar
         }
       })
-      .catch(function (error) {
-        console.log(error)
-      })
       this.$http.get('/check')
       .then(response => {
-        console.log(response.data)
         if (response.data.is_check_today === true) {
           this.text = '签到'
         } else {
           this.text = '已签到'
         }
-      })
-      .catch(function (error) {
-        console.log(error)
       })
     } else {
       this.editinfo = '点此登录'

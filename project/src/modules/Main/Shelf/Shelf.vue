@@ -110,7 +110,7 @@ export default {
           this.selectedNum--
         }
       } else {
-        this.$router.push({name: 'detail', params: {id: this.books[index].book_id}})
+        this.$router.push({name: 'detail', params: {id: this.books[index].id}})
       }
     },
     all () {
@@ -130,7 +130,7 @@ export default {
     remove () {
       for (var i = this.books.length - 1; i >= 0; i--) {
         if (this.books[i].isEdit) {
-          this.$store.commit('remove', this.books[i].book_id)
+          this.$store.commit('remove', this.books[i].id)
           this.selectedNum--
         }
       }

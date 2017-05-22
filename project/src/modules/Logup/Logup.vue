@@ -35,7 +35,6 @@ export default {
   data () {
     return {
       state: 'login',
-      message: '',
       phonenum: '',
       password: '',
       code: ''

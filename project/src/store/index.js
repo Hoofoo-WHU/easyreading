@@ -113,7 +113,7 @@ export default new Vuex.Store({
           var severTime = Date.parse(response.data.update_timestamp)
           console.log(localTime)
           console.log(severTime)
-          if (localTime > severTime) {
+          if (localTime > severTime && state.books.length > 0) {
             if (localStorage.getItem('book')) {
               var books = JSON.parse(localStorage.getItem('book'))
               var bookId = ''

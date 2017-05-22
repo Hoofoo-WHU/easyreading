@@ -20,7 +20,9 @@ export default new Vuex.Store({
     modal: {
       close: undefined,
       size: 0
-    }
+    },
+    token: undefined,
+    expires_at: undefined
   },
   modules: {
     read
@@ -120,12 +122,38 @@ export default new Vuex.Store({
       .catch(function (error) {
         console.log(error)
       })
+    },
+    token: (state, payload) => {
+      localStorage.setItem('easyreading_token', payload.token)
+      localStorage.setItem('easyreading_expires_at', payload.expires_at)
+      state.token = payload.token
+      state.expires_at = payload.expires_at
+    },
+    logout: (state) => {
+      localStorage.removeItem('easyreading_token')
+      localStorage.removeItem('easyreading_expires_at')
+      state.token = undefined
+      state.expires_at = undefined
     }
   },
   getters: {
     // xx: state => state.needScrollTops
     routing: state => state.routing,
-    hasModal: state => state.modal.size > 0
+    hasModal: state => state.modal.size > 0,
+    token: (state) => {
+      let token = localStorage.getItem('easyreading_token')
+      if (token) {
+        state.token = token
+      }
+      return state.token
+    },
+    expires_at: (state) => {
+      let expiresAt = localStorage.getItem('easyreading_expires_at')
+      if (expiresAt) {
+        state.expires_at = expiresAt
+      }
+      return state.expires_at
+    }
   },
   plugins: [myPlugin]
 })

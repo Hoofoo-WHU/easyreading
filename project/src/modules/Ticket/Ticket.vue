@@ -1,13 +1,13 @@
 <template>
-  <router-content style="flex-direction:column">
+  <router-content style="flex-direction:column;background:#fff">
     <navigation-bar title="福利券">
       <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
     </navigation-bar>
     <scroller class="scroller" ref="scroller">
-      <list-item @tap="notice" right icon="sign" text="新手礼包" style="height:50px;line-height:50px;margin: 10px 0;">
+      <list-item right icon="sign" text="新手礼包" style="height:50px;line-height:50px;margin: 10px 0;">
       <span class="lb">领取</span>
       </list-item>
-      <list-item @tap="" right icon="sign1" text="其他福利" style="height:50px;;line-height:50px;margin: 10px 0;">
+      <list-item right icon="sign1" text="其他福利" style="height:50px;;line-height:50px;margin: 10px 0;">
       <span class="lb" style="color:#e59b1a">领取</span>
       </list-item>
     </scroller>
@@ -23,7 +23,7 @@ import Switches from '@/components/Switches'
 import ListItem from '@/components/ListItem'
 
 export default {
-  name: 'cart',
+  name: 'ticket',
   components: {
     Scroller,
     RouterContent,

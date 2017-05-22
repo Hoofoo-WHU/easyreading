@@ -112,9 +112,9 @@
         return false
       },
       bookId () {
-        if (this.$route.params.id) {
-          console.log(this.$route.params.id)
-          return this.$route.params.id
+        if (this.$route.query.id) {
+          console.log(this.$route.query.id)
+          return this.$route.query.id
         }
       }
     },

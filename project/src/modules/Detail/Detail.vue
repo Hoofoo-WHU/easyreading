@@ -218,7 +218,11 @@
         console.log(this.isIn)
       },
       read (id) {
-        this.$router.push({'name': 'read', 'query': {id}})
+        if (this.info.allow_trial === false) {
+          this.showMessage('请先购买后阅读', 'close')
+        } else {
+          this.$router.push({'name': 'read', 'query': {id}})
+        }
       },
       shop () {
         let me = this

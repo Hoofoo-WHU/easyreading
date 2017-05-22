@@ -12,6 +12,8 @@ import Person from './Person'
 import Task from './Task'
 import Bill from './Bill'
 import Cart from './Cart'
+import TaskDetail from './TaskDetail'
+import TaskList from './TaskList'
 
 export default {
   Main,
@@ -27,5 +29,7 @@ export default {
   Person,
   Bill,
   Cart,
-  Task
+  Task,
+  TaskDetail,
+  TaskList
 }

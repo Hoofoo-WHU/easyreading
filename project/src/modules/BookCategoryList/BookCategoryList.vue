@@ -71,8 +71,8 @@ export default {
   computed: {
     typeId () {
       // 点击返回键后，$router.params.typeId获取不到，页面会报错，使用这样的方法处理
-      if (this.$route.params.id) {
-        return this.$route.params.id
+      if (this.$route.query.id) {
+        return this.$route.query.id
       } else {
         return 9
       }
@@ -194,7 +194,7 @@ export default {
       this.messageShow = true
     },
     toBookDetail (id) {
-      this.$router.push({'name': 'detail', params: {'id': id}})
+      this.$router.push({'name': 'detail', query: {'id': id}})
     }
   },
   mounted () {

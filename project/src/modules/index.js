@@ -11,6 +11,9 @@ import List from './List'
 import Person from './Person'
 import Task from './Task'
 import Bill from './Bill'
+import Cart from './Cart'
+import TaskDetail from './TaskDetail'
+import TaskList from './TaskList'
 import Ticket from './Ticket'
 import History from './History'
 
@@ -27,7 +30,14 @@ export default {
   List,
   Person,
   Bill,
+<<<<<<< HEAD
+  Cart,
+  Task,
+  TaskDetail,
+  TaskList
+=======
   Ticket,
   Task,
   History
+>>>>>>> dev
 }

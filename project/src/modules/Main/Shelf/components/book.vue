@@ -2,7 +2,6 @@
   <div id="book">
     <div class="cover">
       <img :src="cover" alt="" width="100%">
-<!--       <icon v-if="!edit" name="unchecked" class="icon" :class='{gray:!isEdit, blue:isEdit}'/> -->
       <transition name="trs">
         <icon v-if="!edit" name="check" class="check" :class='{gray:!isEdit, blue:isEdit}'/>
       </transition>

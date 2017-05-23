@@ -9,3 +9,4 @@
 npm-debug.log
 .gitkeep
 project/src/modules/Detail/Detail.vue
+project/src/modules/Detail/components/Info.vue

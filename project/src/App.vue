@@ -5,10 +5,15 @@
           <router-view/>
       </keep-alive>
     </transition>
-    <action-sheet :show="$store.state.read.showmore" @show="modalshow" @hide="modalhide" @cancel="$store.state.read.showmore = false">
+    <action-sheet 
+    :show="$store.getters['read/showmore']"
+    @show="modalshow"
+    @hide="modalhide"
+    @cancel="$store.state.read.showmore = false"
+    >
       <action-sheet-button text="加入书架"></action-sheet-button>
       <action-sheet-button text="书籍详情" @tap="toDetail"></action-sheet-button>
-      <action-sheet-button text="测试"></action-sheet-button>
+      <action-sheet-button text="点评书籍"></action-sheet-button>
     </action-sheet>
     <p class="prefont">预加载字体</p>
   </div>
@@ -27,9 +32,7 @@ export default {
   },
   data () {
     return {
-      transitionName: 'push',
-      velocity: require('velocity-animate'),
-      routing: false
+      transitionName: 'push'
     }
   },
   watch: {
@@ -44,9 +47,8 @@ export default {
   },
   methods: {
     toDetail () {
-      this.routing = true
       console.log(this.$store.state.read.bookid)
-      this.$router.push({'name': 'detail'})
+      this.$router.push({'name': 'detail', params: {id: this.$store.getters['read/bookid']}})
     },
     modalshow () {
       this.$store.commit('addmodal', this.closemodal)
@@ -55,7 +57,7 @@ export default {
       this.$store.commit('removemodal', this.closemodal)
     },
     closemodal () {
-      this.$store.state.read.showmore = false
+      this.$store.commit('read/showmore', false)
     },
     beforeEnter: function () {
       this.$store.commit('routing', true)

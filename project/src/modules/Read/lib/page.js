@@ -11,7 +11,9 @@ function Paging () {
     paging: false,
     cut: false,
     count: 0,
-    newPage: true
+    newPage: true,
+    paragraph: 0,
+    offset: 0
   }
   var para = {
     buffer: null,
@@ -26,13 +28,15 @@ function Paging () {
     this.count = 0
     this.data = []
     this.tag = false
+    this.paragraph = 0
+    this.offset = 0
   }
   var page
   // 生命周期
   this.start = (buffer, height, data, chapter) => {
     buffer !== undefined ? para.buffer = buffer : console.error('缺少buffer')
     height !== undefined ? para.height = height : console.error('缺少height')
-    data !== undefined ? para.data = data : console.error('缺少data')
+    data !== undefined ? para.data = data.slice(0) : console.error('缺少data')
     chapter !== undefined ? para.chapter = chapter : console.error('缺少chapter')
     emit('start')
     _start()
@@ -43,8 +47,8 @@ function Paging () {
   }
   this.distroy = () => {
     state.paging = false
-    emitter.removeAllListeners()
     emit('destroyed')
+    emitter.removeAllListeners()
   }
   this.on = function () {
     EventEmitter2.prototype.on.apply(emitter, arguments)
@@ -73,9 +77,17 @@ function Paging () {
           page.count = ++state.count
           p.remove()
           para.data.unshift(part)
+          page.paragraph = state.paragraph
+          page.offset = state.offset
+          state.offset = 0
           emit('page', page)
+          if (!page.end) {
+            state.paragraph += page.data.length - 1
+          } else {
+            state.paragraph += page.data.length
+          }
           para.buffer.innerHTML = ''
-          page = new Page(para.chapter)
+          page = new Page(para.chapter, state.paragraph)
           state.newPage = true
         } else {
           p.textContent = part
@@ -94,9 +106,17 @@ function Paging () {
             p.textContent = p.textContent.slice(0, -1)
             page.data.push(p.textContent)
             para.data.unshift(part.slice(p.textContent.length))
+            page.paragraph = state.paragraph
+            page.offset = state.offset
+            state.offset = p.textContent.length
             emit('page', page)
+            if (!page.end) {
+              state.paragraph += page.data.length - 1
+            } else {
+              state.paragraph += page.data.length
+            }
             para.buffer.innerHTML = ''
-            page = new Page(para.chapter)
+            page = new Page(para.chapter, state.paragraph)
             state.newPage = true
           } else {
             page.data.push(part)
@@ -107,7 +127,14 @@ function Paging () {
         page.start = !state.cut
         page.end = true
         page.count = ++state.count
+        page.paragraph = state.paragraph
+        page.offset = state.offset
         emit('page', page)
+        if (!page.end) {
+          state.paragraph += page.data.length - 1
+        } else {
+          state.paragraph += page.data.length
+        }
         emit('finish')
       }
     } else {

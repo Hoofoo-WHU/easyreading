@@ -5,6 +5,8 @@
       <navigation-bar-item @tap="task" slot="right" text="题库" right-icon/>
     </navigation-bar>
     <scroller style="flex-grow:1;" ref="scroller" v-model="istop" can-pull-refresh @pullRefresh="pullRefresh" @loadMore="loadMore" can-load-more>
+      <button @click="haha">loading</button>
+      <button @click="toast">toast</button>
       <container title="Range">
         <range v-model="value" :min="0.3" :max="1" @start="start" @end="end"></range>
       </container>
@@ -19,6 +21,8 @@
         <p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p><p>hohohohohohohohoho</p>
       </container>
     </scroller>
+    <loading v-model="loading"></loading>
+    <toast ref="toast"></toast>
   </router-content>
 </template>
 
@@ -28,6 +32,8 @@
   import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
   import Container from '@/components/Container'
   import Range from '@/components/Range'
+  import Loading from '@/components/Loading'
+  import Toast from '@/components/Toast'
   export default {
     name: 'test',
     components: {
@@ -36,13 +42,16 @@
       NavigationBarItem,
       NavigationBar,
       Container,
-      Range
+      Range,
+      Loading,
+      Toast
     },
     data () {
       return {
         items: [],
         istop: true,
-        value: 1
+        value: 1,
+        loading: false
       }
     },
     watch: {
@@ -56,6 +65,15 @@
       }
     },
     methods: {
+      toast () {
+        this.$refs.toast.open('toast测试')
+      },
+      haha () {
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+        }, 1000)
+      },
       start (value) {
         console.log('start' + value)
       },
@@ -96,7 +114,7 @@
       },
       read () {
         console.log('Tap read')
-        this.$router.push({'name': 'read', query: {bookid: '2'}})
+        this.$router.push({'name': 'read', query: {bookid: '1'}})
         // alert(this.$statusBar.isVisible)
         // if (this.$statusBar.isVisible) {
         //   // alert('111111')

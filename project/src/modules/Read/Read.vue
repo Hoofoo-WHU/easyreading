@@ -1,58 +1,34 @@
 <template>
-  <div class="read" :style="'filter: brightness('+ brightness +')'">
-    <navigation-bar title="读书" class="navigation" :show="show">
-      <navigation-bar-item slot="left" icon="back" text="返回" @tap="back" :disable="$store.state.read.showmore"/>
-      <navigation-bar-item slot="right" icon="shop" :disable="$store.state.read.showmore"/>
-      <navigation-bar-item slot="right" icon="more" @tap="more" :disable="$store.state.read.showmore"/>
+  <div class="read" :style="'filter: brightness('+ this.$store.getters['read/brightness'] +')'">
+    <toast ref="toast"></toast>
+    <loading v-model="loading"></loading>
+    <buy v-model="showBuy" :title="title" :author="author" :price="price" :balance="balance" @buy="buy" @deposit="showDepositModal"></buy>
+    <navigation-bar class="navigation" :show="showUi">
+      <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
+      <navigation-bar-item v-if="!isBought" slot="right" icon="shop" @tap="showBuyModal"/>
+      <navigation-bar-item slot="right" icon="more" @tap="more"/>
     </navigation-bar>
-    <touch class="content" @tap="tap" @panstart="panstart" @panmove="panHorizontal" :pan-options="{ direction: 'horizontal', threshold: 4}" @panend="panend" @swipeleft="swipeleft" @swiperight="swiperight">
-      <div >
-        <page v-if="pages[page - 1]" :tag="pages[page - 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, prev: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page - 1].chapter" :page="pages[page - 1].count" @tag="pages[page - 1].tag=true" @untag="pages[page - 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'" :page-color="background" :font-color="fontColor">
-          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamilys[fontFamily],'font-size':fontSize+'px'}">
-            <div :class="{noindent: !pages[page - 1].start}">
-              <p v-for="(parts, index) in pages[page - 1].data">{{parts}}<span v-if="!pages[page - 1].end && index + 1 === pages[page - 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
-          </div>
-        </page>
-      </div>
-      <div>
-        <page v-if="pages[page + 1]" :tag="pages[page + 1].tag" :can-pull-tag="!paning" :class="{trans: !paning, next: true}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page + 1].chapter" :page="pages[page + 1].count" @tag="pages[page + 1].tag=true" @untag="pages[page + 1].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'" :page-color="background" :font-color="fontColor">
-          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamilys[fontFamily],'font-size':fontSize+'px'}">
-            <div :class="{noindent: !pages[page + 1].start}">
-              <p v-for="(parts, index) in pages[page + 1].data">{{parts}}<span v-if="!pages[page + 1].end && index + 1 === pages[page + 1].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
-          </div>
-        </page>
-      </div>
-      <div>
-        <page :tag="pages[page] ? pages[page].tag : false" :can-pull-tag="!paning" :class="{trans: !paning}" @tagstart="tagstart" @tagend="tagend" :chapter="pages[page] ? pages[page].chapter : ''" :page="pages[page] ? pages[page].count : ''" @tag="pages[page].tag=true" @untag="pages[page].tag=false" :style="'transform: translateX(' + pandistance + 'px) translateZ(0)'" :page-color="background" :font-color="fontColor">
-          <div id="pageContentWrapper" class="pageContentWrapper" style="width: 100%;" :style="{'font-family': fontFamilys[fontFamily],'font-size':fontSize+'px'}">
-            <div style="height: 0; overflow: hidden">
-              <div class="buffer" style="visibility: hidden"></div>
-            </div>
-            <div v-if="pages[page]" :class="{noindent: !pages[page].start}">
-              <p v-for="(parts, index) in pages[page].data">{{parts}}<span v-if="!pages[page].end && index + 1 === pages[page].data.length" style="display:inline-block; padding-left: 100%;"></span></p>
-            </div>
-          </div>
-        </page>
-      </div>
+    <touch ref="book" class="content" @tap="tap" @panstart="panstart" :style="{transform: `translateX(${pandistance}px)`}">
+      <chapter v-if="book && chapter > 0" isprev :book="book" :chapter="chapter - 1" style="transform: translateX(-100%)" :background="background" :color="foreground"></chapter>
+      <chapter v-if="book" ref="chapter" :isprev="isprev" :book="book" :chapter="chapter" @swipeleft="swipeleft" @swiperight="swiperight" @panend="panend" @panHorizontal="panHorizontal" :background="background" :color="foreground"></chapter>
+      <chapter v-if="book && ((book.info.is_bought && chapter + 1 < book.structure.length) || (!book.info.is_bought && chapter < book.info.trial_chapter - 1))" :book="book" :chapter="chapter + 1" style="transform: translateX(100%)" :background="background" :color="foreground"></chapter>
     </touch>
-    <bottom-bar class="bottomBar" :show="show">
-      <bottom-bar-item icon="list" @tap="toc"/>
+    <bottom-bar class="bottomBar" :show="showUi">
+      <bottom-bar-item icon="list" @tap="showTocModal"/>
       <!-- <bottom-bar-item icon="slider"/> -->
       <bottom-bar-item icon="light" @tap="modalShow='light'" :active="modalShow==='light'"/>
       <bottom-bar-item icon="font" @tap="modalShow='font'" :active="modalShow==='font'"/>
     </bottom-bar>
-    <bottom-modal :show="modalShow !== '' && show">
+    <bottom-modal :show="modalShow !== '' && showUi">
       <div v-if="modalShow==='light'" style="padding: 0 1em">
-        <range :min="0.3" :max="1" v-model="brightness" style="height: 53px;">
+        <range :min="0.3" :max="1" :value="$store.getters['read/brightness']" @input="setBrightness" style="height: 53px;">
           <icon slot="left" name="light" style="width: 20px;height:100%;margin-right: 15px;color:#5a6773"></icon>
           <icon slot="right" name="light" style="width: 25px;height:100%;margin-left: 15px;color: #5a6773"></icon>
         </range>
         <div style="height: 53px; display: flex;justify-content: space-between;align-items: center;">
-          <color-block style="height: 26px; width: 20%;" color="#f8f8f8" border :active="background==='#f8f8f8'" @tap="setColor('#f8f8f8', '#000')"></color-block>
-          <color-block style="height: 26px; width: 20%;" color="#f1e5ca" border :active="background==='#f1e5ca'" @tap="setColor('#f1e5ca', '#000')"></color-block>
-          <color-block style="height: 26px; width: 20%;" color="#C7EDCC" border :active="background==='#C7EDCC'" @tap="setColor('#C7EDCC', '#000')"></color-block>
+          <color-block style="height: 26px; width: 20%;" color="#f2f2f2" border :active="background==='#f2f2f2'" @tap="setColor('#f2f2f2', '#222222')"></color-block>
+          <color-block style="height: 26px; width: 20%;" color="#f1e5ca" border :active="background==='#f1e5ca'" @tap="setColor('#f1e5ca', '#222222')"></color-block>
+          <color-block style="height: 26px; width: 20%;" color="#C7EDCC" border :active="background==='#C7EDCC'" @tap="setColor('#C7EDCC', '#222222')"></color-block>
           <color-block style="height: 26px; width: 20%;" color="#2d3035" border :active="background==='#191d25'" @tap="setColor('#191d25', '#78797d')"></color-block>
         </div>
       </div>
@@ -62,19 +38,31 @@
           <icon slot="right" name="a" style="width: 20px;height:100%;margin-left: 15px;color: #5a6773"></icon>
         </range>
         <container divider ></container>
-        <touch style="height: 53px;width: 100%; padding: 0 2em; line-height: 53px; text-align: center; box-sizing: border-box" :style="{'font-family': fontFamilys[fontFamily]}" @tap="showFontselector">{{fontFamily}}</touch>
+        <touch style="height: 53px;width: 100%; padding: 0 2em; line-height: 53px; text-align: center; box-sizing: border-box" :style="{'font-family': fontFamily}" @tap="showFontselector">{{fontFamilys[fontFamily]}}</touch>
       </div>
     </bottom-modal>
     <action-sheet :show="fontSelector" @cancel="cancelFontSelector">
       <scroller style="height: 159px">
-        <action-sheet-button v-for="(fontFamily, index) in fontFamilys" :key="index" @tap="setFontFamily(index)" :text="index" :style="{'font-family': fontFamily}"></action-sheet-button>
+        <action-sheet-button v-for="(value, key) in fontFamilys" :key="key" @tap="setFontFamily(key)" :text="value" :style="{'font-family': key}"></action-sheet-button>
       </scroller>
     </action-sheet>
-    <toc-modal :show="this.$store.state.read.showtoc" @show="tocShow" @hide="tocHide" @cancel="closeToc">
-      <navigation-bar title="霸气侧漏的书籍信息"></navigation-bar>
-      <div style="flex-grow:1; position:relative">
-        <toc v-if="tocTab === 'toc'" :data="getTocData()"></toc>
-        <div v-else-if="tocTab === 'tags'">书签</div>
+    <toc-modal :show="showToc" @show="tocShow" @hide="tocHide" @cancel="closeTocModal">
+      <div style="flex-grow:1; display: flex;">
+        <div v-if="tocTab === 'toc'" style="flex-grow:1; display: flex; flex-direction: column;">
+          <navigation-bar>
+            <button-item @tap="$router.push({'name': 'detail', 'params': {id: $store.getters['read/bookid']}})">
+              <div style="display: flex;align-items: center; flex-grow: 1;">
+                <img :src="cover" alt style="width: 36px;height: 45px;box-shadow: 0 0 30px #d9d9d9;margin: 1em;"/>
+                <div style="flex-grow: 1; width: 0; padding-right: 1em;">
+                  <div style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;font-family: SourceHanserif;">{{title}}</div>
+                  <div style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;opacity: 0.5;font-family: SourceHanserif;">{{author}}</div>
+                </div>
+              </div>
+            </button-item>
+          </navigation-bar>
+          <toc style="flex-grow: 1;" :data="getTocData()" @tap="tocTap"></toc>
+        </div>
+        <tag v-else-if="tocTab === 'tags'" :book="book" @tap="tagTap">书签</tag>
       </div>
       <bottom-bar>
         <bottom-bar-item text="目录" @tap="tocTab = 'toc'" :active="tocTab === 'toc'"></bottom-bar-item>
@@ -86,6 +74,7 @@
 
 <script>
 import {NavigationBar, NavigationBarItem} from '@/components/NavigationBar'
+import Toast from '@/components/Toast'
 import {BottomBar, BottomBarItem} from '@/components/BottomBar'
 import {ActionSheet, ActionSheetItem, ActionSheetButton} from '@/components/ActionSheet'
 import ButtonItem from '@/components/ButtonItem'
@@ -95,16 +84,20 @@ import Toc from '@/components/Toc'
 import ColorBlock from '@/components/ColorBlock'
 import Container from '@/components/Container'
 import Scroller from '@/components/Scroller'
+import Buy from '@/components/Buy'
+import Loading from '@/components/Loading'
 import TocModal from './TocModal'
 import BottomModal from './BottomModal'
+import Chapter from './Chapter'
+import Tag from './Tag'
 import Page from './Page'
-import Paging from './lib/page.js'
 import bounce from './lib/bounce.js'
 export default {
   name: 'read',
   components: {
     NavigationBar,
     NavigationBarItem,
+    Toast,
     BottomBar,
     BottomBarItem,
     Page,
@@ -114,55 +107,153 @@ export default {
     ButtonItem,
     TocModal,
     Toc,
+    Tag,
+    Chapter,
     Range,
     Icon,
     ColorBlock,
     BottomModal,
     Container,
-    Scroller
+    Scroller,
+    Buy,
+    Loading
   },
   data () {
     return {
-      show: false,
-      pages: this.$store.state.read.pages,
-      finish: false,
-      pandistance: 0,
-      paning: false,
+      showUi: false,
+      showBuy: false,
       showToc: false,
+      balance: undefined,
+      paning: false,
       tocTab: 'toc',
       fontFamilys: {
-        '系统字体': 'initial',
-        '思源宋体': 'SourceHanSerif',
-        '思源黑体': 'SourceHanSans'
+        'initial': '系统字体',
+        'SourceHanSerif': '思源宋体',
+        'SourceHanSans': '思源黑体'
       },
-      brightness: 1,
       modalShow: '',
-      background: '#fff',
-      fontColor: '#000',
       fontSelector: false,
-      cfontSize: 1,
-      fontSize: 16,
-      book: undefined
+      cfontSize: (this.$store.getters['read/fontSize'] - 14) / 2,
+      book: undefined,
+      loading: false,
+      chapter: 0,
+      paragraph: 0,
+      word: 0,
+      pandistance: 0,
+      velocity: require('velocity-animate'),
+      isprev: false
     }
   },
   computed: {
+    isBought () {
+      if (this.book) {
+        return this.book.info.is_bought
+      } else {
+        return false
+      }
+    },
+    title () {
+      if (this.book) {
+        return this.book.info.title
+      } else {
+        return ''
+      }
+    },
+    author () {
+      if (this.book) {
+        return this.book.info.author
+      } else {
+        return ''
+      }
+    },
+    price () {
+      if (this.book) {
+        return this.book.info.price
+      } else {
+        return 0
+      }
+    },
+    cover () {
+      if (this.book) {
+        return this.$http.defaults.baseURL + this.book.info.cover
+      } else {
+        return ''
+      }
+    },
     page () {
       return this.$store.state.read.page
     },
     fontFamily () {
-      return this.$store.getters.fontFamily
+      return this.$store.getters['read/fontFamily']
+    },
+    foreground () {
+      return this.$store.getters['read/foreground']
+    },
+    background () {
+      return this.$store.getters['read/background']
     }
   },
   watch: {
-    show: function (val) {
-      this.refreshStatusBar()
+    showUi: function (val) {
+      if (this.$statusBar) {
+        if (val) {
+          this.$statusBar.show()
+        } else {
+          this.$statusBar.hide()
+        }
+      }
     },
-    fontFamily: function (val) {
-      this.pages.splice(0, this.pages.length)
-      this.paging(0)
+    showBuy: function (val) {
+      if (val) {
+        this.$store.commit('addmodal', this.hideBuyModal)
+      } else {
+        this.$store.commit('removemodal', this.hideBuyModal)
+      }
     }
   },
   methods: {
+    refreshBalance () {
+      if (this.balance === undefined) {
+        this.$http.get('/personal/balance')
+        .then(response => {
+          this.balance = response.data.balance_book
+        })
+      }
+    },
+    back () {
+      this.$router.back()
+    },
+    showBuyModal () {
+      this.refreshBalance()
+      this.showBuy = true
+    },
+    hideBuyModal () {
+      this.showBuy = false
+    },
+    buy () {
+      this.loading = true
+      this.$http.post(`/bookshopping/book/${this.$route.query.bookid}/buy`)
+      .then(response => {
+        this.book.info.is_bought = true
+        this.loading = false
+        this.showBuy = false
+        this.$refs.toast.open('购买成功')
+      })
+      .catch(error => {
+        this.loading = false
+        this.showBuy = false
+        this.$refs.toast.open(error.response.data.reason)
+      })
+    },
+    showDepositModal () {
+      console.log('showDepositModal')
+    },
+    more () {
+      this.$store.state.read.showmore = true
+    },
+    closeMore () {
+      this.$store.state.read.showmore = false
+    },
     getTocData () {
       if (this.book) {
         var isLock = (index) => {
@@ -174,6 +265,7 @@ export default {
         }
         return this.book.structure.map((value, index) => {
           return {
+            identifier: value.identifier,
             name: value.chapter,
             lock: isLock(index),
             cache: value.data !== undefined
@@ -183,275 +275,214 @@ export default {
         return []
       }
     },
-    back () {
-      this.$router.back()
-    },
-    more () {
-      console.log('moretap')
-      this.$store.state.read.showmore = true
-    },
-    closeMore () {
-      this.$store.state.read.showmore = false
-    },
     tocShow () {
-      this.$store.commit('addmodal', this.closeToc)
+      this.$store.commit('addmodal', this.closeTocModal)
     },
     tocHide () {
-      this.$store.commit('removemodal', this.closeToc)
+      this.$store.commit('removemodal', this.closeTocModal)
     },
-    toc () {
-      this.$store.state.read.showtoc = true
+    showTocModal () {
+      this.tocTab = 'toc'
+      this.showToc = true
     },
-    closeToc () {
-      this.$store.state.read.showtoc = false
+    closeTocModal () {
+      this.showToc = false
+    },
+    tocTap (item, index) {
+      console.log(item)
+      console.log(index)
+      if (!item.lock) {
+        this.isprev = false
+        this.chapter = index
+        this.closeTocModal()
+        this.showUi = false
+      } else {
+        this.$refs.toast.open('暂未购买')
+      }
+    },
+    tagTap (tag, index) {
+      console.log(tag)
+      console.log(index)
+    },
+    setBrightness (brightness) {
+      this.$store.commit('read/brightness', brightness)
     },
     setColor (color, fontColor) {
-      this.background = color
-      this.fontColor = fontColor
+      this.$store.commit('read/background', color)
+      this.$store.commit('read/foreground', fontColor)
     },
     showFontselector () {
       this.fontSelector = true
     },
     setFontFamily (fontFamily) {
-      this.fontFamily = fontFamily
-      this.$store.commit('setFontFamily', fontFamily)
+      this.$store.commit('read/fontFamily', fontFamily)
       this.fontSelector = false
     },
     setFontSize (size) {
-      this.$store.commit('setFontSize', size)
-      this.fontSize = 14 + size * 2
-      this.pages.splice(0, this.pages.length)
-      this.paging(0)
+      console.log('size', size)
+      this.$store.commit('read/fontSize', 14 + size * 2)
     },
     cancelFontSelector () {
       this.fontSelector = false
     },
     tap (e) {
       var width = window.innerWidth
-      // var height = window.innerHeight
-      if (this.show) {
-        this.show = false
+      if (this.showUi) {
+        this.showUi = false
       } else {
         if (e.center.x < width / 3) {
-          this.prev()
+          // this.prev()
         } else if (e.center.x > width * 2 / 3) {
-          this.next()
+          // this.next()
         } else {
-          this.show = true
+          this.showUi = true
           this.modalShow = ''
         }
       }
     },
-    refreshStatusBar () {
-      // console.log(this.show)
-      if (this.$statusBar && this.$platform === 'ios') {
-        if (!this.show) {
-          this.$statusBar.hide()
-        } else {
-          this.$statusBar.show()
-        }
-      }
+    panstart (e) {
+      this.showUi = false
     },
-    prev () {
-      // this.tag = true
-      console.log('to prev page')
-      if (this.finish) {
-        this.pageReset()
-        setTimeout(this.swiperight, 50)
-      }
-      // if (this.$store.state.read.page > 0) {
-      //   this.$store.state.read.page--
-      // }
-      // console.log(this.pages[this.$store.state.read.page])
+    swiperight () {
+      this.prev()
+      console.log('swiperight')
+    },
+    swipeleft () {
+      this.next()
+      console.log('swipeleft')
     },
     next () {
-      // this.tag = false
-      console.log('to next page')
-      if (this.finish) {
-        this.pageReset()
-        setTimeout(this.swipeleft, 50)
-      }
-      // if (this.$store.state.read.page + 1 < this.pages.length) {
-      //   this.$store.state.read.page++
-      // }
-      // console.log(this.pages[this.$store.state.read.page])
-    },
-    panstart (e) {
-      if (this.finish) {
-        if (!this.taging) {
-          this.show = false
-          this.pageReset()
-          this.fixdistance = e.deltaX
+      this.isprev = false
+      this.velocity(this.$refs.book.$el, 'finish')
+      setTimeout(() => {
+        if (this.book.info.is_bought) {
+          if (this.chapter < this.book.structure.length - 1) {
+            console.log('next')
+            const width = this.$refs.chapter.$el.offsetWidth
+            if (this.pandistance === 0) {
+              this.pandistance = -1
+            }
+            this.velocity(this.$refs.book.$el, {translateX: [-width, this.pandistance]}, [0.3, 0.5, 0.29, 0.99], () => {
+              this.$refs.book.$el.style.transform = 'translateX(0)'
+              this.pandistance = 0
+              this.chapter++
+            })
+          }
+        } else {
+          if (this.chapter < this.book.info.trial_chapter - 1) {
+            console.log('next')
+            const width = this.$refs.chapter.$el.offsetWidth
+            if (this.pandistance === 0) {
+              this.pandistance = -1
+            }
+            this.velocity(this.$refs.book.$el, {translateX: [-width, this.pandistance]}, [0.3, 0.5, 0.29, 0.99], () => {
+              this.$refs.book.$el.style.transform = 'translateX(0)'
+              this.pandistance = 0
+              this.chapter++
+            })
+          } else {
+            this.reset()
+          }
         }
-      }
+      }, 50)
+    },
+    prev () {
+      this.isprev = true
+      this.velocity(this.$refs.book.$el, 'finish')
+      setTimeout(() => {
+        if (this.chapter > 0) {
+          console.log('prev')
+          this.velocity(this.$refs.book.$el, 'finish')
+          const width = this.$refs.chapter.$el.offsetWidth
+          if (this.pandistance === 0) {
+            this.pandistance = 1
+          }
+          this.velocity(this.$refs.book.$el, {translateX: [width, this.pandistance]}, [0.3, 0.5, 0.29, 0.99], () => {
+            this.$refs.book.$el.style.transform = 'translateX(0)'
+            this.pandistance = 0
+            this.chapter--
+          })
+        } else {
+          this.reset()
+        }
+      }, 50)
+    },
+    reset () {
+      this.velocity(this.$refs.book.$el, {translateX: [0, this.pandistance]}, [0.3, 0.5, 0.29, 0.99], () => {
+        this.$refs.book.$el.style.transform = 'translateX(0)'
+        this.pandistance = 0
+      })
     },
     panHorizontal (e) {
-      if (this.finish) {
-        if (!this.taging && this.paning) {
-          if ((this.$store.state.read.page <= 0 && e.deltaX > 0) || (this.$store.state.read.page >= this.pages.length - 1 && e.deltaX < 0)) {
-            this.pandistance = bounce(e.deltaX - this.fixdistance)
+      // if (!this.taging && this.paning) {
+      //   if ((this.$store.state.read.page <= 0 && e.deltaX > 0) || (this.$store.state.read.page >= this.pages.length - 1 && e.deltaX < 0)) {
+      //     this.pandistance = bounce(e.deltaX - this.fixdistance)
+      //   } else {
+      //     this.pandistance = e.deltaX - this.fixdistance
+      //   }
+      // }
+      if (this.chapter <= 0) {
+        this.pandistance = bounce(e)
+      } else {
+        if (!this.book.info.is_bought) {
+          if (this.chapter >= this.book.info.trial_chapter - 1) {
+            this.pandistance = bounce(e)
           } else {
-            this.pandistance = e.deltaX - this.fixdistance
+            this.pandistance = e
+          }
+        } else {
+          if (this.chapter >= this.book.info.total_chapter) {
+            this.pandistance = bounce(e)
+          } else {
+            this.pandistance = e
           }
         }
       }
     },
     panend (e) {
-      if (this.finish) {
-        if (!this.taging && this.paning) {
-          var width = window.innerWidth
-          // console.log(e.deltaX - this.fixdistance - this.pandistance)
-          // console.log(new Date().getTime() - this.pantime)
-          if (this.pandistance < -width * 0.5 && this.$store.state.read.page + 1 < this.pages.length) {
-            this.pandistance = -width
-          } else if (this.pandistance > width * 0.5 && this.$store.state.read.page > 0) {
-            this.pandistance = width
-          } else {
-            this.pandistance = 0
-          }
-          this.paning = false
-        }
+      console.log('panend')
+      var width = window.innerWidth
+      if (this.pandistance > width / 2 && this.chapter > 0) {
+        this.prev()
+      } else if (this.pandistance < -width / 2) {
+        this.next()
+      } else {
+        this.reset()
       }
-    },
-    swiperight () {
-      // console.log('swiperight')
-      if (this.finish) {
-        this.paning = false
-        // this.paning = true
-        // if (this.pandistance < 0) {
-        //   this.$store.state.read.page++
-        // }
-        // if (this.pandistance > 0) {
-        //   this.$store.state.read.page--
-        // }
-        // this.paning = false
-        if (this.$store.state.read.page > 0 && !this.taging) {
-          var width = window.innerWidth
-          this.pandistance = width
-        }
-      }
-    },
-    swipeleft () {
-      // console.log('swipeleft')
-      // if (this.pandistance < 0) {
-      //   this.$store.state.read.page++
+      // if (!this.taging && this.paning) {
+      //   var width = window.innerWidth
+      //   // console.log(e.deltaX - this.fixdistance - this.pandistance)
+      //   // console.log(new Date().getTime() - this.pantime)
+      //   if (this.pandistance < -width * 0.5 && this.$store.state.read.page + 1 < this.pages.length) {
+      //     this.pandistance = -width
+      //   } else if (this.pandistance > width * 0.5 && this.$store.state.read.page > 0) {
+      //     this.pandistance = width
+      //   } else {
+      //     this.pandistance = 0
+      //   }
+      //   this.paning = false
       // }
-      // if (this.pandistance > 0) {
-      //   this.$store.state.read.page--
-      // }
-      // this.paning = false
-      if (this.finish) {
-        this.paning = false
-        if (this.$store.state.read.page + 1 < this.pages.length && !this.taging) {
-          var width = window.innerWidth
-          this.pandistance = -width
-        }
-      }
-    },
-    pageReset () {
-      this.paning = true
-      if (this.pandistance < 0) {
-        this.$store.state.read.page++
-      }
-      if (this.pandistance > 0) {
-        this.$store.state.read.page--
-      }
-      this.pandistance = 0
-    },
-    tagstart () {
-      this.show = false
-      this.taging = true
-    },
-    tagend () {
-      this.taging = false
-    },
-    getData: function () {
-      var dataElement = this.$el.getElementsByClassName('text')[0].getElementsByTagName('p')
-      var data = []
-      Array.prototype.forEach.call(dataElement, function (value) {
-        data.push(value.textContent)
-      })
-      return data
-    },
-    paging: function (chapterIndex) {
-      console.log(chapterIndex)
-      this.pageReset()
-      this.finish = false
-      var buffer = this.$el.getElementsByClassName('buffer')[0]
-      var height = this.$el.getElementsByClassName('pageContentWrapper')[0].offsetHeight
-      // var data = this.getData()
-      this.$http.get('/reading/book/' + this.book.info.id + '/chapter', {
-        params: {
-          'identifier': this.book.structure[chapterIndex].identifier
-        }
-      })
-      .then(response => {
-        var chapter = response.data.chapter
-        var paragraphs = response.data.paragraphs
-        this.book.structure[chapterIndex].data = paragraphs
-        if (this._paging) {
-          this._paging.distroy()
-        }
-        this._paging = new Paging()
-        // console.log(data.length)
-        // console.log(this.$el.getElementsByClassName('text')[0].textContent.length)
-        // this.$el.getElementsByClassName('text')[0]
-        this._paging.on('start', () => {
-          this.startTime = new Date().getTime()
-        })
-        this._paging.on('finish', () => {
-          // this.finish = true
-          if (this.page >= this.pages.length) {
-            this.$store.state.read.page = this.pages.length - 1
-          }
-          if (chapterIndex + 1 < this.book.structure.length) {
-            setTimeout(() => {
-              this.paging(chapterIndex + 1)
-            }, 0)
-          }
-          console.log(this.pages)
-          console.log(new Date().getTime() - this.startTime)
-        })
-        this._paging.on('page', (page) => {
-          this.pages.push(page)
-          if (this.pages.length > this.$store.state.read.page + 2) {
-            this.finish = true
-          }
-        })
-        buffer.innerHTML = ''
-        this._paging.start(buffer, height, paragraphs, chapter)
-      })
-      .catch(err => {
-        this.finish = true
-        this.pages.push({
-          data: ['完']
-        })
-        console.log(err)
-      })
     }
   },
   activated () {
-    this.show = false
-    this.refreshStatusBar()
-    this.cfontSize = this.$store.getters.fontSize
-    this.fontSize = 14 + this.cfontSize * 2
+    this.showUi = false
     this.$http.get('/reading/book/' + this.$route.query.bookid)
     .then(response => {
-      console.log(response)
       this.book = response.data
-      this.paging(0)
+      this.$store.commit('read/bookid', this.book.info.id)
+      this.$http.get(`/reading/book/${this.book.info.id}/bookmark`)
+      .then(response => {
+        this.book.tagData = response.data.results
+      })
     })
     .catch(err => {
-      console.err(err)
+      console.error(err)
     })
   },
   deactivated () {
-    this.showmore = false
-    this.refreshStatusBar()
   },
   mounted () {
-    console.log(this.$route.query.bookid)
-    this.$store.state.read.bookid = this.$route.query.bookid
+    // console.log(this.$route.query.bookid)
   }
 }
 </script>
@@ -477,16 +508,8 @@ export default {
     }
   }
   .content{
-    flex: 1;
+    flex-grow: 1;
     display: flex;
-    .prev{
-      left: -100%;
-      right: 100%;
-    }
-    .next{
-      left: 100%;
-      right: -100%;
-    }
   }
   .trans{   
     transition: transform .4s cubic-bezier(.3,.5,.29,.99);
@@ -505,27 +528,10 @@ export default {
     text-align: justify;
     line-height: 1.8em;
     font-size: 16px;
-    // font-family: SourceHanSerif;
+    width: 100%;
   }
   .noindent>:first-child{
     text-indent: 0em;
   }
-  .buttonItem{
-    height: 53px;
-  }
-  // .pageContentWrapper p {
-  //   -webkit-margin-before: 0.5em;
-  //   -webkit-margin-after: 0.5em;
-  // }
-  // .pageContent p:first-child{
-  //   -webkit-margin-before: 0em;
-  // }
-  // ::-webkit-scrollbar{width:0px;}
-}
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
-}
-.fade-enter, .fade-leave-active {
-  opacity: 0
 }
 </style>

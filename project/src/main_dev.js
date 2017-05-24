@@ -13,7 +13,7 @@ import store from './store'
 var axios = require('axios')
 Vue.prototype.$http = axios.create({
   baseURL: 'http://oott.me',
-  timeout: 1000
+  timeout: 10000
 })
 Vue.prototype.$http.interceptors.request.use(
   async config => {

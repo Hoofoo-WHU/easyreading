@@ -182,7 +182,8 @@ export default {
       })
       this.$http.get('/check')
       .then(response => {
-        if (response.data.is_check_today === true) {
+        console.log(response.data.is_check_today)
+        if (response.data.is_check_today === false) {
           this.text = '签到'
         } else {
           this.text = '已签到'

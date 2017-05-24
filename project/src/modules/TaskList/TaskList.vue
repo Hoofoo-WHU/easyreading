@@ -1,6 +1,6 @@
 <template lang="html">
     <div id="book-rank-list">
-        <navigation-bar @tap="" title="排行列表" :border="!top">
+        <navigation-bar @tap="" title="题库列表" :border="!top">
           <navigation-bar-item @tap="back" slot="left" text="返回" icon="back"/>
         </navigation-bar>
         <scroller style="flex-grow:1" ref="scroller" @loadMore="loadMore" v-model="top" can-load-more>
@@ -13,13 +13,10 @@
                     </div>
                     <div class="book-info">
                         <p class="book-title">{{ book.title }}</p>
-                        <p class="book-author">{{ book.author }}</p>
+                        <p class="book-number"> 1000 道</p>
                         <div class="operate">
                             <touch class="addShelf" @tap="add(book)">
                                 <icon class="icon" :name="'addShelf'"></icon>
-                            </touch>
-                            <touch class="addCart" @tap="shop(book.title, book.price, book.id)">
-                                <icon :name="'addCart'"></icon>
                             </touch>
                         </div>
                     </div>
@@ -29,18 +26,6 @@
                 </li>
             </ul>
         </scroller>
-        <!--购买框-->
-        <modal v-model="shopModalShow" :on-ok="confirmShop" :ok-text="'确认支付'">
-          <div slot="header">
-              购买本书
-          </div>
-          <div class="shop-modal">
-              <p class="title">{{ shopBook.name }}</p>
-              <p class="price">价格：<span>{{ shopBook.price }}</span>代币</p>
-              <p class="hold">您还剩余 <span>{{ userHold }}</span>阅币</p>
-          </div>
-        </modal>
-        <!--购买框结束-->
         <message v-model="messageShow" :message-text="messageText" :icon-name="messageIcon"></message>
     </div>
 </template>
@@ -49,22 +34,19 @@
 import { NavigationBar, NavigationBarItem } from '@/components/NavigationBar'
 import Scroller from '@/components/Scroller'
 import Icon from '@/components/Icon'
-import Modal from '@/components/Modal'
 import Message from '@/components/Message'
 export default {
-  name: 'bookRankList',
+  name: 'taskList',
   components: {
     NavigationBar,
     NavigationBarItem,
     Icon,
     Scroller,
-    Message,
-    Modal
+    Message
   },
   data () {
     return {
       bookList: [],
-      shopModalShow: false,
       messageShow: false,
       shopBook: {
         name: '',
@@ -75,15 +57,6 @@ export default {
       messageText: '',
       messageIcon: 'ok',
       top: true
-    }
-  },
-  watch: {
-    shopModalShow (val) {
-      if (val) {
-        this.$store.commit('addmodal', () => { this.shopModalShow = true })
-      } else {
-        this.$store.commit('removemodal', () => { this.shopModalShow = false })
-      }
     }
   },
   methods: {
@@ -135,31 +108,6 @@ export default {
           this.showMessage('添加成功', 'ok')
         })
       }
-    },
-    shop (name, price, id) {
-      this.shopBook.name = name
-      this.shopBook.price = price
-      this.shopBook.id = id
-      let me = this
-      me.$http.get('/personal/balance')
-      .then(response => {
-        me.userHold = response.data.balance_book
-        setTimeout(function () {
-          me.shopModalShow = true
-        }, 0)
-      })
-    },
-    confirmShop () {
-      this.shopModalShow = false
-      let me = this
-      me.$http.post('/bookshopping/book/' + this.shopBook.id + '/buy')
-      .then(response => {
-        alert('response')
-        this.showMessage('购买成功', 'ok')
-      })
-      .catch(error => {
-        this.showMessage(error.response.data.reason, 'close')
-      })
     },
     showMessage (text, icon) {
       if (icon) {
@@ -240,27 +188,5 @@ export default {
         }
     }
 }
-.shop-modal {
-    .title {
-        text-align: center;
-        font-size: 15px;
-        font-weight: bold;
-    }
-    .price {
-        font-size: 13px;
-        margin: 10px
-        span {
-            color: #ffa500
-            padding: 0 5px
-        }
-    }
-    .hold {
-        margin: 10px
-        font-size: 13px;
-        span{
-            color: #ffa500
-            padding: 0 5px
-        }
-    }
-}
+
 </style>

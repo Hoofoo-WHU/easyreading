@@ -19,6 +19,29 @@
           </div>
       </container>
 
+      <!--题库-->
+      <container :title="'题库'" :more="false" :divider="true">
+          <div class="task-list">
+              <div class="section-content">
+                  <ul class="task-show" >
+                      <touch v-for="task in rankList" :key="task.id" @tap="toTaskDetail(task.id)">
+                      <li>
+                          <div class="task-img">
+                              <img :src="task.cover" :alt="task.title">
+                          </div>
+                          <p>{{ task.title }}</p>
+                      </li>
+                    </touch>
+                  </ul>
+                  <div class="see-more">
+                  <touch @tap="toTaskList">
+                   更多>>>
+                  </touch>
+                  </div>
+              </div>
+          </div>
+      </container>
+
 
       <!--排行榜-->
       <container :title="'排行榜'" :more="false" :divider="true">
@@ -149,7 +172,7 @@ export default {
       }, 2000)
     },
     replace (name, id) {
-      this.$router.push({'name': name, params: {'id': id}})
+      this.$router.push({'name': name, query: {'id': id}})
     },
     toBookCategoryList (id) {
       this.replace('bookCategoryList', id)
@@ -159,6 +182,12 @@ export default {
     },
     toBookDetail (id) {
       this.replace('detail', id)
+    },
+    toTaskList () {
+      this.replace('taskList')
+    },
+    toTaskDetail (id) {
+      this.replace('taskDetail', id)
     },
     sliderAction (id) {
       console.log(id)
@@ -234,6 +263,49 @@ export default {
             span {
                 vertical-align: super;
             }
+        }
+    }
+}
+.task-list {
+    .section-content {
+        padding: 10px 0;
+        .task-show {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex
+            justify-content: space-around;
+            div {
+                width: 25%;
+                box-sizing: border-box;
+                padding: 10px;
+                li {
+                    .task-img {
+                        width: 100%
+                        height: 100%
+                        img {
+                            display: block;
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+
+                    p {
+                        font-size: 10px;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+        .see-more {
+            width: 30%;
+            height: 20px;
+            border: 1px #d3d3d3 solid
+            border-radius: 50px;
+            text-align: center;
+            font-size: 10px;
+            margin: 10px auto;
+            line-height: 20px;
         }
     }
 }

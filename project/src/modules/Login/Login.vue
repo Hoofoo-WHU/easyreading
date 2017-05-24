@@ -34,8 +34,7 @@ export default {
     return {
       state: 'login',
       phonenum: '',
-      password: '',
-      message: ''
+      password: ''
     }
   },
   methods: {
@@ -46,6 +45,7 @@ export default {
       this.$http.post('/user/login', {'identifier': this.phonenum, 'password': this.password})
       .then(response => {
         this.$store.commit('token', {token: response.data.token, expires_at: response.data.expires_at})
+        this.$store.commit('synchronize')
         this.$router.back()
       })
       .catch(function (error) {

@@ -34,8 +34,7 @@ export default {
     return {
       state: 'login',
       phonenum: '',
-      password: '',
-      message: ''
+      password: ''
     }
   },
   methods: {

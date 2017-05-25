@@ -74,7 +74,8 @@ export default {
       userHold: 0,
       messageText: '',
       messageIcon: 'ok',
-      top: true
+      top: true,
+      next: ''
     }
   },
   watch: {
@@ -88,13 +89,10 @@ export default {
   },
   methods: {
     load () {
-      this.$http.get('/recommendation/rank', {
-        params: {
-          amount: 10
-        }
-      })
+      this.$http.get('/recommendation/rank')
       .then(response => {
         this.bookList = this.formatImg(response.data.results)
+        this.next = response.data.next
       })
     },
     formatImg (arr) {
@@ -116,7 +114,17 @@ export default {
       this.$router.go(-1)
     },
     loadMore (over) {
-      console.log('loadMore')
+      let noMore = false
+      if (this.next === null) {
+        noMore = true
+        over(noMore)
+      } else {
+        this.$http.get('/recommendation/rank')
+        .then(response => {
+          this.bookList = this.formatImg(response.data.results)
+          this.next = response.data.next
+        })
+      }
     },
     toBookDetail (id) {
       this.$router.push({'name': 'detail', query: {'id': id}})

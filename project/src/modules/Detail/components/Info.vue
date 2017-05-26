@@ -4,7 +4,7 @@
       <div class="catalog">
         <div>
           <p class="left"><b>目录 最近更新</b></p>
-          <p class="right">{{time}}</p>
+          <p class="right">{{update.time}}</p>
         </div>
         <div>
           <p class="left">{{update.chapter}}</p>
@@ -43,11 +43,6 @@
         default: function () {
           return {}
         }
-      }
-    },
-    computed: {
-      time: function () {
-        return Date.parse(this.update.time)
       }
     },
     methods: {

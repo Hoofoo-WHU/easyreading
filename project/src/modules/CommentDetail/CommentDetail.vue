@@ -1,6 +1,5 @@
 <template lang="html">
-    <transition name="comment-detail-show">
-    <div id="comment-detail" v-show="show">
+    <div id="comment-detail">
         <navigation-bar @tap="scrollTop" title="评论详情" ref="scroller" :border="!top">
           <navigation-bar-item slot="left" icon="back" text="返回" @tap="back"/>
         </navigation-bar>
@@ -49,8 +48,6 @@
           <touch class="confirm" @tap="confirm">回复</touch>
         </bottom-bar>
     </div>
-   </transition>
-
 </template>
 
 <script>
@@ -73,39 +70,26 @@ export default {
       type: Boolean,
       default: false
     },
-    commentId: {
-      type: Number,
-      default: 1
-    },
     bookId: {
       type: Number,
       default: 1
     }
   },
-  watch: {
-    value (val) {
-      this.show = val
-      if (val) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = 'auto'
-        this.clean()
-      }
-    },
-    show (val) {
-      this.$emit('input', val)
+  computed: {
+    commentId () {
+      return this.$route.query.id
     }
   },
   data () {
     return {
       mainComment: {},
-      show: false,
       subComment: [],
       top: true,
       messageShow: false,
       messageText: '',
       icon: 'ok',
-      responseContent: ''
+      responseContent: '',
+      next: ''
     }
   },
   methods: {
@@ -115,6 +99,8 @@ export default {
       .then(response => {
         console.log('/bookshopping/comment/: ' + response)
         me.mainComment = response.data
+        me.mainComment.timestamp = me.formatTime(me.mainComment.timestamp)
+        me.mainComment.user_avatar = 'http://oott.me' + me.mainComment.user_avatar
       })
     },
     loadChilrenComment () {
@@ -126,21 +112,30 @@ export default {
         }
       })
       .then(response => {
-        console.log('/bookshopping/comment/children: ' + response)
-        me.subComment = response.data.results
+        me.subComment = this.formatImg(response.data.results)
+        for (let i = 0; i < me.subComment.length; i++) {
+          me.subComment[i].timestamp = me.formatTime(me.subComment[i].timestamp)
+        }
+        me.next = response.data.next
         me.$refs.scroller.refresh()
       })
     },
     back () {
       this.clean()
-      this.show = false
-      this.$emit('reloadComment')
+      this.$router.go(-1)
     },
     scrollTop: function () {
       this.$refs.scroller.scrollTop()
     },
     loadMore (over) {
-      console.log('loadMore')
+      let noMore = false
+      if (this.next === null) {
+        noMore = true
+        over(noMore)
+      } else {
+        this.loadChilrenComment()
+        over(noMore)
+      }
     },
     getStarWidth: function (score) {
       return score * 20 + '%'
@@ -149,6 +144,20 @@ export default {
       this.messageShow = true
       this.icon = icon
       this.messageText = text
+    },
+    formatImg (arr) {
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].user_avatar) {
+          arr[i].user_avatar = 'http://oott.me' + arr[i].user_avatar
+        } else if (arr[i].cover) {
+          arr[i].cover = 'http://oott.me' + arr[i].cover
+        }
+      }
+      return arr
+    },
+    formatTime (time) {
+      let newTime = new Date(time)
+      return newTime.getFullYear() + '-' + ('0' + (newTime.getMonth() + 1)).slice(-2) + '-' + (('0' + newTime.getDate()).slice(-2))
     },
     clean () {
       this.responseContent = ''
@@ -171,7 +180,7 @@ export default {
   },
   mounted () {
     this.load()
-    this.$refs.scroller.refresh()
+    this.loadChilrenComment()
   }
 }
 </script>
@@ -207,7 +216,7 @@ export default {
             display: inline-block;
             left: 0;
             top: 0;
-            background: url(../png/star.png);
+            background: url(../Detail/png/star.png);
             height: 16px;
           }
         }
@@ -298,14 +307,5 @@ export default {
             line-height: 49px;
         }
     }
-}
-.comment-detail-show-enter-active, .comment-detail-show-leave-active {
-    transition: transform .3s
-}
-.comment-detail-show-enter {
-    transform: translateY(100%);
-}
-.comment-detail-show-leave-to {
-    transform: translateY(100%);
 }
 </style>

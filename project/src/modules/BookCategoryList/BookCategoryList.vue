@@ -129,7 +129,7 @@ export default {
     },
     formatImg (arr) {
       for (let i = 0; i < arr.length; i++) {
-        arr[i].cover = 'http://oott.me' + arr[i].cover
+        arr[i].cover = 'http://139.224.112.83' + arr[i].cover
       }
       return arr
     },

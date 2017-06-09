@@ -14,7 +14,7 @@ Vue.use(VueTouch, {name: 'touch'})
 
 var axios = require('axios')
 Vue.prototype.$http = axios.create({
-  baseURL: 'http://oott.me',
+  baseURL: 'http://139.224.112.83',
   timeout: 1000
 })
 Vue.prototype.$http.interceptors.request.use(

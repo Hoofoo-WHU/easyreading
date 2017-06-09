@@ -56,7 +56,7 @@ export default {
     this.$http.get('/personal/read')
     .then(response => {
       for (var i = 0; i < response.data.results.length; i++) {
-        response.data.results[i].cover = 'http://oott.me' + response.data.results[i].cover
+        response.data.results[i].cover = 'http://139.224.112.83' + response.data.results[i].cover
         this.items.push(response.data.results[i])
       }
     })

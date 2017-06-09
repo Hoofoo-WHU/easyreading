@@ -93,7 +93,7 @@ export default {
           this.after = true
           this.see = '取消'
           for (var i = 0; i < response.data.results.length; i++) {
-            response.data.results[i].cover = 'http://oott.me' + response.data.results[i].cover
+            response.data.results[i].cover = 'http://139.224.112.83' + response.data.results[i].cover
             this.bookData.push(response.data.results[i])
           }
         })

@@ -44,9 +44,9 @@ export default {
   },
   computed: {
     score () {
-      for (let i = 0; i < this.stars.length; i++) {
-        if (this.stars[i].light === true) {
-          return this.stars[i].score
+      for (let i = this.stars.length; i > 0; i--) {
+        if (this.stars[i - 1].light === true) {
+          return this.stars[i - 1].score
         }
       }
     }

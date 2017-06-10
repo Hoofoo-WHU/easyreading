@@ -1,10 +1,10 @@
 <template>
   <router-content style="flex-direction:column;background:#fff">
-  <navigation-bar>
+  <div class="bar">
     <icon name="search" class="icon"></icon>
     <input v-model="message" placeholder="书名/作者">
     <touch @tap="search"><span class="search">{{see}}</span></touch>
-  </navigation-bar>
+  </div>
   <aside v-show="before">
     <div class="hot">
       <p>热门搜索</p>
@@ -120,6 +120,17 @@ export default {
   margin-bottom:49px;
 }
 
+.bar{
+    display: flex;
+    width: 100%;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    z-index: 100;
+    user-select: none;
+    position: relative;
+    min-height: 49px;
+}
 input{
   width: 70%;
   margin: 5px 0 5px -25px;

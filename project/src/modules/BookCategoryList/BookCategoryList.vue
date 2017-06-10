@@ -103,7 +103,8 @@ export default {
       userHold: 0,
       messageText: '',
       messageIcon: 'ok',
-      top: true
+      top: true,
+      next: ''
     }
   },
   watch: {
@@ -119,12 +120,13 @@ export default {
     load () {
       this.$http.get('/bookshopping/book', {
         params: {
-          category: this.type[this.typeId - 1].name,
-          page: this.page
+          category: this.type[this.typeId - 1].name
         }
       })
       .then(response => {
         this.bookList = this.formatImg(response.data.results)
+        this.next = response.data.next
+        this.$refs.scroller.refresh()
       })
     },
     formatImg (arr) {
@@ -146,7 +148,30 @@ export default {
       this.$router.go(-1)
     },
     loadMore (over) {
+      let noMore = false
+      let me = this
       console.log('loadMore')
+      if (me.next === null) {
+        noMore = true
+        over(noMore)
+      } else {
+        me.$http.get(this.next, {
+          params: {
+            category: this.type[this.typeId - 1].name
+          }
+        })
+        .then(response => {
+          me.next = response.data.next
+          me.bookList = me.formatImg(response.data.results)
+          over(noMore)
+          this.$refs.scroller.refresh()
+        })
+        .catch(error => {
+          console.log(error.response.data.message)
+          over(noMore)
+          this.$refs.scroller.refresh()
+        })
+      }
     },
     add (book) {
       let me = this

@@ -47,8 +47,10 @@ export default {
       this.$router.go(-1)
     },
     out () {
+      console.log(this.$store.getters.token)
       this.$store.commit('logout')
       this.$router.push({name: 'my'})
+      console.log(this.$store.getters.token)
     }
   },
   mounted () {

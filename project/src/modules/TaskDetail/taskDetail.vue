@@ -141,7 +141,7 @@
           if (arr[i].user_avatar) {
             arr[i].user_avatar = 'http://oott.me' + arr[i].user_avatar
           } else if (arr[i].cover) {
-            arr[i].cover = 'http://oott.me' + arr[i].cover
+            arr[i].cover = 'http://139.224.112.83' + arr[i].cover
           }
         }
         return arr

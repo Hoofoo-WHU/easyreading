@@ -177,7 +177,7 @@ export default {
       this.$http.get('/user/profile')
       .then(response => {
         if (response.data.avatar !== '') {
-          this.img = 'http://oott.me' + response.data.avatar
+          this.img = 'http://139.224.112.83' + response.data.avatar
         }
       })
       this.$http.get('/check')

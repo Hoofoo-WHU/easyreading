@@ -104,7 +104,7 @@
         .then(response => {
           console.log('/bookshopping/book/: ' + response)
           me.info = response.data
-          me.info.cover = 'http://oott.me' + me.info.cover
+          me.info.cover = 'http://139.224.112.83' + me.info.cover
           me.update.time = me.info.update_timestamp
           me.update.chapter = me.info.latest_chapter_text
           this.$refs.scroller.refresh()
@@ -139,7 +139,7 @@
       formatImg (arr) {
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].user_avatar) {
-            arr[i].user_avatar = 'http://oott.me' + arr[i].user_avatar
+            arr[i].user_avatar = 'http://139.224.112.83' + arr[i].user_avatar
           } else if (arr[i].cover) {
             arr[i].cover = 'http://139.224.112.83' + arr[i].cover
           }

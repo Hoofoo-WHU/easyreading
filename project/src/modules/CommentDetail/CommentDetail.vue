@@ -100,7 +100,7 @@ export default {
         console.log('/bookshopping/comment/: ' + response)
         me.mainComment = response.data
         me.mainComment.timestamp = me.formatTime(me.mainComment.timestamp)
-        me.mainComment.user_avatar = 'http://oott.me' + me.mainComment.user_avatar
+        me.mainComment.user_avatar = 'http://139.224.112.83' + me.mainComment.user_avatar
       })
     },
     loadChilrenComment () {
@@ -148,9 +148,9 @@ export default {
     formatImg (arr) {
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].user_avatar) {
-          arr[i].user_avatar = 'http://oott.me' + arr[i].user_avatar
+          arr[i].user_avatar = 'http://139.224.112.83' + arr[i].user_avatar
         } else if (arr[i].cover) {
-          arr[i].cover = 'http://oott.me' + arr[i].cover
+          arr[i].cover = 'http://139.224.112.83' + arr[i].cover
         }
       }
       return arr
@@ -232,7 +232,7 @@ export default {
         background-color: #efeff4;
     }
     .response-comment {
-        margin: 20px;
+        margin: 20px 0 20px 20px;
         list-style: none;
         .comments-number {
             margin: 10px 0;

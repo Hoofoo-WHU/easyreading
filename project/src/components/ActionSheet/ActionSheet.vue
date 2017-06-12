@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <transition name="fade">
+    <transition name="fade" @before-enter="enter" @after-leave="leave">
       <touch v-if="show" class="back" @tap="cancel"></touch>
     </transition>
     <transition name="trans">
@@ -32,20 +32,17 @@ export default {
     return {
     }
   },
-  watch: {
-    show (val) {
-      if (val) {
-        this.$emit('show')
-      } else {
-        this.$emit('hide')
-      }
-    }
-  },
   methods: {
     cancel (e) {
       setTimeout(() => {
         this.$emit('cancel')
       }, 0)
+    },
+    enter () {
+      this.$emit('show')
+    },
+    leave () {
+      this.$emit('hide')
     },
     stop (e) {
       e.srcEvent.stopImmediatePropagation()
@@ -72,7 +69,7 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    margin: 10px;
+    padding: 10px;
     border-radius: 12px;
     overflow: hidden;
     z-index: 300;

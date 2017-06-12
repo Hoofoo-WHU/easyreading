@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import read from './read.js'
 
 Vue.use(Vuex)
 
@@ -20,19 +21,15 @@ export default new Vuex.Store({
     // xx: {}
     books: [],
     routing: false,
-    read: {
-      bookid: undefined,
-      pages: [],
-      page: 0,
-      showmore: false,
-      showtoc: false
-    },
     modal: {
       close: undefined,
       size: 0
     },
     token: undefined,
     expires_at: undefined
+  },
+  modules: {
+    read
   },
   mutations: {
     // mutation: (state, payload) => {

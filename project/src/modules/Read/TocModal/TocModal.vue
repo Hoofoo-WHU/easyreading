@@ -69,7 +69,7 @@ export default {
     top: 0;
     overflow: hidden;
     z-index: 300;
-    background: #f4f4f4;
+    background: #fff;
     display: flex;
     flex-direction: column;
   } 

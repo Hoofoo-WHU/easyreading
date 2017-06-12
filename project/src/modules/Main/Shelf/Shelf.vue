@@ -1,7 +1,8 @@
 <template>
   <router-content style="flex-direction:column">
     <navigation-bar @tap="scrollTop" title="书架" :sub-title="select" :border="!top">
-      <navigation-bar-item @tap="modify" slot="right" text="编辑" v-if="edit" :disable="empty"/>
+    <navigation-bar-item @tap="task" slot="left" text="题库" />
+      <navigati on-bar-item @tap="modify" slot="right" text="编辑" v-if="edit" :disable="empty"/>
       <navigation-bar-item @tap="finish" slot="right" text="完成" v-else/>
     </navigation-bar>
     <div v-if="empty" class="default">
@@ -145,6 +146,9 @@ export default {
         this.selectedNum++
         this.pressed = true
       }
+    },
+    task () {
+      this.$router.push({'name': 'task'})
     }
   }
 }

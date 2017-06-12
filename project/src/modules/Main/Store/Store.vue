@@ -150,26 +150,28 @@ export default {
       this.$refs.scroller.scrollTop()
     },
     loadMore (over) {
+      let noMore = false
       let me = this
       console.log('loadMore')
-      setTimeout(() => {
-        let noMore = false
-        me.$http.get('/recommendation/individuation', {
-          params: {
-            amount: 10
-          }
-        })
-        .then(response => {
-          me.recommendList = me.formatImg(response.data.results)
-          over(noMore)
-          this.$refs.scroller.refresh()
-        })
-        .catch(error => {
-          console.log(error.response.data.message)
-          over(noMore)
-          this.$refs.scroller.refresh()
-        })
-      }, 2000)
+      if (me.next === null) {
+        noMore = true
+        over(noMore)
+      } else {
+        setTimeout(() => {
+          me.$http.get(this.nextRecommand)
+          .then(response => {
+            me.nextRecommand = response.data.next
+            me.recommendList = me.formatImg(response.data.results)
+            over(noMore)
+            this.$refs.scroller.refresh()
+          })
+          .catch(error => {
+            console.log(error.response.data.message)
+            over(noMore)
+            this.$refs.scroller.refresh()
+          })
+        }, 2000)
+      }
     },
     replace (name, id) {
       this.$router.push({'name': name, query: {'id': id}})
@@ -194,16 +196,12 @@ export default {
     },
     formatImg (arr) {
       for (let i = 0; i < arr.length; i++) {
-        arr[i].cover = 'http://oott.me' + arr[i].cover
+        arr[i].cover = 'http://139.224.112.83' + arr[i].cover
       }
       return arr
     },
     load () {
-      this.$http.get('/recommendation/individuation', {
-        params: {
-          amount: 10
-        }
-      })
+      this.$http.get('/recommendation/individuation')
       .then(response => {
         this.recommendList = this.formatImg(response.data.results)
         this.nextRecommand = response.data.next
@@ -211,13 +209,16 @@ export default {
       })
       .catch(error => {
         console.log(error.response.data.message)
+        this.$refs.scroller.refresh()
       })
       this.$http.get('/recommendation/rank', {
         params: {
-          amount: 4
+          page: 1,
+          page_size: 4
         }
       })
       .then(response => {
+        this.$refs.scroller.refresh()
         this.rankList = this.formatImg(response.data.results)
       })
       .catch(error => {

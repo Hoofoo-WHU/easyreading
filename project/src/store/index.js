@@ -132,7 +132,7 @@ export default new Vuex.Store({
               for (var i = 0; i < books.length; i++) {
                 state.books.push(books[i])
                 state.books[i].id = state.books[i].book_id
-                state.books[i].cover = 'http://oott.me' + state.books[i].cover
+                state.books[i].cover = 'http://139.224.112.83' + state.books[i].cover
               }
               console.log(state.books)
               var json = JSON.stringify(state.books)

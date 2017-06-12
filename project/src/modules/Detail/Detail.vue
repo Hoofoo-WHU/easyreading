@@ -21,8 +21,6 @@
         </div>
     </scroller>
     <message v-model="messageShow" :message-text="messageText" :icon-name="messageIcon"></message>
-    <!--评论详情-->
-    <comment-detail v-model="commentDetailShow" :comment-id="commentId" :book-id="curId" @reloadComment="loadComment"></comment-detail>
     <!--评论框-->
     <add-comment v-model="addCommentShow" :id="info.id" @showMessage="showMessage" @reloadComment="loadComment"></add-comment>
     <!--购买框-->
@@ -55,7 +53,6 @@
   import Relate from './components/relate'
   import Comment from './components/comment'
   import AddComment from './components/AddComment'
-  import CommentDetail from './components/CommentDetail'
   import Message from '@/components/Message'
   import Modal from '@/components/Modal'
   import Container from '@/components/Container'
@@ -73,7 +70,6 @@
       Relate,
       Comment,
       AddComment,
-      CommentDetail,
       Message,
       Container,
       Modal,
@@ -96,9 +92,10 @@
         userHold: 0,
         addCommentShow: false,
         top: true,
-        commentDetailShow: false,
         commentId: 1,
-        curId: 1
+        curId: 1,
+        curPage: 1,
+        next: ''
       }
     },
     computed: {
@@ -134,14 +131,16 @@
         .then(response => {
           console.log('/bookshopping/book/: ' + response)
           me.info = response.data
-          me.info.cover = 'http://oott.me' + me.info.cover
+          me.info.cover = 'http://139.224.112.83' + me.info.cover
           me.update.time = me.info.update_timestamp
+
           me.update.chapter = me.info.latest_chapter_text
           this.$refs.scroller.refresh()
         })
         me.$http.get('/recommendation/individuation', {
           params: {
-            amount: 10
+            page: 1,
+            page_size: 4
           }
         })
         .then(response => {
@@ -155,23 +154,27 @@
       },
       loadComment () {
         let me = this
-        me.$http.get('/bookshopping/book/' + this.curId + '/comment', {
-          params: {
-            page: 1,
-            page_size: 20
-          }
-        })
+        me.$http.get('/bookshopping/book/' + this.curId + '/comment')
         .then(response => {
+          this.curPage = this.curPage + 1
           me.comment = this.formatImg(response.data.results)
+          me.next = response.data.next
+          for (let i = 0; i < me.comment.length; i++) {
+            me.comment[i].timestamp = this.formatTime(me.comment[i].timestamp)
+          }
           this.$refs.scroller.refresh()
         })
+      },
+      formatTime (time) {
+        let newTime = new Date(time)
+        return newTime.getFullYear() + '-' + ('0' + (newTime.getMonth() + 1)).slice(-2) + '-' + (('0' + newTime.getDate()).slice(-2))
       },
       formatImg (arr) {
         for (let i = 0; i < arr.length; i++) {
           if (arr[i].user_avatar) {
-            arr[i].user_avatar = 'http://oott.me' + arr[i].user_avatar
+            arr[i].user_avatar = 'http://139.224.112.83' + arr[i].user_avatar
           } else if (arr[i].cover) {
-            arr[i].cover = 'http://oott.me' + arr[i].cover
+            arr[i].cover = 'http://139.224.112.83' + arr[i].cover
           }
         }
         return arr
@@ -188,12 +191,19 @@
       },
       loadMore (over) {
         let me = this
-        console.log('loadMore')
-        setTimeout(() => {
-          let noMore = false
-          me.loadComment()
+        let noMore = false
+        if (me.next === null) {
+          noMore = true
           over(noMore)
-        }, 2000)
+        } else {
+          me.$http.get(this.next)
+          .then(response => {
+            this.next = response.data.next
+            me.comment = this.formatImg(response.data.results)
+            over(noMore)
+            this.$refs.scroller.refresh()
+          })
+        }
       },
       test () {
         alert('可以')
@@ -218,7 +228,11 @@
         console.log(this.isIn)
       },
       read (id) {
-        this.$router.push({'name': 'read', 'query': {id}})
+        if (this.info.allow_trial === false) {
+          this.showMessage('请先购买后阅读', 'close')
+        } else {
+          this.$router.push({'name': 'read', 'query': {id}})
+        }
       },
       shop () {
         let me = this
@@ -257,8 +271,7 @@
         this.load(id)
       },
       toCommentDetail (id) {
-        this.commentDetailShow = true
-        this.commentId = id
+        this.$router.push({'name': 'commentDetail', query: {'id': id}})
       }
     },
     mounted () {

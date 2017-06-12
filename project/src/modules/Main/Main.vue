@@ -12,7 +12,7 @@
       <bottom-bar-item @tap="replace('store')" text="书城" icon="store" :active="router === 'store'"/>
       <bottom-bar-item @tap="replace('search')" text="搜索" icon="search" :active="router === 'search'"/>
       <bottom-bar-item @tap="replace('my')" text="我的" icon="account" :active="router === 'my'"/>
-      <bottom-bar-item @tap="replace('test')" text="测试" icon="settings" :active="router === 'test'"/>
+      <!--<bottom-bar-item @tap="replace('test')" text="测试" icon="settings" :active="router === 'test'"/>-->
     </bottom-bar>
   </div>
 </template>

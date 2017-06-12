@@ -20,6 +20,7 @@
       </container>
 
       <!--题库-->
+      <!--
       <container :title="'题库'" :more="false" :divider="true">
           <div class="task-list">
               <div class="section-content">
@@ -41,7 +42,7 @@
               </div>
           </div>
       </container>
-
+      -->
 
       <!--排行榜-->
       <container :title="'排行榜'" :more="false" :divider="true">

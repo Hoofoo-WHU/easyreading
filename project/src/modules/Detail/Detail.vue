@@ -132,7 +132,7 @@
           console.log('/bookshopping/book/: ' + response)
           me.info = response.data
           me.info.cover = 'http://139.224.112.83' + me.info.cover
-          me.update.time = me.info.update_timestamp
+          me.update.time = me.formatTime(me.info.update_timestamp)
 
           me.update.chapter = me.info.latest_chapter_text
           this.$refs.scroller.refresh()

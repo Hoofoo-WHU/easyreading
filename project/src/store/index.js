@@ -24,7 +24,9 @@ export default new Vuex.Store({
     modal: {
       close: undefined,
       size: 0
-    }
+    },
+    token: undefined,
+    expires_at: undefined
   },
   modules: {
     read

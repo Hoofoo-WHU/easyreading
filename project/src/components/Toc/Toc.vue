@@ -1,7 +1,7 @@
 <template>
   <div class="toc">
     <scroller style="flex-grow:1">
-      <list-item v-for="item in 20" :key="item" style="height: 53px;line-height: 53px;font-family: serif" :text="'第'+item+'章'" @tap="tap"></list-item>
+      <list-item v-for="(item, index) in data" :key="index" style="height: 49px;line-height: 49px;font-family: serif" :style="{opacity: item.cache ? 1 : 0.5}" :text="item.name" @tap="tap(item, index)"><icon v-if="item.lock" name="lock" style="height: 100%; width: 20px; color: #666;"></icon></list-item>
     </scroller>
   </div>
 </template>
@@ -9,19 +9,27 @@
 <script>
 import Scroller from '@/components/Scroller'
 import ListItem from '@/components/ListItem'
+import Icon from '@/components/Icon'
 export default {
   name: 'Toc',
+  props: {
+    data: {
+      type: Array,
+      require: true
+    }
+  },
   components: {
     Scroller,
-    ListItem
+    ListItem,
+    Icon
   },
   data () {
     return {
     }
   },
   methods: {
-    tap () {
-      console.log('tap')
+    tap (item, index) {
+      this.$emit('tap', item, index)
     }
   }
 }
@@ -29,11 +37,6 @@ export default {
 
 <style lang="stylus" scoped>
 .toc{
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
 }
 </style>

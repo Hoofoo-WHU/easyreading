@@ -231,7 +231,6 @@
         if (this.info.allow_trial === false) {
           this.showMessage('请先购买后阅读', 'close')
         } else {
-          console.error(id)
           this.$router.push({'name': 'read', 'query': {'bookid': id}})
         }
       },

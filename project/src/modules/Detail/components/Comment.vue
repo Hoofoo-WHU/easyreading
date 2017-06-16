@@ -18,7 +18,7 @@
           </div>
           <div class="texts">
             <div class="textTop">
-              <p class="left"><b>{{item.user_id}}</b></p>
+              <p class="left"><b>{{item.user_nickname}}</b></p>
               <p class="right"> {{item.timestamp}}</p>
             </div>
             <div>
